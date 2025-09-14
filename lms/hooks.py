@@ -247,8 +247,8 @@ on_login = "lms.lms.user.on_login"
 add_to_apps_screen = [
 	{
 		"name": "lms",
-		"logo": "/assets/lms/frontend/learning.svg",
-		"title": "Learning",
+		"logo": "/assets/lms/frontend/genkiddo_logo_only.svg",
+		"title": "GenKiddo Academy",
 		"route": "/lms",
 		"has_permission": "lms.lms.api.check_app_permission",
 	}

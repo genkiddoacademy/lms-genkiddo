@@ -404,7 +404,7 @@ export function getSidebarLinks() {
 	return [
 		{
 			label: 'Courses',
-			icon: 'BookOpen',
+			icon: 'GraduationCap',
 			to: 'Courses',
 			activeFor: [
 				'Courses',
@@ -455,13 +455,13 @@ export function getSidebarLinks() {
 export function getFormattedDateRange(
 	startDate,
 	endDate,
-	format = 'DD MMM YYYY'
+	format = 'DD MMM YYYY',
 ) {
 	if (startDate === endDate) {
 		return dayjs(startDate).format(format)
 	}
 	return `${dayjs(startDate).format(format)} - ${dayjs(endDate).format(
-		format
+		format,
 	)}`
 }
 
@@ -493,7 +493,7 @@ export function singularize(word) {
 	}
 	return word.replace(
 		new RegExp(`(${Object.keys(endings).join('|')})$`),
-		(r) => endings[r]
+		(r) => endings[r],
 	)
 }
 
@@ -521,7 +521,7 @@ export const escapeHTML = (text) => {
 
 	return String(text).replace(
 		/[&<>"'`=]/g,
-		(char) => escape_html_mapping[char] || char
+		(char) => escape_html_mapping[char] || char,
 	)
 }
 

@@ -12,6 +12,11 @@ export default {
 	],
 	theme: {
 		extend: {
+			colors: {
+				'orange-2': '#EF7F1F',
+				'warning-100': '#F5B704',
+			},
+
 			strokeWidth: {
 				1.5: '1.5',
 			},

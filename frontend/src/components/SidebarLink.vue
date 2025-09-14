@@ -3,20 +3,21 @@
 		v-if="link && !link.onlyMobile"
 		class="flex h-7 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3"
 		:class="
-			isActive ? 'bg-surface-selected shadow-sm' : 'hover:bg-surface-gray-2'
+			isActive ? 'bg-orange-2 shadow-sm text-white' : 'hover:bg-surface-gray-2'
 		"
 		@click="handleClick"
 	>
 		<div
 			class="flex items-center w-full duration-300 ease-in-out group"
-			:class="isCollapsed ? 'p-1 relative' : 'px-2 py-1'"
+			:class="isCollapsed ? 'p-1 relative justify-center' : 'px-2 py-1'"
 		>
 			<Tooltip :text="link.label" placement="right">
 				<slot name="icon">
 					<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
 						<component
 							:is="icons[link.icon]"
-							class="h-4 w-4 stroke-1.5 text-ink-gray-8"
+							class="h-4 w-4 stroke-1.5"
+							:class="isActive ? 'text-white' : 'text-ink-gray-8'"
 						/>
 					</span>
 				</slot>
@@ -44,7 +45,7 @@
 			</span>
 			<div
 				v-if="showControls && !isCollapsed"
-				class="flex items-center space-x-2 !ml-auto block text-xs text-ink-gray-5 group-hover:visible invisible"
+				class="flex items-center space-x-2 !ml-auto text-xs text-ink-gray-5 group-hover:visible invisible"
 			>
 				<component
 					:is="icons['Edit']"
@@ -62,7 +63,7 @@
 </template>
 <script setup>
 import { Tooltip } from 'frappe-ui'
-import { computed } from 'vue'
+import { computed, watchEffect, nextTick, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import * as icons from 'lucide-vue-next'
 
@@ -93,7 +94,32 @@ function handleClick() {
 }
 
 const isActive = computed(() => {
-	return props.link?.activeFor?.includes(router.currentRoute.value.name)
+	const currentRoute = router.currentRoute.value
+	if (!currentRoute?.name) return false
+
+	if (props.link?.activeFor) {
+		return props.link.activeFor.includes(currentRoute.name)
+	}
+	// For web pages without activeFor, check if current route matches
+	if (router.hasRoute(props.link.to)) {
+		return currentRoute.name === props.link.to
+	} else {
+		return currentRoute.path === `/${props.link.to}`
+	}
+})
+
+// Use watchEffect to ensure reactivity on mount and route changes
+watchEffect(async () => {
+	const currentRoute = router.currentRoute.value
+	if (currentRoute) {
+		await nextTick()
+	}
+	// This will trigger whenever currentRoute changes
+})
+
+onMounted(async () => {
+	await router.isReady()
+	// Ensure router is ready
 })
 
 const openModal = (link) => {

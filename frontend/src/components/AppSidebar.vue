@@ -4,21 +4,168 @@
 		:class="sidebarStore.isSidebarCollapsed ? 'w-14' : 'w-56'"
 	>
 		<div
-			class="flex flex-col overflow-hidden"
+			class="flex flex-col overflow-visible divide-y-2 divide-gray-200"
 			:class="sidebarStore.isSidebarCollapsed ? 'items-center' : ''"
 		>
-			<UserDropdown :isCollapsed="sidebarStore.isSidebarCollapsed" />
-			<div class="flex flex-col" v-if="sidebarSettings.data">
+			<div
+				class="flex items-center flex-col px-2 py-1 w-full"
+				:class="
+					sidebarStore.isSidebarCollapsed
+						? 'justify-center space-x-1'
+						: 'justify-between'
+				"
+			>
+				<div class="flex items-center justify-center flex-1 min-w-0 py-4">
+					<Tooltip :text="__('Toggle sidebar')">
+						<div
+							class="flex items-center justify-center w-6 h-6 rounded hover:bg-surface-gray-2 transition-colors flex-shrink-0 cursor-pointer"
+							@click="toggleSidebar()"
+						>
+							<Menu class="w-4 h-4 text-ink-gray-7" />
+						</div>
+					</Tooltip>
+
+					<UserDropdown :isCollapsed="sidebarStore.isSidebarCollapsed" />
+				</div>
+			</div>
+			<div class="flex flex-col pb-4 pt-2" v-if="sidebarSettings.data">
+				<!-- Theme Toggle (expanded) -->
+				<div
+					v-if="!sidebarStore.isSidebarCollapsed"
+					class="px-2 py-2 flex items-center justify-center mb-2"
+				>
+					<button
+						type="button"
+						:aria-pressed="isDarkMode ? 'true' : 'false'"
+						class="relative inline-flex items-center gap-2 rounded-full px-4 py-2 select-none transition ring-1 ring-black/5 shadow-sm"
+						:class="
+							isDarkMode
+								? 'bg-gray-200 text-gray-700'
+								: 'bg-warning-100 text-white'
+						"
+						@click="handleThemeClick"
+					>
+						<span class="text-sm font-semibold tracking-wide">
+							{{ isDarkMode ? 'GELAP' : 'TERANG' }}
+						</span>
+						<Sun v-if="!isDarkMode" :size="18" class="shrink-0" />
+						<Moon v-else :size="18" class="shrink-0" />
+					</button>
+				</div>
+
+				<!-- Theme Toggle (collapsed, kecil) -->
+				<div v-else class="px-2 py-2">
+					<button
+						type="button"
+						class="grid place-items-center w-9 h-9 rounded-full ring-1 shadow-sm transition"
+						:class="
+							isDarkMode
+								? 'bg-black ring-white  text-white'
+								: 'bg-warning-100 ring-warning-100 text-white '
+						"
+						@click="handleThemeClick"
+					>
+						<Sun v-if="!isDarkMode" :size="18" />
+						<Moon v-else :size="18" />
+					</button>
+				</div>
+
 				<SidebarLink
 					v-for="link in sidebarLinks"
+					:key="link.to"
 					:link="link"
 					:isCollapsed="sidebarStore.isSidebarCollapsed"
 					class="mx-2 my-0.5"
 				/>
 			</div>
+
+			<!-- Halaman Utama Link -->
+			<div v-if="!user" class="px-2 py-2">
+				<button
+					:class="
+						sidebarStore.isSidebarCollapsed
+							? 'p-2 rounded hover:bg-surface-gray-2 cursor-pointer mx-2 my-0.5'
+							: 'flex h-7 w-full hover:bg-surface-gray-2 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3'
+					"
+					@click="goToHome"
+				>
+					<div
+						class="flex items-center w-full duration-300 ease-in-out group"
+						:class="
+							sidebarStore.isSidebarCollapsed ? 'justify-center' : 'px-2 py-1'
+						"
+					>
+						<Tooltip :text="'Halaman Utama'" placement="right">
+							<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
+								<Command class="h-4 w-4 stroke-1.5" />
+							</span>
+						</Tooltip>
+						<span
+							class="flex-shrink-0 text-sm duration-300 ease-in-out"
+							:class="
+								sidebarStore.isSidebarCollapsed
+									? 'ml-0 w-0 overflow-hidden opacity-0'
+									: 'ml-2 w-auto opacity-100'
+							"
+						>
+							Halaman Utama
+						</span>
+					</div>
+				</button>
+			</div>
+
+			<!-- Login/Register Buttons -->
+			<div
+				v-if="!user"
+				class="px-2 py-2 pt-4"
+				:class="
+					sidebarStore.isSidebarCollapsed
+						? 'flex flex-col items-center space-y-2'
+						: 'space-y-2'
+				"
+			>
+				<div
+					v-if="sidebarStore.isSidebarCollapsed"
+					class="flex flex-col space-y-2"
+				>
+					<Tooltip :text="'Log In'">
+						<button
+							@click="goToLogin"
+							class="p-2 rounded ring-1 ring-orange-2 !border-orange-2 !text-orange-2 hover:!bg-orange-2/50 mx-2 my-0.5"
+						>
+							<LogIn class="h-4 w-4" />
+						</button>
+					</Tooltip>
+					<Tooltip :text="'Register'">
+						<button
+							@click="goToRegister"
+							class="p-2 rounded !bg-orange-2 !text-white hover:!bg-orange-600 mx-2 my-0.5"
+						>
+							<User class="h-4 w-4" />
+						</button>
+					</Tooltip>
+				</div>
+				<div v-else class="space-y-2">
+					<Button
+						variant="outline"
+						class="w-full !border-orange-2 !text-orange-2 hover:!bg-orange-50"
+						@click="goToLogin"
+					>
+						Log In
+					</Button>
+					<Button
+						variant="solid"
+						class="w-full !bg-orange-2 !text-white hover:!bg-orange-600"
+						@click="goToRegister"
+					>
+						Register
+					</Button>
+				</div>
+			</div>
+
 			<div
 				v-if="sidebarSettings.data?.web_pages?.length || isModerator"
-				class="mt-4"
+				class="mt-4 mb-4"
 			>
 				<div
 					class="flex items-center justify-between pr-2 cursor-pointer"
@@ -56,6 +203,7 @@
 				>
 					<SidebarLink
 						v-for="link in sidebarSettings.data.web_pages"
+						:key="link.name || link.to"
 						:link="link"
 						:isCollapsed="sidebarStore.isSidebarCollapsed"
 						class="mx-2 my-0.5"
@@ -65,6 +213,169 @@
 					/>
 				</div>
 			</div>
+
+			<!-- Additional Links -->
+			<div v-if="user" class="px-2 py-2 space-y-2">
+				<button
+					@click="goToProfile"
+					:class="
+						sidebarStore.isSidebarCollapsed
+							? 'p-2 rounded hover:bg-surface-gray-2 cursor-pointer mx-2 my-0.5'
+							: 'flex h-7 w-full hover:bg-surface-gray-2 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3'
+					"
+				>
+					<div
+						class="flex items-center w-full duration-300 ease-in-out group"
+						:class="
+							sidebarStore.isSidebarCollapsed ? 'justify-center' : 'px-2 py-1'
+						"
+					>
+						<Tooltip :text="'Profile'" placement="right">
+							<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
+								<UserRound class="h-4 w-4 stroke-1.5" />
+							</span>
+						</Tooltip>
+						<span
+							class="flex-shrink-0 text-sm duration-300 ease-in-out"
+							:class="
+								sidebarStore.isSidebarCollapsed
+									? 'ml-0 w-0 overflow-hidden opacity-0'
+									: 'ml-2 w-auto opacity-100'
+							"
+						>
+							Profile
+						</span>
+					</div>
+				</button>
+				<button
+					@click="goToSettings"
+					:class="
+						sidebarStore.isSidebarCollapsed
+							? 'p-2 rounded hover:bg-surface-gray-2 cursor-pointer mx-2 my-0.5'
+							: 'flex h-7 w-full hover:bg-surface-gray-2 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3'
+					"
+				>
+					<div
+						class="flex items-center w-full duration-300 ease-in-out group"
+						:class="
+							sidebarStore.isSidebarCollapsed ? 'justify-center' : 'px-2 py-1'
+						"
+					>
+						<Tooltip :text="'Pengaturan'" placement="right">
+							<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
+								<Settings class="h-4 w-4 stroke-1.5" />
+							</span>
+						</Tooltip>
+						<span
+							class="flex-shrink-0 text-sm duration-300 ease-in-out"
+							:class="
+								sidebarStore.isSidebarCollapsed
+									? 'ml-0 w-0 overflow-hidden opacity-0'
+									: 'ml-2 w-auto opacity-100'
+							"
+						>
+							Pengaturan
+						</span>
+					</div>
+				</button>
+				<button
+					@click="showHelp"
+					:class="
+						sidebarStore.isSidebarCollapsed
+							? 'p-2 rounded hover:bg-surface-gray-2 cursor-pointer mx-2 my-0.5'
+							: 'flex h-7 w-full hover:bg-surface-gray-2 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3'
+					"
+				>
+					<div
+						class="flex items-center w-full duration-300 ease-in-out group"
+						:class="
+							sidebarStore.isSidebarCollapsed ? 'justify-center' : 'px-2 py-1'
+						"
+					>
+						<Tooltip :text="'Bantuan'" placement="right">
+							<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
+								<HelpCircle class="h-4 w-4 stroke-1.5" />
+							</span>
+						</Tooltip>
+						<span
+							class="flex-shrink-0 text-sm duration-300 ease-in-out"
+							:class="
+								sidebarStore.isSidebarCollapsed
+									? 'ml-0 w-0 overflow-hidden opacity-0'
+									: 'ml-2 w-auto opacity-100'
+							"
+						>
+							Bantuan
+						</span>
+					</div>
+				</button>
+				<button
+					@click="goToHome"
+					:class="
+						sidebarStore.isSidebarCollapsed
+							? 'p-2 rounded hover:bg-surface-gray-2 cursor-pointer mx-2 my-0.5'
+							: 'flex h-7 w-full hover:bg-surface-gray-2 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3'
+					"
+				>
+					<div
+						class="flex items-center w-full duration-300 ease-in-out group"
+						:class="
+							sidebarStore.isSidebarCollapsed ? 'justify-center' : 'px-2 py-1'
+						"
+					>
+						<Tooltip :text="'Halaman Utama'" placement="right">
+							<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
+								<Command class="h-4 w-4 stroke-1.5" />
+							</span>
+						</Tooltip>
+						<span
+							class="flex-shrink-0 text-sm duration-300 ease-in-out"
+							:class="
+								sidebarStore.isSidebarCollapsed
+									? 'ml-0 w-0 overflow-hidden opacity-0'
+									: 'ml-2 w-auto opacity-100'
+							"
+						>
+							Halaman Utama
+						</span>
+					</div>
+				</button>
+			</div>
+
+			<!-- Logout -->
+			<div v-if="user" class="px-2 py-2">
+				<button
+					@click="handleLogout"
+					:class="
+						sidebarStore.isSidebarCollapsed
+							? 'p-2 rounded hover:bg-surface-gray-2 cursor-pointer mx-2 my-0.5'
+							: 'flex h-7 w-full hover:bg-surface-gray-2 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3'
+					"
+				>
+					<div
+						class="flex items-center w-full duration-300 ease-in-out group"
+						:class="
+							sidebarStore.isSidebarCollapsed ? 'justify-center' : 'px-2 py-1'
+						"
+					>
+						<Tooltip :text="'Logout'" placement="right">
+							<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
+								<LogOut class="h-4 w-4 stroke-1.5" />
+							</span>
+						</Tooltip>
+						<span
+							class="flex-shrink-0 text-sm duration-300 ease-in-out"
+							:class="
+								sidebarStore.isSidebarCollapsed
+									? 'ml-0 w-0 overflow-hidden opacity-0'
+									: 'ml-2 w-auto opacity-100'
+							"
+						>
+							Logout
+						</span>
+					</div>
+				</button>
+			</div>
 		</div>
 		<div class="m-2 flex flex-col gap-1">
 			<div
@@ -73,7 +384,7 @@
 			>
 				{{
 					__(
-						'This site is being updated. You will not be able to make any changes. Full access will be restored shortly.'
+						'This site is being updated. You will not be able to make any changes. Full access will be restored shortly.',
 					)
 				}}
 			</div>
@@ -113,58 +424,16 @@
 							>
 								{{
 									__(
-										'This site is being updated. You will not be able to make any changes. Full access will be restored shortly.'
+										'This site is being updated. You will not be able to make any changes. Full access will be restored shortly.',
 									)
 								}}
 							</div>
 						</template>
 					</Tooltip>
-					<Tooltip :text="__('Powered by Learning')">
-						<Zap
-							class="size-4 stroke-1.5 text-ink-gray-7 cursor-pointer"
-							@click="redirectToWebsite()"
-						/>
-					</Tooltip>
-					<Tooltip v-if="showOnboarding" :text="__('Help')">
-						<CircleHelp
-							class="size-4 stroke-1.5 text-ink-gray-7 cursor-pointer"
-							@click="
-								() => {
-									showHelpModal = minimize ? true : !showHelpModal
-									minimize = !showHelpModal
-								}
-							"
-						/>
-					</Tooltip>
 				</div>
-				<Tooltip
-					:text="
-						sidebarStore.isSidebarCollapsed ? __('Expand') : __('Collapse')
-					"
-				>
-					<CollapseSidebar
-						class="size-4 text-ink-gray-7 duration-300 stroke-1.5 ease-in-out cursor-pointer"
-						:class="{
-							'[transform:rotateY(180deg)]': sidebarStore.isSidebarCollapsed,
-						}"
-						@click="toggleSidebar()"
-					/>
-				</Tooltip>
 			</div>
 		</div>
-		<HelpModal
-			v-if="showOnboarding && showHelpModal"
-			v-model="showHelpModal"
-			v-model:articles="articles"
-			appName="learning"
-			title="Frappe Learning"
-			:logo="LMSLogo"
-			:afterSkip="(step) => capture('onboarding_step_skipped_' + step)"
-			:afterSkipAll="() => capture('onboarding_steps_skipped')"
-			:afterReset="(step) => capture('onboarding_step_reset_' + step)"
-			:afterResetAll="() => capture('onboarding_steps_reset')"
-			docsLink="https://docs.frappe.io/learning"
-		/>
+
 		<IntermediateStepModal
 			v-model="showIntermediateModal"
 			:currentStep="currentStep"
@@ -178,6 +447,19 @@
 </template>
 
 <script setup>
+const isDarkMode = ref(false)
+
+const toggleTheme = () => {
+	const newTheme = isDarkMode.value ? 'dark' : 'light'
+	document.documentElement.setAttribute('data-theme', newTheme)
+	localStorage.setItem('theme', newTheme)
+}
+
+function handleThemeClick() {
+	isDarkMode.value = !isDarkMode.value
+	toggleTheme()
+}
+
 import UserDropdown from '@/components/UserDropdown.vue'
 import CollapseSidebar from '@/components/Icons/CollapseSidebar.vue'
 import SidebarLink from '@/components/SidebarLink.vue'
@@ -214,6 +496,16 @@ import {
 	Users,
 	BookText,
 	Zap,
+	Menu,
+	Sun,
+	Moon,
+	Command,
+	LogIn,
+	User,
+	LogOut,
+	UserRound,
+	Settings,
+	HelpCircle,
 } from 'lucide-vue-next'
 import {
 	TrialBanner,
@@ -225,7 +517,7 @@ import {
 	IntermediateStepModal,
 } from 'frappe-ui/frappe'
 
-const { user } = sessionStore()
+const { user, logout } = sessionStore()
 const { userResource } = usersStore()
 let sidebarStore = useSidebar()
 const socket = inject('$socket')
@@ -244,6 +536,7 @@ const router = useRouter()
 let onboardingDetails
 let isOnboardingStepsCompleted = false
 const readOnlyMode = window.read_only_mode
+const isActive = ref(true)
 const iconProps = {
 	strokeWidth: 1.5,
 	width: 16,
@@ -251,15 +544,27 @@ const iconProps = {
 }
 
 onMounted(() => {
-	addNotifications()
-	setSidebarLinks()
+	if (user) {
+		addNotifications()
+		setSidebarLinks()
+	} else {
+		addGuestSidebar()
+	}
 	setUpOnboarding()
 	socket.on('publish_lms_notifications', (data) => {
 		unreadNotifications.reload()
 	})
+
+	// Initialize theme
+	const currentTheme =
+		document.documentElement.getAttribute('data-theme') || 'light'
+	isDarkMode.value = currentTheme === 'dark'
 })
 
 const setSidebarLinks = () => {
+	if (!user) {
+		return // Skip for guest users
+	}
 	sidebarSettings.reload(
 		{},
 		{
@@ -267,12 +572,15 @@ const setSidebarLinks = () => {
 				Object.keys(data).forEach((key) => {
 					if (!parseInt(data[key])) {
 						sidebarLinks.value = sidebarLinks.value.filter(
-							(link) => link.label.toLowerCase().split(' ').join('_') !== key
+							(link) => link.label.toLowerCase().split(' ').join('_') !== key,
 						)
 					}
 				})
 			},
-		}
+			onError() {
+				// Handle error, keep default sidebarLinks
+			},
+		},
 	)
 }
 
@@ -301,6 +609,9 @@ const unreadNotifications = createResource({
 })
 
 const addNotifications = () => {
+	if (userResource.data?.is_system_manager || userResource.data?.is_moderator) {
+		return // Admin sidebar already includes Notifications
+	}
 	if (user) {
 		sidebarLinks.value.push({
 			label: 'Notifications',
@@ -313,6 +624,9 @@ const addNotifications = () => {
 }
 
 const addQuizzes = () => {
+	if (userResource.data?.is_system_manager || userResource.data?.is_moderator) {
+		return // Admin sidebar already set
+	}
 	if (isInstructor.value || isModerator.value) {
 		sidebarLinks.value.splice(4, 0, {
 			label: 'Quizzes',
@@ -329,6 +643,9 @@ const addQuizzes = () => {
 }
 
 const addAssignments = () => {
+	if (userResource.data?.is_system_manager || userResource.data?.is_moderator) {
+		return // Admin sidebar already set
+	}
 	if (isInstructor.value || isModerator.value) {
 		sidebarLinks.value.splice(5, 0, {
 			label: 'Assignments',
@@ -345,6 +662,9 @@ const addAssignments = () => {
 }
 
 const addPrograms = () => {
+	if (userResource.data?.is_system_manager || userResource.data?.is_moderator) {
+		return // Admin sidebar already set
+	}
 	let activeFor = ['Programs', 'ProgramForm']
 	let index = 1
 	let canAddProgram = false
@@ -355,7 +675,7 @@ const addPrograms = () => {
 		settingsStore.learningPaths.data
 	) {
 		sidebarLinks.value = sidebarLinks.value.filter(
-			(link) => link.label !== 'Courses'
+			(link) => link.label !== 'Courses',
 		)
 		activeFor.push('CourseDetail')
 		activeFor.push('Lesson')
@@ -372,6 +692,37 @@ const addPrograms = () => {
 			to: 'Programs',
 			activeFor: activeFor,
 		})
+	}
+}
+
+const addGuestSidebar = () => {
+	if (!user) {
+		sidebarLinks.value = [
+			{
+				label: 'Courses',
+				icon: 'GraduationCap',
+				to: 'Courses',
+				activeFor: [
+					'Courses',
+					'CourseDetail',
+					'Lesson',
+					'CourseForm',
+					'LessonForm',
+				],
+			},
+			{
+				label: 'Batches',
+				icon: 'Users',
+				to: 'Batches',
+				activeFor: ['Batches', 'BatchDetail', 'Batch', 'BatchForm'],
+			},
+			{
+				label: 'Chat with Kiko',
+				icon: 'MessageCircle',
+				to: 'ChatKiko',
+				activeFor: ['ChatKiko'],
+			},
+		]
 	}
 }
 
@@ -394,7 +745,7 @@ const deletePage = (link) => {
 			onSuccess() {
 				sidebarSettings.reload()
 			},
-		}
+		},
 	)
 }
 
@@ -402,7 +753,7 @@ const toggleSidebar = () => {
 	sidebarStore.isSidebarCollapsed = !sidebarStore.isSidebarCollapsed
 	localStorage.setItem(
 		'isSidebarCollapsed',
-		JSON.stringify(sidebarStore.isSidebarCollapsed)
+		JSON.stringify(sidebarStore.isSidebarCollapsed),
 	)
 }
 
@@ -410,8 +761,43 @@ const toggleWebPages = () => {
 	sidebarStore.isWebpagesCollapsed = !sidebarStore.isWebpagesCollapsed
 	localStorage.setItem(
 		'isWebpagesCollapsed',
-		JSON.stringify(sidebarStore.isWebpagesCollapsed)
+		JSON.stringify(sidebarStore.isWebpagesCollapsed),
 	)
+}
+
+const goToLogin = () => {
+	window.location.href = '/login'
+}
+
+const goToRegister = () => {
+	window.location.href = '/register'
+}
+
+const goToHome = () => {
+	router.push('/')
+}
+
+const goToProfile = () => {
+	router.push({
+		name: 'Profile',
+		params: {
+			username: userResource.data?.username,
+		},
+	})
+}
+
+const goToSettings = () => {
+	settingsStore.isSettingsOpen = true
+}
+
+const showHelp = () => {
+	showHelpModal.value = true
+}
+
+const handleLogout = () => {
+	logout.submit().then(() => {
+		window.location.reload()
+	})
 }
 
 const getFirstCourse = async () => {
@@ -626,6 +1012,7 @@ watch(userResource, () => {
 	if (userResource.data) {
 		isModerator.value = userResource.data.is_moderator
 		isInstructor.value = userResource.data.is_instructor
+		addAdminSidebar()
 		addPrograms()
 		addQuizzes()
 		addAssignments()

@@ -6,6 +6,8 @@
 			</div>
 		</Layout>
 		<Dialogs />
+		<!-- Mount Settings dialog globally and bind it to the settings store -->
+		<Settings v-model="settingsStore.isSettingsOpen" />
 	</FrappeUIProvider>
 </template>
 <script setup>
@@ -19,11 +21,14 @@ import NoSidebarLayout from './components/NoSidebarLayout.vue'
 import { usersStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { posthogSettings } from '@/telemetry'
+import Settings from '@/components/Settings/Settings.vue'
+import { useSettings } from '@/stores/settings'
 
 const screenSize = useScreenSize()
 const router = useRouter()
 const noSidebar = ref(false)
 const { userResource } = usersStore()
+const settingsStore = useSettings()
 
 router.beforeEach((to, from, next) => {
 	if (to.query.fromLesson || to.path === '/persona') {

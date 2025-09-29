@@ -2,7 +2,9 @@
 	<header
 		class="sticky flex items-center justify-between top-0 z-10 border-b bg-surface-white px-3 py-2.5 sm:px-5"
 	>
-		<Breadcrumbs :items="breadcrumbs" />
+		<div class="font-semibold">
+			<Breadcrumbs :items="breadcrumbs" />
+		</div>
 		<router-link
 			v-if="canCreateCourse()"
 			:to="{
@@ -18,43 +20,49 @@
 			</Button>
 		</router-link>
 	</header>
-	<div class="p-5 pb-10">
-		<div
-			class="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:items-center justify-between mb-5"
-		>
-			<div class="text-lg text-ink-gray-9 font-semibold">
-				{{ __('All Courses') }}
-			</div>
-			<div
-				class="flex flex-col space-y-2 lg:space-y-0 lg:flex-row lg:items-center lg:space-x-4"
-			>
-				<TabButtons :buttons="courseTabs" v-model="currentTab" />
-				<FormControl
-					v-model="certification"
-					:label="__('Certification')"
-					type="checkbox"
-					@change="updateCourses()"
+	<div class="p-5 pb-10 w-full flex flex-col">
+		<div class="flex flex-col w-full gap-4 mb-6">
+			<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+				<TabButtons
+					:buttons="courseTabs"
+					v-model="currentTab"
+					class="flex-1 lg:w-fit custom-tab-buttons"
 				/>
-				<div class="grid grid-cols-2 gap-2">
+
+				<div
+					class="flex flex-row items-center gap-2 w-full justify-between lg:justify-end lg:w-full"
+				>
+					<FormControl
+						v-model="certification"
+						:label="__('Tersedia Sertifikat')"
+						type="checkbox"
+						class="!checked:bg-orange-2"
+						@change="updateCourses()"
+					/>
+
 					<FormControl
 						v-model="title"
-						:placeholder="__('Search by Title')"
+						:placeholder="__('Cari Berdasarkan Judul')"
 						type="text"
-						class="min-w-40 lg:min-w-0 lg:w-32 xl:w-40"
+						class="ring-1 ring-orange-2 rounded-sm !bg-white focus:!bg-orange-50 focus:ring-2 focus:ring-orange-300 transition-all duration-200"
 						@input="updateCourses()"
 					/>
-					<div class="min-w-40 lg:min-w-0 lg:w-32 xl:w-40">
-						<Select
-							v-if="categories.length"
-							v-model="currentCategory"
-							:options="categories"
-							:placeholder="__('Category')"
-							@change="updateCourses()"
-						/>
-					</div>
 				</div>
 			</div>
+
+			<div class="flex-row flex gap-2 items-center w-full">
+				Learning Path:
+				<Select
+					v-if="categories.length"
+					v-model="currentCategory"
+					:options="categories"
+					:placeholder="__('Category')"
+					@change="updateCourses()"
+					class="!min-w-36 !w-fit !placeholder:text-white !bg-orange-2 !text-white flex !h-[40px]"
+				/>
+			</div>
 		</div>
+
 		<div
 			v-if="courses.data?.length"
 			class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5"
@@ -105,7 +113,7 @@ const currentCategory = ref(null)
 const title = ref('')
 const certification = ref(false)
 const filters = ref({})
-const currentTab = ref('Live')
+const currentTab = ref('live')
 const { brand } = sessionStore()
 const courseCount = ref(0)
 
@@ -142,7 +150,7 @@ const courses = createListResource({
 const setCategories = (data) => {
 	let allCategories = data.map((course) => course.category)
 	allCategories = allCategories.filter(
-		(category, index) => allCategories.indexOf(category) === index && category
+		(category, index) => allCategories.indexOf(category) === index && category,
 	)
 	if (categories.value.length <= allCategories.length) {
 		updateCategories(data)
@@ -227,28 +235,28 @@ const updateTabFilter = () => {
 	delete filters.value['published_on']
 	delete filters.value['upcoming']
 
-	if (currentTab.value == 'Enrolled' && user.data?.is_student) {
+	if (currentTab.value == 'enrolled' && user.data?.is_student) {
 		filters.value['enrolled'] = 1
 		delete filters.value['published']
 	} else {
 		delete filters.value['published']
 		delete filters.value['enrolled']
 
-		if (currentTab.value == 'Live') {
+		if (currentTab.value == 'live') {
 			filters.value['published'] = 1
 			filters.value['upcoming'] = 0
 			filters.value['live'] = 1
-		} else if (currentTab.value == 'Upcoming') {
+		} else if (currentTab.value == 'upcoming') {
 			filters.value['upcoming'] = 1
-		} else if (currentTab.value == 'New') {
+		} else if (currentTab.value == 'new') {
 			filters.value['published'] = 1
 			filters.value['published_on'] = [
 				'>=',
 				dayjs().add(-3, 'month').format('YYYY-MM-DD'),
 			]
-		} else if (currentTab.value == 'Created') {
+		} else if (currentTab.value == 'created') {
 			filters.value['created'] = 1
-		} else if (currentTab.value == 'Unpublished') {
+		} else if (currentTab.value == 'unpublished') {
 			filters.value['published'] = 0
 		}
 	}
@@ -304,13 +312,16 @@ watch(currentTab, () => {
 const courseTabs = computed(() => {
 	let tabs = [
 		{
-			label: __('Live'),
+			label: __('👩‍💻 Terbuka'),
+			value: 'live',
 		},
 		{
-			label: __('New'),
+			label: __('⚡ Baru'),
+			value: 'new',
 		},
 		{
-			label: __('Upcoming'),
+			label: __('🧑‍⚖️ Akan Datang'),
+			value: 'upcoming',
 		},
 	]
 	if (
@@ -318,17 +329,17 @@ const courseTabs = computed(() => {
 		user.data?.is_instructor ||
 		user.data?.is_evaluator
 	) {
-		tabs.push({ label: __('Created') })
-		tabs.push({ label: __('Unpublished') })
+		tabs.push({ label: __('Created'), value: 'created' })
+		tabs.push({ label: __('Unpublished'), value: 'unpublished' })
 	} else if (user.data) {
-		tabs.push({ label: __('Enrolled') })
+		tabs.push({ label: __('Enrolled'), value: 'enrolled' })
 	}
 	return tabs
 })
 
 const breadcrumbs = computed(() => [
 	{
-		label: __('Courses'),
+		label: __('📖 Kursus > Semua Kursus'),
 		route: { name: 'Courses' },
 	},
 ])

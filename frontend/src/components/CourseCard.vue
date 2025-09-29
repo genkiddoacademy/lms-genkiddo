@@ -12,12 +12,12 @@
 			<div class="flex items-center flex-wrap relative top-4 px-2 w-fit">
 				<Badge
 					v-if="course.featured"
-					variant="subtle"
-					theme="green"
-					size="md"
-					class="mb-1 mr-1"
+					class="mb-1 mr-1 bg-white px-2 py-0.5 rounded-xl flex items-center border-2 border-gradasi-1-0"
 				>
-					{{ __('Featured') }}
+					<Star class="h-4 w-4 mr-1 text-gradasi-1-0" />
+					<span class="font-bold text-gradasi-1-0">
+						{{ __('Unggulan') }}
+					</span>
 				</Badge>
 				<div
 					v-if="course.tags"
@@ -188,6 +188,7 @@ const props = defineProps({
 .short-introduction {
 	display: -webkit-box;
 	-webkit-line-clamp: 2;
+	line-clamp: 2;
 	-webkit-box-orient: vertical;
 	text-overflow: ellipsis;
 	width: 100%;

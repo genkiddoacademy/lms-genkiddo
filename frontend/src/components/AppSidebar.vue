@@ -1,21 +1,21 @@
 <template>
 	<div
-		class="flex h-full flex-col justify-between transition-all duration-300 ease-in-out border-r bg-surface-menu-bar"
-		:class="sidebarStore.isSidebarCollapsed ? 'w-14' : 'w-56'"
+		class="flex h-full flex-col transition-all duration-300 ease-in-out border-r bg-surface-menu-bar"
+		:class="sidebarStore.isSidebarCollapsed ? 'w-20' : '!w-[260px]'"
 	>
 		<div
-			class="flex flex-col overflow-visible divide-y-2 divide-gray-200"
+			class="flex flex-col flex-1 overflow-hidden h-fit px-4"
 			:class="sidebarStore.isSidebarCollapsed ? 'items-center' : ''"
 		>
 			<div
-				class="flex items-center flex-col px-2 py-1 w-full"
+				class="flex items-center flex-col py-1 w-full"
 				:class="
 					sidebarStore.isSidebarCollapsed
 						? 'justify-center space-x-1'
 						: 'justify-between'
 				"
 			>
-				<div class="flex items-center justify-center flex-1 min-w-0 py-4">
+				<div class="flex items-center justify-center flex-1 min-w-0 pt-4">
 					<Tooltip :text="__('Toggle sidebar')">
 						<div
 							class="flex items-center justify-center w-6 h-6 rounded hover:bg-surface-gray-2 transition-colors flex-shrink-0 cursor-pointer"
@@ -28,11 +28,17 @@
 					<UserDropdown :isCollapsed="sidebarStore.isSidebarCollapsed" />
 				</div>
 			</div>
-			<div class="flex flex-col pb-4 pt-2" v-if="sidebarSettings.data">
-				<!-- Theme Toggle (expanded) -->
+			<!-- Main Content Sections -->
+
+			<!-- Theme Toggle and Main Links -->
+			<div
+				class="border-t-2 border-gray-200 flex flex-col py-2"
+				v-if="sidebarSettings.data"
+			>
+				<!-- Theme Toggle: render expanded or collapsed UI inside same parent -->
 				<div
 					v-if="!sidebarStore.isSidebarCollapsed"
-					class="px-2 py-2 flex items-center justify-center mb-2"
+					class="py-2 flex items-center justify-center mb-2"
 				>
 					<button
 						type="button"
@@ -45,23 +51,22 @@
 						"
 						@click="handleThemeClick"
 					>
-						<span class="text-sm font-semibold tracking-wide">
-							{{ isDarkMode ? 'GELAP' : 'TERANG' }}
-						</span>
+						<span class="text-xs font-semibold tracking-wide">{{
+							isDarkMode ? 'GELAP' : 'TERANG'
+						}}</span>
 						<Sun v-if="!isDarkMode" :size="18" class="shrink-0" />
 						<Moon v-else :size="18" class="shrink-0" />
 					</button>
 				</div>
 
-				<!-- Theme Toggle (collapsed, kecil) -->
-				<div v-else class="px-2 py-2">
+				<div v-else class="px-2 py-2 flex items-center justify-center mb-2">
 					<button
 						type="button"
 						class="grid place-items-center w-9 h-9 rounded-full ring-1 shadow-sm transition"
 						:class="
 							isDarkMode
-								? 'bg-black ring-white  text-white'
-								: 'bg-warning-100 ring-warning-100 text-white '
+								? 'bg-black ring-white text-white'
+								: 'bg-warning-100 ring-warning-100 text-white'
 						"
 						@click="handleThemeClick"
 					>
@@ -75,370 +80,244 @@
 					:key="link.to"
 					:link="link"
 					:isCollapsed="sidebarStore.isSidebarCollapsed"
-					class="mx-2 my-0.5"
+					class="px-2 my-0.5"
 				/>
 			</div>
 
-			<!-- Halaman Utama Link -->
-			<div v-if="!user" class="px-2 py-2">
-				<button
-					:class="
-						sidebarStore.isSidebarCollapsed
-							? 'p-2 rounded hover:bg-surface-gray-2 cursor-pointer mx-2 my-0.5'
-							: 'flex h-7 w-full hover:bg-surface-gray-2 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3'
-					"
-					@click="goToHome"
-				>
-					<div
-						class="flex items-center w-full duration-300 ease-in-out group"
-						:class="
-							sidebarStore.isSidebarCollapsed ? 'justify-center' : 'px-2 py-1'
-						"
-					>
-						<Tooltip :text="'Halaman Utama'" placement="right">
-							<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
-								<Command class="h-4 w-4 stroke-1.5" />
-							</span>
-						</Tooltip>
-						<span
-							class="flex-shrink-0 text-sm duration-300 ease-in-out"
-							:class="
-								sidebarStore.isSidebarCollapsed
-									? 'ml-0 w-0 overflow-hidden opacity-0'
-									: 'ml-2 w-auto opacity-100'
-							"
-						>
-							Halaman Utama
-						</span>
-					</div>
-				</button>
-			</div>
-
-			<!-- Login/Register Buttons -->
+			<!-- Guest User Section -->
 			<div
 				v-if="!user"
-				class="px-2 py-2 pt-4"
+				class="border-t-2 border-gray-200 py-2"
 				:class="
 					sidebarStore.isSidebarCollapsed
-						? 'flex flex-col items-center space-y-2'
-						: 'space-y-2'
+						? 'flex flex-col items-center space-y-1'
+						: 'flex flex-col'
 				"
 			>
-				<div
-					v-if="sidebarStore.isSidebarCollapsed"
-					class="flex flex-col space-y-2"
-				>
-					<Tooltip :text="'Log In'">
-						<button
-							@click="goToLogin"
-							class="p-2 rounded ring-1 ring-orange-2 !border-orange-2 !text-orange-2 hover:!bg-orange-2/50 mx-2 my-0.5"
-						>
-							<LogIn class="h-4 w-4" />
-						</button>
-					</Tooltip>
-					<Tooltip :text="'Register'">
-						<button
-							@click="goToRegister"
-							class="p-2 rounded !bg-orange-2 !text-white hover:!bg-orange-600 mx-2 my-0.5"
-						>
-							<User class="h-4 w-4" />
-						</button>
-					</Tooltip>
-				</div>
-				<div v-else class="space-y-2">
-					<Button
-						variant="outline"
-						class="w-full !border-orange-2 !text-orange-2 hover:!bg-orange-50"
-						@click="goToLogin"
-					>
-						Log In
-					</Button>
-					<Button
-						variant="solid"
-						class="w-full !bg-orange-2 !text-white hover:!bg-orange-600"
-						@click="goToRegister"
-					>
-						Register
-					</Button>
-				</div>
-			</div>
+				<SidebarLink
+					:link="{
+						label: 'Halaman Utama',
+						icon: 'Command',
+						to: 'Home',
+						activeFor: ['Home'],
+						onClick: goToHome,
+					}"
+					:isCollapsed="sidebarStore.isSidebarCollapsed"
+					:class="sidebarStore.isSidebarCollapsed ? 'w-fit' : 'px-2 my-0.5'"
+				/>
 
-			<div
-				v-if="sidebarSettings.data?.web_pages?.length || isModerator"
-				class="mt-4 mb-4"
-			>
+				<!-- Login/Register Buttons -->
 				<div
-					class="flex items-center justify-between pr-2 cursor-pointer"
-					:class="sidebarStore.isSidebarCollapsed ? 'pl-3' : 'pl-4'"
-					@click="toggleWebPages"
-				>
-					<div
-						v-if="!sidebarStore.isSidebarCollapsed"
-						class="flex items-center text-sm text-ink-gray-5 my-1"
-					>
-						<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
-							<ChevronRight
-								class="h-4 w-4 stroke-1.5 text-ink-gray-9 transition-all duration-300 ease-in-out"
-								:class="{ 'rotate-90': !sidebarStore.isWebpagesCollapsed }"
-							/>
-						</span>
-						<span class="ml-2">
-							{{ __('More') }}
-						</span>
-					</div>
-					<Button
-						v-if="isModerator && !readOnlyMode"
-						variant="ghost"
-						@click="openPageModal()"
-					>
-						<template #icon>
-							<Plus class="h-4 w-4 text-ink-gray-7 stroke-1.5" />
-						</template>
-					</Button>
-				</div>
-				<div
-					v-if="sidebarSettings.data?.web_pages?.length"
-					class="flex flex-col transition-all duration-300 ease-in-out"
-					:class="!sidebarStore.isWebpagesCollapsed ? 'block' : 'hidden'"
-				>
-					<SidebarLink
-						v-for="link in sidebarSettings.data.web_pages"
-						:key="link.name || link.to"
-						:link="link"
-						:isCollapsed="sidebarStore.isSidebarCollapsed"
-						class="mx-2 my-0.5"
-						:showControls="isModerator ? true : false"
-						@openModal="openPageModal"
-						@deletePage="deletePage"
-					/>
-				</div>
-			</div>
-
-			<!-- Additional Links -->
-			<div v-if="user" class="px-2 py-2 space-y-2">
-				<button
-					@click="goToProfile"
+					v-if="!user"
+					class="py-2 pt-4"
 					:class="
 						sidebarStore.isSidebarCollapsed
-							? 'p-2 rounded hover:bg-surface-gray-2 cursor-pointer mx-2 my-0.5'
-							: 'flex h-7 w-full hover:bg-surface-gray-2 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3'
+							? 'flex flex-col items-center space-y-2 px-2'
+							: 'space-y-2 px-2'
 					"
 				>
 					<div
-						class="flex items-center w-full duration-300 ease-in-out group"
-						:class="
-							sidebarStore.isSidebarCollapsed ? 'justify-center' : 'px-2 py-1'
-						"
+						v-if="sidebarStore.isSidebarCollapsed"
+						class="flex flex-col gap-1"
 					>
-						<Tooltip :text="'Profile'" placement="right">
-							<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
-								<UserRound class="h-4 w-4 stroke-1.5" />
-							</span>
-						</Tooltip>
-						<span
-							class="flex-shrink-0 text-sm duration-300 ease-in-out"
-							:class="
-								sidebarStore.isSidebarCollapsed
-									? 'ml-0 w-0 overflow-hidden opacity-0'
-									: 'ml-2 w-auto opacity-100'
-							"
-						>
-							Profile
-						</span>
-					</div>
-				</button>
-				<button
-					@click="goToSettings"
-					:class="
-						sidebarStore.isSidebarCollapsed
-							? 'p-2 rounded hover:bg-surface-gray-2 cursor-pointer mx-2 my-0.5'
-							: 'flex h-7 w-full hover:bg-surface-gray-2 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3'
-					"
-				>
-					<div
-						class="flex items-center w-full duration-300 ease-in-out group"
-						:class="
-							sidebarStore.isSidebarCollapsed ? 'justify-center' : 'px-2 py-1'
-						"
-					>
-						<Tooltip :text="'Pengaturan'" placement="right">
-							<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
-								<Settings class="h-4 w-4 stroke-1.5" />
-							</span>
-						</Tooltip>
-						<span
-							class="flex-shrink-0 text-sm duration-300 ease-in-out"
-							:class="
-								sidebarStore.isSidebarCollapsed
-									? 'ml-0 w-0 overflow-hidden opacity-0'
-									: 'ml-2 w-auto opacity-100'
-							"
-						>
-							Pengaturan
-						</span>
-					</div>
-				</button>
-				<button
-					@click="showHelp"
-					:class="
-						sidebarStore.isSidebarCollapsed
-							? 'p-2 rounded hover:bg-surface-gray-2 cursor-pointer mx-2 my-0.5'
-							: 'flex h-7 w-full hover:bg-surface-gray-2 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3'
-					"
-				>
-					<div
-						class="flex items-center w-full duration-300 ease-in-out group"
-						:class="
-							sidebarStore.isSidebarCollapsed ? 'justify-center' : 'px-2 py-1'
-						"
-					>
-						<Tooltip :text="'Bantuan'" placement="right">
-							<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
-								<HelpCircle class="h-4 w-4 stroke-1.5" />
-							</span>
-						</Tooltip>
-						<span
-							class="flex-shrink-0 text-sm duration-300 ease-in-out"
-							:class="
-								sidebarStore.isSidebarCollapsed
-									? 'ml-0 w-0 overflow-hidden opacity-0'
-									: 'ml-2 w-auto opacity-100'
-							"
-						>
-							Bantuan
-						</span>
-					</div>
-				</button>
-				<button
-					@click="goToHome"
-					:class="
-						sidebarStore.isSidebarCollapsed
-							? 'p-2 rounded hover:bg-surface-gray-2 cursor-pointer mx-2 my-0.5'
-							: 'flex h-7 w-full hover:bg-surface-gray-2 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3'
-					"
-				>
-					<div
-						class="flex items-center w-full duration-300 ease-in-out group"
-						:class="
-							sidebarStore.isSidebarCollapsed ? 'justify-center' : 'px-2 py-1'
-						"
-					>
-						<Tooltip :text="'Halaman Utama'" placement="right">
-							<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
-								<Command class="h-4 w-4 stroke-1.5" />
-							</span>
-						</Tooltip>
-						<span
-							class="flex-shrink-0 text-sm duration-300 ease-in-out"
-							:class="
-								sidebarStore.isSidebarCollapsed
-									? 'ml-0 w-0 overflow-hidden opacity-0'
-									: 'ml-2 w-auto opacity-100'
-							"
-						>
-							Halaman Utama
-						</span>
-					</div>
-				</button>
-			</div>
-
-			<!-- Logout -->
-			<div v-if="user" class="px-2 py-2">
-				<button
-					@click="handleLogout"
-					:class="
-						sidebarStore.isSidebarCollapsed
-							? 'p-2 rounded hover:bg-surface-gray-2 cursor-pointer mx-2 my-0.5'
-							: 'flex h-7 w-full hover:bg-surface-gray-2 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3'
-					"
-				>
-					<div
-						class="flex items-center w-full duration-300 ease-in-out group"
-						:class="
-							sidebarStore.isSidebarCollapsed ? 'justify-center' : 'px-2 py-1'
-						"
-					>
-						<Tooltip :text="'Logout'" placement="right">
-							<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
-								<LogOut class="h-4 w-4 stroke-1.5" />
-							</span>
-						</Tooltip>
-						<span
-							class="flex-shrink-0 text-sm duration-300 ease-in-out"
-							:class="
-								sidebarStore.isSidebarCollapsed
-									? 'ml-0 w-0 overflow-hidden opacity-0'
-									: 'ml-2 w-auto opacity-100'
-							"
-						>
-							Logout
-						</span>
-					</div>
-				</button>
-			</div>
-		</div>
-		<div class="m-2 flex flex-col gap-1">
-			<div
-				v-if="readOnlyMode && !sidebarStore.isSidebarCollapsed"
-				class="z-10 m-2 bg-surface-modal py-2.5 px-3 text-xs text-ink-gray-7 leading-5 rounded-md"
-			>
-				{{
-					__(
-						'This site is being updated. You will not be able to make any changes. Full access will be restored shortly.',
-					)
-				}}
-			</div>
-			<TrialBanner
-				v-if="
-					userResource.data?.is_system_manager && userResource.data?.is_fc_site
-				"
-				:isSidebarCollapsed="sidebarStore.isSidebarCollapsed"
-			/>
-			<GettingStartedBanner
-				v-if="showOnboarding && !isOnboardingStepsCompleted"
-				:isSidebarCollapsed="sidebarStore.isSidebarCollapsed"
-				appName="learning"
-			/>
-
-			<div
-				class="flex items-center mt-4"
-				:class="
-					sidebarStore.isSidebarCollapsed ? 'flex-col space-y-3' : 'flex-row'
-				"
-			>
-				<div
-					class="flex items-center flex-1"
-					:class="
-						sidebarStore.isSidebarCollapsed
-							? 'flex-col space-y-3'
-							: 'flex-row space-x-3'
-					"
-				>
-					<Tooltip v-if="readOnlyMode && sidebarStore.isSidebarCollapsed">
-						<CircleAlert
-							class="size-4 stroke-1.5 text-ink-gray-7 cursor-pointer"
-						/>
-						<template #body>
-							<div
-								class="max-w-[30ch] rounded bg-surface-gray-7 px-2 py-1 text-center text-p-xs text-ink-white shadow-xl"
+						<Tooltip :text="'Log In'">
+							<button
+								@click="goToLogin"
+								class="p-2 rounded ring-1 ring-orange-2 !border-orange-2 !text-orange-2 hover:!bg-orange-2/50"
 							>
-								{{
-									__(
-										'This site is being updated. You will not be able to make any changes. Full access will be restored shortly.',
-									)
-								}}
-							</div>
-						</template>
-					</Tooltip>
+								<LogIn class="h-4 w-4" />
+							</button>
+						</Tooltip>
+						<Tooltip :text="'Register'">
+							<button
+								@click="goToRegister"
+								class="p-2 rounded !bg-orange-2 !text-white hover:!bg-orange-600"
+							>
+								<User class="h-4 w-4" />
+							</button>
+						</Tooltip>
+					</div>
+					<div v-else class="space-y-2">
+						<Button
+							variant="outline"
+							class="w-full !border-orange-2 !text-orange-2 hover:!bg-orange-50"
+							@click="goToLogin"
+						>
+							Log In
+						</Button>
+						<Button
+							variant="solid"
+							class="w-full !bg-orange-2 !text-white hover:!bg-orange-600"
+							@click="goToRegister"
+						>
+							Register
+						</Button>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<IntermediateStepModal
-			v-model="showIntermediateModal"
-			:currentStep="currentStep"
-		/>
+			<!-- User Profile and Settings Section -->
+			<div
+				v-if="user"
+				class="border-t-2 border-gray-200 py-2"
+				:class="
+					sidebarStore.isSidebarCollapsed
+						? 'flex flex-col items-center space-y-1'
+						: 'flex flex-col'
+				"
+			>
+				<SidebarLink
+					:link="{
+						label: 'Profile',
+						icon: 'UserRound',
+						to: 'Profile',
+						activeFor: [
+							'Profile',
+							'ProfileAbout',
+							'ProfileCertificates',
+							'ProfileRoles',
+							'ProfileEvaluator',
+						],
+						onClick: goToProfile,
+					}"
+					:isCollapsed="sidebarStore.isSidebarCollapsed"
+					:class="sidebarStore.isSidebarCollapsed ? 'w-fit' : 'px-2 my-0.5'"
+				/>
+				<SidebarLink
+					v-if="userResource.data?.roles?.includes('Administrator')"
+					:link="{
+						label: 'Pengaturan',
+						icon: 'Settings',
+						to: 'Settings',
+						activeFor: ['Settings'],
+						onClick: goToSettings,
+					}"
+					:isCollapsed="sidebarStore.isSidebarCollapsed"
+					:class="sidebarStore.isSidebarCollapsed ? 'w-fit' : 'px-2 my-0.5'"
+				/>
+				<SidebarLink
+					:link="{
+						label: 'Bantuan',
+						icon: 'HelpCircle',
+						to: 'Help',
+						activeFor: ['Help'],
+						onClick: showHelp,
+					}"
+					:isCollapsed="sidebarStore.isSidebarCollapsed"
+					:class="sidebarStore.isSidebarCollapsed ? 'w-fit' : 'px-2 my-0.5'"
+				/>
+				<SidebarLink
+					:link="{
+						label: 'Halaman Utama',
+						icon: 'Command',
+						to: 'Home',
+						activeFor: ['Home'],
+						onClick: goToHome,
+					}"
+					:isCollapsed="sidebarStore.isSidebarCollapsed"
+					:class="sidebarStore.isSidebarCollapsed ? 'w-fit' : 'px-2 my-0.5'"
+				/>
+			</div>
+
+			<!-- Logout Section -->
+			<div
+				v-if="user"
+				class="border-t-2 border-gray-200 py-2"
+				:class="
+					sidebarStore.isSidebarCollapsed
+						? 'flex flex-col items-center space-y-1'
+						: 'flex flex-col'
+				"
+			>
+				<SidebarLink
+					:link="{
+						label: 'Logout',
+						icon: 'LogOut',
+						to: null,
+						onClick: handleLogout,
+					}"
+					:isCollapsed="sidebarStore.isSidebarCollapsed"
+					:class="sidebarStore.isSidebarCollapsed ? 'w-fit' : 'px-2 my-0.5'"
+				/>
+			</div>
+		</div>
+		<!-- Web Pages Section -->
+		<div
+			v-if="sidebarSettings.data?.web_pages?.length"
+			class="border-t-2 border-gray-200 py-2"
+			:class="
+				sidebarStore.isSidebarCollapsed ? 'flex flex-col items-center' : ''
+			"
+		>
+			<div
+				v-if="sidebarSettings.data?.web_pages?.length"
+				class="flex flex-col"
+				:class="sidebarStore.isSidebarCollapsed ? 'items-center space-y-1' : ''"
+			>
+				<SidebarLink
+					v-for="link in sidebarSettings.data.web_pages"
+					:key="link.name || link.to"
+					:link="link"
+					:isCollapsed="sidebarStore.isSidebarCollapsed"
+					:class="sidebarStore.isSidebarCollapsed ? 'w-fit' : 'px-2 my-0.5'"
+					:showControls="isModerator ? true : false"
+					@openModal="openPageModal"
+					@deletePage="deletePage"
+				/>
+			</div>
+		</div>
 	</div>
+
+	<!-- Bottom Section -->
+	<div class="flex-shrink-0 p-2 space-y-2">
+		<div
+			v-if="readOnlyMode && !sidebarStore.isSidebarCollapsed"
+			class="bg-surface-modal py-2.5 px-3 text-xs text-ink-gray-7 leading-5 rounded-md"
+		>
+			{{
+				__(
+					'This site is being updated. You will not be able to make any changes. Full access will be restored shortly.',
+				)
+			}}
+		</div>
+		<TrialBanner
+			v-if="
+				userResource.data?.is_system_manager && userResource.data?.is_fc_site
+			"
+			:isSidebarCollapsed="sidebarStore.isSidebarCollapsed"
+		/>
+		<GettingStartedBanner
+			v-if="showOnboarding && !isOnboardingStepsCompleted"
+			:isSidebarCollapsed="sidebarStore.isSidebarCollapsed"
+			appName="learning"
+		/>
+
+		<div
+			v-if="readOnlyMode && sidebarStore.isSidebarCollapsed"
+			class="flex justify-center"
+		>
+			<Tooltip>
+				<CircleAlert class="size-4 stroke-1.5 text-ink-gray-7 cursor-pointer" />
+				<template #body>
+					<div
+						class="max-w-[30ch] rounded bg-surface-gray-7 px-2 py-1 text-center text-p-xs text-ink-white shadow-xl"
+					>
+						{{
+							__(
+								'This site is being updated. You will not be able to make any changes. Full access will be restored shortly.',
+							)
+						}}
+					</div>
+				</template>
+			</Tooltip>
+		</div>
+	</div>
+
+	<!-- Modals -->
+	<IntermediateStepModal
+		v-model="showIntermediateModal"
+		:currentStep="currentStep"
+	/>
 	<PageModal
 		v-model="showPageModal"
 		v-model:reloadSidebar="sidebarSettings"
@@ -487,7 +366,6 @@ import InviteIcon from './Icons/InviteIcon.vue'
 import {
 	BookOpen,
 	CircleAlert,
-	ChevronRight,
 	Plus,
 	CircleHelp,
 	FolderTree,
@@ -569,6 +447,7 @@ const setSidebarLinks = () => {
 		{},
 		{
 			onSuccess(data) {
+				// Filter based on settings
 				Object.keys(data).forEach((key) => {
 					if (!parseInt(data[key])) {
 						sidebarLinks.value = sidebarLinks.value.filter(
@@ -576,12 +455,57 @@ const setSidebarLinks = () => {
 						)
 					}
 				})
+
+				// Filter based on user roles
+				filterSidebarByRole()
+
+				// Add Chat with Kiko if not already present
+				if (
+					!sidebarLinks.value.some((link) => link.label === 'Chat with Kiko')
+				) {
+					sidebarLinks.value.push({
+						label: 'Chat with Kiko',
+						icon: 'MessageCircle',
+						to: 'ChatKiko',
+						activeFor: ['ChatKiko'],
+					})
+				}
 			},
 			onError() {
 				// Handle error, keep default sidebarLinks
 			},
 		},
 	)
+}
+
+const filterSidebarByRole = () => {
+	if (!userResource.data?.roles) return
+
+	const userRoles = userResource.data.roles
+	const isAdmin = userRoles.includes('Administrator')
+	const isModerator = userRoles.includes('Moderator')
+	const isInstructor = userRoles.includes('Course Creator')
+	const isEvaluator = userRoles.includes('Batch Evaluator')
+	const isStudent = userRoles.includes('LMS Student')
+
+	// Role-based filtering logic
+	sidebarLinks.value = sidebarLinks.value.filter((link) => {
+		switch (link.label) {
+			case 'Statistics':
+				return isAdmin || isModerator
+			case 'Jobs':
+				return isAdmin || isModerator
+			case 'Programming Exercises':
+				return true // All roles can access, but functionality differs
+			case 'Certified Members':
+				return true // All roles can view
+			case 'Courses':
+			case 'Batches':
+				return true // All roles can access
+			default:
+				return true
+		}
+	})
 }
 
 const unreadNotifications = createResource({
@@ -757,13 +681,7 @@ const toggleSidebar = () => {
 	)
 }
 
-const toggleWebPages = () => {
-	sidebarStore.isWebpagesCollapsed = !sidebarStore.isWebpagesCollapsed
-	localStorage.setItem(
-		'isWebpagesCollapsed',
-		JSON.stringify(sidebarStore.isWebpagesCollapsed),
-	)
-}
+// Removed toggleWebPages (no longer needed)
 
 const goToLogin = () => {
 	window.location.href = '/login'
@@ -774,7 +692,8 @@ const goToRegister = () => {
 }
 
 const goToHome = () => {
-	router.push('/')
+	// Navigate to the external Genkiddo site
+	window.open('https://genkiddo.id/', '_blank')
 }
 
 const goToProfile = () => {

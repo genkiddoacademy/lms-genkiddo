@@ -3,17 +3,16 @@
 		v-if="link && !link.onlyMobile"
 		class="flex h-7 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3"
 		:class="
-			isActive ? 'bg-orange-2 shadow-sm text-white' : 'hover:bg-surface-gray-2'
+			isActive
+				? 'bg-orange-2 shadow-sm text-white font-bold'
+				: 'hover:bg-surface-gray-2'
 		"
 		@click="handleClick"
 	>
-		<div
-			class="flex items-center w-full duration-300 ease-in-out group"
-			:class="isCollapsed ? 'p-1 relative justify-center' : 'px-2 py-1'"
-		>
+		<div v-if="isCollapsed" class="p-1">
 			<Tooltip :text="link.label" placement="right">
 				<slot name="icon">
-					<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
+					<span class="grid h-5 w-6 place-items-center">
 						<component
 							:is="icons[link.icon]"
 							class="h-4 w-4 stroke-1.5"
@@ -22,29 +21,25 @@
 					</span>
 				</slot>
 			</Tooltip>
-			<span
-				class="flex-shrink-0 text-sm duration-300 ease-in-out"
-				:class="
-					isCollapsed
-						? 'ml-0 w-0 overflow-hidden opacity-0'
-						: 'ml-2 w-auto opacity-100'
-				"
-			>
+		</div>
+		<div v-else class="flex items-center w-full py-1 group">
+			<slot name="icon">
+				<span class="grid h-5 w-6 flex-shrink-0 place-items-center">
+					<component
+						:is="icons[link.icon]"
+						class="h-4 w-4 stroke-1.5"
+						:class="isActive ? 'text-white' : 'text-ink-gray-8'"
+					/>
+				</span>
+			</slot>
+			<span class="flex-shrink-0 text-sm ml-2">
 				{{ __(link.label) }}
 			</span>
-			<span
-				v-if="link.count"
-				class="!ml-auto block text-xs text-ink-gray-5"
-				:class="
-					isCollapsed && link.count > 9
-						? 'absolute top-[2px] right-0 bg-surface-white'
-						: ''
-				"
-			>
+			<span v-if="link.count" class="!ml-auto block text-xs text-ink-gray-5">
 				{{ link.count }}
 			</span>
 			<div
-				v-if="showControls && !isCollapsed"
+				v-if="showControls"
 				class="flex items-center space-x-2 !ml-auto text-xs text-ink-gray-5 group-hover:visible invisible"
 			>
 				<component
@@ -59,6 +54,14 @@
 				/>
 			</div>
 		</div>
+
+		<!-- Count badge for collapsed state -->
+		<span
+			v-if="link.count && isCollapsed && link.count > 0"
+			class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center text-[10px] font-bold"
+		>
+			{{ link.count > 9 ? '9+' : link.count }}
+		</span>
 	</button>
 </template>
 <script setup>
@@ -86,6 +89,13 @@ const props = defineProps({
 })
 
 function handleClick() {
+	// Check if there's a custom onClick handler
+	if (props.link.onClick && typeof props.link.onClick === 'function') {
+		props.link.onClick()
+		return
+	}
+
+	// Default navigation behavior
 	if (router.hasRoute(props.link.to)) {
 		router.push({ name: props.link.to })
 	} else if (props.link.to) {
@@ -94,6 +104,11 @@ function handleClick() {
 }
 
 const isActive = computed(() => {
+	// Check if there's a custom isActive property
+	if (props.link?.isActive !== undefined) {
+		return props.link.isActive
+	}
+
 	const currentRoute = router.currentRoute.value
 	if (!currentRoute?.name) return false
 

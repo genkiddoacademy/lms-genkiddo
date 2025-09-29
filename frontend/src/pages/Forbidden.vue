@@ -50,7 +50,7 @@ export default {
 			login()
 		},
 		goToHome() {
-			this.$router.push({ name: 'Courses' })
+			window.open('https://genkiddo.id/', '_blank')
 		},
 	},
 }

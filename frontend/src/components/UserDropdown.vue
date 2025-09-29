@@ -26,7 +26,7 @@
 					>
 						{{ branding.data?.app_name }}
 					</span>
-					<span v-else> GenKiddo LMS </span>
+					<span v-else class="!font-bold !text-sm"> GenKiddo LMS </span>
 				</div>
 			</div>
 		</div>

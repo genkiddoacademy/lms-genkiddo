@@ -1,0 +1,100 @@
+/* Custom TabButtons styling untuk konsistensi aplikasi */
+
+/* Konfigurasi warna dari Tailwind config */
+:root {
+	--tab-active-bg: #ef7f1f; /* orange-2 */
+	--tab-active-text: theme('colors.white');
+	--tab-inactive-bg: transparent;
+	--tab-inactive-text: #ef7f1f; /* text orange untuk tidak aktif */
+	--tab-hover-bg: theme('colors.orange.50');
+	--tab-hover-text: #ef7f1f;
+}
+
+/* Hilangkan background abu-abu default dari TabButtons container */
+.custom-tab-buttons > div {
+	background-color: transparent !important;
+}
+
+/* Base styling untuk custom tab buttons */
+.custom-tab-buttons button {
+	transition: all 0.2s ease-in-out;
+	padding: 6px 12px !important; /* padding yang lebih besar untuk text/icon */
+	font-weight: 500 !important; /* medium font weight */
+	font-size: 16px !important; /* ukuran font sama dengan Learning Path */
+	min-height: auto !important; /* tinggi mengikuti content */
+	border-radius: 6px !important; /* rounded corners */
+}
+
+/* Tab yang aktif (checked) - mengoverride !bg-surface-white */
+.custom-tab-buttons [data-headlessui-state*='checked'] button {
+	background-color: var(--tab-active-bg) !important;
+	color: var(--tab-active-text) !important;
+	font-weight: 600 !important; /* semibold untuk tab aktif */
+	box-shadow:
+		0 1px 3px 0 rgba(0, 0, 0, 0.1),
+		0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Tab yang tidak aktif */
+.custom-tab-buttons [data-headlessui-state=''] button {
+	background-color: var(--tab-inactive-bg) !important;
+	color: var(--tab-inactive-text) !important;
+	font-weight: 500 !important; /* medium untuk tab tidak aktif */
+}
+
+/* Hover state untuk tab tidak aktif */
+.custom-tab-buttons [data-headlessui-state='']:hover button {
+	/* Hover state untuk tab tidak aktif */
+	.custom-tab-buttons [data-headlessui-state='']:hover button {
+		background-color: var(--tab-hover-bg) !important;
+		color: var(--tab-hover-text) !important;
+	}
+	.custom-tab-buttons button.bg-surface-white {
+		background-color: var(--tab-active-bg) !important;
+		color: var(--tab-active-text) !important;
+		font-weight: 600 !important;
+	}
+
+	/* Selector yang lebih spesifik untuk mengoverride Tailwind */
+	.custom-tab-buttons div > button[class*='bg-surface-white'] {
+		background-color: var(--tab-active-bg) !important;
+		color: var(--tab-active-text) !important;
+		font-weight: 800 !important;
+	}
+
+	/* Styling untuk icon dan text spacing */
+	.custom-tab-buttons button span {
+		display: flex !important;
+		align-items: center !important;
+		gap: 4px !important; /* jarak antara icon dan text */
+	}
+
+	/* Selector paling agresif sebagai fallback */
+	.custom-tab-buttons button {
+		background-color: var(--tab-inactive-bg) !important;
+		color: var(--tab-inactive-text) !important;
+	}
+
+	.custom-tab-buttons [data-headlessui-state*='checked'] button,
+	.custom-tab-buttons button[class*='bg-surface-white'] {
+		background-color: var(--tab-active-bg) !important;
+		color: var(--tab-active-text) !important;
+		font-weight: 600 !important;
+	}
+
+	/* Variant untuk tema yang berbeda jika diperlukan */
+	.custom-tab-buttons.primary-theme {
+		--tab-active-bg: theme('colors.blue.500');
+		--tab-active-text: theme('colors.white');
+	}
+
+	.custom-tab-buttons.success-theme {
+		--tab-active-bg: theme('colors.green.500');
+		--tab-active-text: theme('colors.white');
+	}
+
+	.custom-tab-buttons.warning-theme {
+		--tab-active-bg: theme('colors.yellow.500');
+		--tab-active-text: theme('colors.black');
+	}
+}

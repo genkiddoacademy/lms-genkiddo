@@ -71,7 +71,10 @@ const routes = [
 		path: '/statistics',
 		name: 'Statistics',
 		component: () => import('@/pages/Statistics.vue'),
-		meta: { requiresAuth: true },
+		meta: {
+			requiresAuth: true,
+			requiredRoles: ['Administrator', 'Moderator']
+		},
 	},
 	{
 		path: '/user/:username',
@@ -113,7 +116,10 @@ const routes = [
 		path: '/job-openings',
 		name: 'Jobs',
 		component: () => import('@/pages/Jobs.vue'),
-		meta: { requiresAuth: true },
+		meta: {
+			requiresAuth: true,
+			requiredRoles: ['Administrator', 'Moderator']
+		},
 	},
 	{
 		path: '/job-openings/:job',
@@ -256,7 +262,10 @@ const routes = [
 		name: 'ProgrammingExercises',
 		component: () =>
 			import('@/pages/ProgrammingExercises/ProgrammingExercises.vue'),
-		meta: { requiresAuth: true },
+		meta: {
+			requiresAuth: true,
+			requiredRoles: ['Administrator', 'Moderator', 'Course Creator', 'Batch Evaluator', 'LMS Student']
+		},
 	},
 	{
 		path: '/programming-exercises/submissions',
@@ -302,6 +311,17 @@ router.beforeEach(async (to, from, next) => {
 	if (to.meta.requiresAuth && !isLoggedIn) {
 		// Redirect to Forbidden page for protected routes
 		return next({ name: 'Forbidden' })
+	}
+
+	// Check role-based access control
+	if (to.meta.requiredRoles && isLoggedIn) {
+		const userRoles = userResource.data?.roles || []
+		const hasRequiredRole = to.meta.requiredRoles.some(role => userRoles.includes(role))
+
+		if (!hasRequiredRole) {
+			// User doesn't have required role, redirect to forbidden
+			return next({ name: 'Forbidden' })
+		}
 	}
 
 	if (!isLoggedIn) {

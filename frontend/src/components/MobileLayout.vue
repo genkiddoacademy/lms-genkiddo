@@ -148,6 +148,14 @@ const addOtherLinks = () => {
 			label: 'Toggle Theme',
 			icon: isDarkMode.value ? 'Moon' : 'Sun',
 		})
+		// Settings shortcut in mobile "more" menu
+		// Settings shortcut in mobile "more" menu (only for admins)
+		if (userResource.data?.roles?.includes('Administrator')) {
+			otherLinks.value.push({
+				label: 'Settings',
+				icon: 'Settings',
+			})
+		}
 		otherLinks.value.push({
 			label: 'Log out',
 			icon: 'LogOut',
@@ -345,6 +353,7 @@ const handleClick = (tab) => {
 	if (tab.label == 'Log in') window.location.href = '/login'
 	else if (tab.label == 'Register') window.location.href = '/register'
 	else if (tab.label == 'Toggle Theme') handleThemeClick()
+	else if (tab.label == 'Settings') settingsStore.isSettingsOpen = true
 	else if (tab.label == 'Log out')
 		logout.submit().then(() => {
 			isLoggedIn = false

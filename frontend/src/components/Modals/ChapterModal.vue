@@ -22,7 +22,7 @@
 					:label="__('SCORM Package')"
 					:description="
 						__(
-							'Enable this only if you want to upload a SCORM package as a chapter.'
+							'Enable this only if you want to upload a SCORM package as a chapter.',
 						)
 					"
 					v-model="chapter.is_scorm_package"
@@ -108,13 +108,23 @@ const chapter = reactive({
 const chapterResource = createResource({
 	url: 'lms.lms.api.upsert_chapter',
 	makeParams(values) {
-		return {
+		const params = {
 			title: chapter.title,
 			course: props.course,
-			is_scorm_package: chapter.is_scorm_package,
-			scorm_package: chapter.scorm_package,
-			name: props.chapterDetail?.name,
+			is_scorm_package: chapter.is_scorm_package ? 1 : 0,
 		}
+
+		// Only add scorm_package if it's a SCORM package
+		if (chapter.is_scorm_package && chapter.scorm_package) {
+			params.scorm_package = chapter.scorm_package
+		}
+
+		// Only add name if editing existing chapter
+		if (props.chapterDetail?.name) {
+			params.name = props.chapterDetail.name
+		}
+
+		return params
 	},
 })
 
@@ -134,6 +144,14 @@ const chapterReference = createResource({
 })
 
 const addChapter = async (close) => {
+	// Log the chapter data being submitted for debugging
+	console.log('Creating chapter with data:', {
+		title: chapter.title,
+		course: props.course,
+		is_scorm_package: chapter.is_scorm_package,
+		scorm_package: chapter.scorm_package,
+	})
+
 	chapterResource.submit(
 		{},
 		{
@@ -141,6 +159,15 @@ const addChapter = async (close) => {
 				return validateChapter()
 			},
 			onSuccess: (data) => {
+				console.log('Chapter created successfully:', data)
+
+				if (!data || !data.name) {
+					toast.error(
+						__('Failed to create chapter: Invalid response from server'),
+					)
+					return
+				}
+
 				if (user.data?.is_system_manager)
 					updateOnboardingStep('create_first_chapter')
 
@@ -149,21 +176,43 @@ const addChapter = async (close) => {
 					{ name: data.name },
 					{
 						onSuccess(data) {
+							console.log('Chapter reference created:', data)
 							cleanChapter()
 							outline.value.reload()
 							toast.success(__('Chapter added successfully'))
 						},
 						onError(err) {
-							toast.error(err.messages?.[0] || err)
+							// Chapter was created but reference failed
+							// Still show success and reload
+							console.warn('Chapter reference failed but chapter exists:', err)
+							cleanChapter()
+							outline.value.reload()
+							toast.success(__('Chapter added successfully'))
 						},
-					}
+					},
 				)
 				close()
 			},
 			onError(err) {
-				toast.error(err.messages?.[0] || err)
+				console.error('Failed to create chapter:', err)
+				const errorMessage = err.messages?.[0] || err.message || err
+
+				// Check for network errors
+				if (
+					errorMessage.toString().includes('Failed to fetch') ||
+					errorMessage.toString().includes('ECONNRESET') ||
+					errorMessage.toString().includes('EPIPE')
+				) {
+					toast.error(
+						__(
+							'Network connection issue. Please try again or refresh the page.',
+						),
+					)
+				} else {
+					toast.error(errorMessage.toString())
+				}
 			},
-		}
+		},
 	)
 }
 
@@ -199,7 +248,7 @@ const editChapter = (close) => {
 			onError(err) {
 				toast.error(err.messages?.[0] || err)
 			},
-		}
+		},
 	)
 }
 
@@ -209,7 +258,7 @@ watch(
 		chapter.title = newChapter?.title
 		chapter.is_scorm_package = newChapter?.is_scorm_package
 		chapter.scorm_package = newChapter?.scorm_package
-	}
+	},
 )
 
 const validateFile = (file) => {

@@ -86,7 +86,7 @@
 								:label="__('Short Introduction')"
 								:placeholder="
 									__(
-										'A one line introduction to the course that appears on the course card'
+										'A one line introduction to the course that appears on the course card',
 									)
 								"
 								:required="true"
@@ -204,7 +204,7 @@
 							:label="__('Preview Video')"
 							:placeholder="
 								__(
-									'Paste the youtube link of a short video introducing the course'
+									'Paste the youtube link of a short video introducing the course',
 								)
 							"
 						/>
@@ -516,6 +516,24 @@ const imageResource = createResource({
 })
 
 const submitCourse = () => {
+	// Validate required fields
+	if (!course.title.trim()) {
+		toast.error(__('Title is required'))
+		return
+	}
+	if (instructors.value.length === 0) {
+		toast.error(__('At least one instructor is required'))
+		return
+	}
+	if (!course.short_introduction.trim()) {
+		toast.error(__('Short Introduction is required'))
+		return
+	}
+	if (!course.description.trim()) {
+		toast.error(__('Description is required'))
+		return
+	}
+
 	if (courseResource.data) {
 		editCourse()
 	} else {
@@ -528,9 +546,13 @@ const createCourse = () => {
 		onSuccess(data) {
 			updateMetaInfo('courses', data.name, meta)
 			if (user.data?.is_system_manager) {
-				updateOnboardingStep('create_first_course', true, false, () => {
-					localStorage.setItem('firstCourse', data.name)
-				})
+				try {
+					updateOnboardingStep('create_first_course', true, false, () => {
+						localStorage.setItem('firstCourse', data.name)
+					})
+				} catch (error) {
+					console.error('Error updating onboarding step:', error)
+				}
 			}
 
 			capture('course_created')
@@ -559,7 +581,7 @@ const editCourse = () => {
 			onError(err) {
 				toast.error(err.messages?.[0] || err)
 			},
-		}
+		},
 	)
 }
 
@@ -580,7 +602,7 @@ const trashCourse = () => {
 	$dialog({
 		title: __('Delete Course'),
 		message: __(
-			'Deleting the course will also delete all its chapters and lessons. Are you sure you want to delete this course?'
+			'Deleting the course will also delete all its chapters and lessons. Are you sure you want to delete this course?',
 		),
 		actions: [
 			{
@@ -602,7 +624,7 @@ watch(
 		if (newVal) {
 			fetchCourseInfo()
 		}
-	}
+	},
 )
 
 const updateTags = () => {

@@ -660,16 +660,21 @@ export const getMetaInfo = (type, route, meta) => {
 }
 
 export const updateMetaInfo = (type, route, meta) => {
+	if (!meta || typeof meta !== 'object') {
+		console.warn('Invalid meta object provided to updateMetaInfo')
+		return
+	}
+
 	call('lms.lms.api.update_meta_info', {
 		type: type,
 		route: route,
 		meta_tags: [
-			{ key: 'description', value: meta.description },
-			{ key: 'keywords', value: meta.keywords },
+			{ key: 'description', value: meta.description || '' },
+			{ key: 'keywords', value: meta.keywords || '' },
 		],
 	}).catch((error) => {
-		toast.error(__('Failed to update meta tags {0}').format(error))
-		console.error(error)
+		console.error('Failed to update meta tags:', error)
+		// Don't show error toast as this is a non-critical operation
 	})
 }
 

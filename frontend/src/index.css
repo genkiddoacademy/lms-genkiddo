@@ -2,3 +2,4 @@
 @import 'frappe-ui/src/style.css';
 @import './styles/codemirror.css';
 @import './styles/tab-buttons.css';
+@import './styles/toast-fix.css';

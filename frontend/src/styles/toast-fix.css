@@ -1,0 +1,91 @@
+/* Toast visibility fix */
+/* Force toast viewport to be visible and properly positioned */
+
+[data-reka-toast-viewport] {
+	position: fixed !important;
+	bottom: 0 !important;
+	right: 0 !important;
+	z-index: 2147483647 !important;
+	pointer-events: none !important;
+	display: flex !important;
+	flex-direction: column !important;
+	padding: 1.25rem !important;
+	gap: 0.625rem !important;
+	max-width: 100vw !important;
+	align-items: flex-end !important;
+}
+
+[data-reka-toast-viewport] > * {
+	pointer-events: auto !important;
+}
+
+/* Ensure toast is visible with proper styling */
+[data-reka-toast] {
+	background-color: white !important;
+	border: 1px solid #e5e7eb !important;
+	border-radius: 0.5rem !important;
+	padding: 1rem !important;
+	box-shadow:
+		0 10px 15px -3px rgba(0, 0, 0, 0.1),
+		0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+	min-width: 300px !important;
+	max-width: 500px !important;
+	display: flex !important;
+	align-items: flex-start !important;
+	gap: 0.75rem !important;
+}
+
+/* Toast animation */
+@keyframes slideIn {
+	from {
+		transform: translateX(calc(100% + 1.25rem));
+	}
+	to {
+		transform: translateX(0);
+	}
+}
+
+@keyframes slideOut {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(calc(100% + 1.25rem));
+	}
+}
+
+[data-reka-toast][data-state='open'] {
+	animation: slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-reka-toast][data-state='closed'] {
+	animation: slideOut 100ms ease-in;
+}
+
+/* Toast types - color indicators */
+[data-reka-toast][data-type='success'] {
+	border-left: 4px solid #10b981 !important;
+}
+
+[data-reka-toast][data-type='error'] {
+	border-left: 4px solid #ef4444 !important;
+}
+
+[data-reka-toast][data-type='warning'] {
+	border-left: 4px solid #f59e0b !important;
+}
+
+[data-reka-toast][data-type='info'] {
+	border-left: 4px solid #3b82f6 !important;
+}
+
+/* Toast close button */
+[data-reka-toast-close] {
+	cursor: pointer;
+	opacity: 0.5;
+	transition: opacity 150ms;
+}
+
+[data-reka-toast-close]:hover {
+	opacity: 1;
+}

@@ -8,6 +8,13 @@
 		<Dialogs />
 		<!-- Mount Settings dialog globally and bind it to the settings store -->
 		<Settings v-model="settingsStore.isSettingsOpen" />
+		<!-- Manually mount toast viewport -->
+		<div
+			data-reka-toast-viewport
+			class="fixed bottom-0 right-0 flex flex-col p-5 gap-2.5 w-auto max-w-full z-[2147483647] pointer-events-none"
+		>
+			<component :is="ToastsComponent" />
+		</div>
 	</FrappeUIProvider>
 </template>
 <script setup>
@@ -23,6 +30,8 @@ import { useRouter } from 'vue-router'
 import { posthogSettings } from '@/telemetry'
 import Settings from '@/components/Settings/Settings.vue'
 import { useSettings } from '@/stores/settings'
+// Import Toasts component from frappe-ui internal
+import { Toasts as ToastsComponent } from 'frappe-ui/src/components/Toast/index'
 
 const screenSize = useScreenSize()
 const router = useRouter()

@@ -8,7 +8,7 @@
 		<div class="m-5">
 			<div class="flex justify-between w-full space-x-5">
 				<div class="md:w-2/3">
-					<div class="text-3xl font-semibold text-ink-gray-9">
+					<div class="text-[36px] font-extrabold text-gradasi-1">
 						{{ course.data.title }}
 					</div>
 					<div class="my-3 leading-6 text-ink-gray-7">
@@ -69,13 +69,16 @@
 					<div class="md:hidden mb-4">
 						<CourseCardOverlay :course="course" />
 					</div>
-					<div
-						v-html="course.data.description"
-						class="ProseMirror prose prose-table:table-fixed prose-td:p-2 prose-th:p-2 prose-td:border prose-th:border prose-td:border-outline-gray-2 prose-th:border-outline-gray-2 prose-td:relative prose-th:relative prose-th:bg-surface-gray-2 prose-sm max-w-none !whitespace-normal mt-10"
-					></div>
+					<div class="mt-10 flex flex-col gap-2">
+						<div class="text-3xl font-extrabold text-gradasi-1">Deskripsi</div>
+						<div
+							v-html="course.data.description"
+							class="ProseMirror prose prose-table:table-fixed prose-td:p-2 prose-th:p-2 prose-td:border prose-th:border prose-td:border-outline-gray-2 prose-th:border-outline-gray-2 prose-td:relative prose-th:relative prose-th:bg-surface-gray-2 prose-sm max-w-none !whitespace-normal"
+						></div>
+					</div>
 					<div class="mt-10">
 						<CourseOutline
-							:title="__('Course Outline')"
+							:title="__('Outline Pembelajaran')"
 							:courseName="course.data.name"
 							:showOutline="true"
 							:getProgress="course.data.membership ? true : false"
@@ -137,7 +140,7 @@ watch(
 	() => props.courseName,
 	() => {
 		course.reload()
-	}
+	},
 )
 
 const breadcrumbs = computed(() => {

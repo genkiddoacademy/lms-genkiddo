@@ -9,7 +9,7 @@
 			}"
 		>
 			<div
-				class="font-semibold text-lg leading-5 text-ink-gray-9"
+				class="font-semibold text-lg leading-5 text-gradasi-1"
 				:class="{ 'font-medium text-p-base': allowEdit }"
 			>
 				{{ __(title) }}
@@ -226,7 +226,7 @@ watch(
 	() => props.courseName,
 	() => {
 		outline.reload()
-	}
+	},
 )
 
 const deleteLesson = createResource({
@@ -276,7 +276,7 @@ const trashLesson = (lessonName, chapterName) => {
 	$dialog({
 		title: __('Delete this lesson?'),
 		message: __(
-			'Deleting this lesson will permanently remove it from the course. This action cannot be undone. Are you sure you want to continue?'
+			'Deleting this lesson will permanently remove it from the course. This action cannot be undone. Are you sure you want to continue?',
 		),
 		actions: [
 			{
@@ -342,7 +342,7 @@ const trashChapter = (chapterName) => {
 	$dialog({
 		title: __('Delete this chapter?'),
 		message: __(
-			'Deleting this chapter will also delete all its lessons and permanently remove it from the course. This action cannot be undone. Are you sure you want to continue?'
+			'Deleting this chapter will also delete all its lessons and permanently remove it from the course. This action cannot be undone. Are you sure you want to continue?',
 		),
 		actions: [
 			{

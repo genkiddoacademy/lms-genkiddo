@@ -15,7 +15,7 @@
 					class="mb-1 mr-1 bg-white px-2 py-0.5 rounded-xl flex items-center border-2 border-gradasi-1-0"
 				>
 					<Star class="h-4 w-4 mr-1 text-gradasi-1-0" />
-					<span class="font-bold text-gradasi-1-0">
+					<span class="!font-bold text-gradasi-1-0">
 						{{ __('Unggulan') }}
 					</span>
 				</Badge>

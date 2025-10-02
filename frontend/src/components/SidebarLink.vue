@@ -3,9 +3,7 @@
 		v-if="link && !link.onlyMobile"
 		class="flex h-7 cursor-pointer items-center rounded text-ink-gray-8 duration-300 ease-in-out focus:outline-none focus:transition-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-outline-gray-3"
 		:class="
-			isActive
-				? 'bg-orange-2 shadow-sm text-white font-bold'
-				: 'hover:bg-surface-gray-2'
+			isActive ? 'bg-orange-2 shadow-sm text-white ' : 'hover:bg-surface-gray-2'
 		"
 		@click="handleClick"
 	>
@@ -28,11 +26,14 @@
 					<component
 						:is="icons[link.icon]"
 						class="h-4 w-4 stroke-1.5"
-						:class="isActive ? 'text-white' : 'text-ink-gray-8'"
+						:class="isActive ? 'text-white stroke-2' : 'text-ink-gray-8'"
 					/>
 				</span>
 			</slot>
-			<span class="flex-shrink-0 text-sm ml-2">
+			<span
+				class="flex-shrink-0 !text-lg ml-2"
+				:class="isActive ? '!font-bold' : ''"
+			>
 				{{ __(link.label) }}
 			</span>
 			<span v-if="link.count" class="!ml-auto block text-xs text-ink-gray-5">
@@ -58,7 +59,7 @@
 		<!-- Count badge for collapsed state -->
 		<span
 			v-if="link.count && isCollapsed && link.count > 0"
-			class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center text-[10px] font-bold"
+			class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-4 w-4 flex items-center justify-center text-[10px] !font-bold"
 		>
 			{{ link.count > 9 ? '9+' : link.count }}
 		</span>

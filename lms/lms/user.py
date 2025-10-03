@@ -69,6 +69,16 @@ def sign_up(email, full_name, verify_terms, user_category):
 	user.add_roles("LMS Student")
 	set_country_from_ip(None, user.name)
 
+	# Check if auto-enable is configured for development
+	auto_enable = frappe.db.get_single_value("LMS Settings", "auto_enable_users")
+	is_developer_mode = frappe.conf.get("developer_mode", False)
+	
+	if auto_enable and is_developer_mode:
+		# Auto-enable user in development mode
+		user.enabled = 1
+		user.save(ignore_permissions=True)
+		return 1, _("User registered and enabled successfully! You can now login.")
+	
 	if user.flags.email_sent:
 		return 1, _("Please check your email for verification")
 	else:

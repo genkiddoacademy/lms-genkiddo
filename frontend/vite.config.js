@@ -26,6 +26,9 @@ export default defineConfig({
 	],
 	server: {
 		allowedHosts: ['fs', 'per2'],
+		hmr: {
+			overlay: true,
+		},
 	},
 	resolve: {
 		alias: {

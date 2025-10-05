@@ -31,6 +31,15 @@
 			{{ batch.price }}
 		</div>
 		<div class="flex flex-col space-y-2 mt-auto">
+			<div
+				v-if="
+					batch.students_count !== undefined && batch.students_count !== null
+				"
+				class="flex items-center text-sm text-ink-gray-7"
+			>
+				<Users class="h-4 w-4 stroke-1.5 mr-2 text-ink-gray-7" />
+				<span> {{ batch.students_count || 0 }} {{ __('Enrolled') }} </span>
+			</div>
 			<DateRange
 				:startDate="batch.start_date"
 				:endDate="batch.end_date"
@@ -71,7 +80,7 @@
 </template>
 <script setup>
 import { formatTime } from '@/utils'
-import { Clock, Globe } from 'lucide-vue-next'
+import { Clock, Globe, Users } from 'lucide-vue-next'
 import DateRange from '@/components/Common/DateRange.vue'
 import CourseInstructors from '@/components/CourseInstructors.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
@@ -87,6 +96,7 @@ const props = defineProps({
 .short-introduction {
 	display: -webkit-box;
 	-webkit-line-clamp: 2;
+	line-clamp: 2;
 	-webkit-box-orient: vertical;
 	text-overflow: ellipsis;
 	width: 100%;

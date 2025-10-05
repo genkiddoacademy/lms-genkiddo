@@ -33,7 +33,7 @@
 		</div>
 		<div class="flex flex-col flex-auto p-4">
 			<div class="flex items-center justify-between mb-2">
-				<div v-if="course.lessons">
+				<div v-if="course.lessons && course.lessons > 0">
 					<Tooltip :text="__('Lessons')">
 						<span class="flex items-center text-ink-gray-7">
 							<BookOpen class="h-4 w-4 stroke-1.5 mr-1" />
@@ -42,20 +42,22 @@
 					</Tooltip>
 				</div>
 
-				<div v-if="course.enrollments">
+				<div
+					v-if="course.enrollments !== undefined && course.enrollments !== null"
+				>
 					<Tooltip :text="__('Enrolled Students')">
 						<span class="flex items-center text-ink-gray-7">
-							<Users class="h-4 w-4 stroke-1. mr-1" />
-							{{ course.enrollments }}
+							<Users class="h-4 w-4 stroke-1.5 mr-1" />
+							{{ course.enrollments || 0 }}
 						</span>
 					</Tooltip>
 				</div>
 
-				<div v-if="course.rating">
+				<div>
 					<Tooltip :text="__('Average Rating')">
 						<span class="flex items-center text-ink-gray-7">
 							<Star class="h-4 w-4 stroke-1.5 mr-1" />
-							{{ course.rating }}
+							{{ course.rating || '0.0' }}
 						</span>
 					</Tooltip>
 				</div>

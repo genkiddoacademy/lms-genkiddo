@@ -1007,6 +1007,14 @@ def get_courses(filters=None, start=0):
 def get_course_card_details(courses):
 	for course in courses:
 		course.instructors = get_instructors("LMS Course", course.name)
+		
+		# Ensure rating is set to '0.0' if None or empty
+		if not course.rating or course.rating == '0':
+			course.rating = '0.0'
+		
+		# Ensure enrollments is set to 0 if None
+		if course.enrollments is None:
+			course.enrollments = 0
 
 		if course.paid_course and course.published == 1:
 			course.amount, course.currency = check_multicurrency(
@@ -2175,6 +2183,9 @@ def get_batch_card_details(batches):
 	for batch in batches:
 		batch.instructors = get_instructors("LMS Batch", batch.name)
 		students_count = frappe.db.count("LMS Batch Enrollment", {"batch": batch.name})
+		
+		# Add students count to batch object for display
+		batch.students_count = students_count
 
 		if batch.seat_count:
 			batch.seats_left = batch.seat_count - students_count

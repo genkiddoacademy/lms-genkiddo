@@ -51,7 +51,7 @@
 					:label="__('Published')"
 					:description="
 						__(
-							'Enabling this will publish the certificate on the certified participants page.'
+							'Enabling this will publish the certificate on the certified participants page.',
 						)
 					"
 					v-model="details.published"
@@ -111,9 +111,11 @@ const generateCertificates = (close) => {
 			},
 			{
 				onError(err) {
-					toast.error(err.messages?.[0] || err)
+					const errorMessage =
+						err?.messages?.[0] || err?.message || err || __('An error occurred')
+					toast.error(errorMessage)
 				},
-			}
+			},
 		)
 	})
 	close()

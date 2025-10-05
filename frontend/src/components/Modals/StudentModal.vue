@@ -34,7 +34,7 @@ import { Dialog, createResource, toast } from 'frappe-ui'
 import { ref, inject } from 'vue'
 import Link from '@/components/Controls/Link.vue'
 import { useOnboarding } from 'frappe-ui/frappe'
-import { openSettings } from '@/utils'
+import { openSettings, getSafeErrorMessage } from '@/utils'
 
 const students = defineModel('reloadStudents')
 const batchModal = defineModel('batchModal')
@@ -67,19 +67,28 @@ const addStudent = (close) => {
 	studentResource.submit(
 		{},
 		{
-			onSuccess() {
+			onSuccess(data) {
 				if (user.data?.is_system_manager)
 					updateOnboardingStep('add_batch_student')
 
-				students.value.reload()
-				batchModal.value.reload()
+				// Safely reload resources
+				if (students.value?.reload) {
+					students.value.reload()
+				}
+				if (batchModal.value?.reload) {
+					batchModal.value.reload()
+				}
+
 				student.value = null
 				close()
+				toast.success(__('Student added successfully'))
 			},
 			onError(err) {
-				toast.error(err.messages?.[0] || err)
+				// Use safe error message utility
+				const errorMessage = getSafeErrorMessage(err, __('An error occurred'))
+				toast.error(errorMessage)
 			},
-		}
+		},
 	)
 }
 </script>

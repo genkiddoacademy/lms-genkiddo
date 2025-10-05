@@ -130,7 +130,7 @@ function submitEvaluation(close) {
 			}
 			if (dayjs(evaluation.date).isAfter(dayjs(props.endDate), 'day')) {
 				return `Please select a date before the end date ${dayjs(
-					props.endDate
+					props.endDate,
 				).format('DD MMMM YYYY')}.`
 			}
 		},
@@ -139,7 +139,9 @@ function submitEvaluation(close) {
 			close()
 		},
 		onError(err) {
-			toast.warning(__(err.messages?.[0] || err))
+			const errorMessage =
+				err?.messages?.[0] || err?.message || err || __('An error occurred')
+			toast.warning(__(errorMessage))
 		},
 	})
 }
@@ -180,7 +182,7 @@ watch(
 		if (date && evaluation.course) {
 			slots.submit(evaluation)
 		}
-	}
+	},
 )
 
 watch(
@@ -189,7 +191,7 @@ watch(
 		evaluation.date = ''
 		evaluation.start_time = ''
 		slots.reset()
-	}
+	},
 )
 
 const saveSlot = (slot) => {

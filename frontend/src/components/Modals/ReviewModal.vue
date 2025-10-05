@@ -71,7 +71,9 @@ function submitReview(close) {
 			hasReviewed.value.reload()
 		},
 		onError(err) {
-			toast.error(err.messages?.[0] || err)
+			const errorMessage =
+				err?.messages?.[0] || err?.message || err || __('An error occurred')
+			toast.error(errorMessage)
 		},
 	})
 	close()

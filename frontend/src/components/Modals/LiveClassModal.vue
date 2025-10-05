@@ -42,7 +42,7 @@
 						<Tooltip
 							:text="
 								__(
-									'Time must be in 24 hour format (HH:mm). Example 11:30 or 22:00'
+									'Time must be in 24 hour format (HH:mm). Example 11:30 or 22:00',
 								)
 							"
 						>
@@ -176,7 +176,9 @@ const submitLiveClass = (close) => {
 			close()
 		},
 		onError(err) {
-			toast.error(err.messages?.[0] || err)
+			const errorMessage =
+				err?.messages?.[0] || err?.message || err || __('An error occurred')
+			toast.error(errorMessage)
 		},
 	})
 }
@@ -199,12 +201,12 @@ const validateFormFields = () => {
 	}
 	const liveClassDateTime = dayjs(`${liveClass.date}T${liveClass.time}`).tz(
 		liveClass.timezone,
-		true
+		true,
 	)
 	if (
 		liveClassDateTime.isSameOrBefore(
 			dayjs().tz(liveClass.timezone, false),
-			'minute'
+			'minute',
 		)
 	) {
 		return __('Please select a future date and time.')

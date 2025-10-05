@@ -101,9 +101,11 @@ const makeAnnouncement = (close) => {
 				toast.success(__('Announcement has been sent successfully'))
 			},
 			onError(err) {
-				toast.error(__(err.messages?.[0] || err))
+				const errorMessage =
+					err?.messages?.[0] || err?.message || err || __('An error occurred')
+				toast.error(__(errorMessage))
 			},
-		}
+		},
 	)
 }
 </script>

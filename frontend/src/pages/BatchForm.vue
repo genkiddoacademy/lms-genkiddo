@@ -248,7 +248,7 @@
 										<div class="mt-2 text-ink-gray-5 text-sm">
 											{{
 												__(
-													'Appears when the batch URL is shared on any online platform'
+													'Appears when the batch URL is shared on any online platform',
 												)
 											}}
 										</div>
@@ -420,15 +420,21 @@ onBeforeUnmount(() => {
 const newBatch = createResource({
 	url: 'frappe.client.insert',
 	makeParams(values) {
+		const docData = {
+			doctype: 'LMS Batch',
+			meta_image: batch.image?.file_url,
+			instructors: instructors.value.map((instructor) => ({
+				instructor: instructor,
+			})),
+			...batch,
+		}
+
+		console.log('Submitting batch data:', docData)
+		console.log('Batch object:', batch)
+		console.log('Instructors:', instructors.value)
+
 		return {
-			doc: {
-				doctype: 'LMS Batch',
-				meta_image: batch.image?.file_url,
-				instructors: instructors.value.map((instructor) => ({
-					instructor: instructor,
-				})),
-				...batch,
-			},
+			doc: docData,
 		}
 	},
 })
@@ -498,6 +504,33 @@ const imageResource = createResource({
 })
 
 const saveBatch = () => {
+	// Validate mandatory fields
+	const requiredFields = [
+		{ field: 'title', name: 'Title' },
+		{ field: 'start_date', name: 'Start Date' },
+		{ field: 'end_date', name: 'End Date' },
+		{ field: 'start_time', name: 'Start Time' },
+		{ field: 'end_time', name: 'End Time' },
+		{ field: 'timezone', name: 'Timezone' },
+		{ field: 'description', name: 'Description' },
+		{ field: 'batch_details', name: 'Batch Details' },
+	]
+
+	const missingFields = requiredFields.filter(
+		({ field }) => !batch[field] || batch[field].toString().trim() === '',
+	)
+
+	if (missingFields.length > 0) {
+		const fieldNames = missingFields.map(({ name }) => name).join(', ')
+		toast.error(`Please fill in the following required fields: ${fieldNames}`)
+		return
+	}
+
+	if (!instructors.value || instructors.value.length === 0) {
+		toast.error('Please add at least one instructor')
+		return
+	}
+
 	if (batchDetail.data) {
 		editBatchDetails()
 	} else {
@@ -510,12 +543,36 @@ const createNewBatch = () => {
 		{},
 		{
 			onSuccess(data) {
-				if (user.data?.is_system_manager) {
-					updateOnboardingStep('create_first_batch', true, false, () => {
-						localStorage.setItem('firstBatch', data.name)
-					})
+				console.log('Batch creation response:', data)
+
+				// Ensure data.name exists
+				if (!data?.name) {
+					console.error(
+						'Invalid batch creation response - missing name field:',
+						data,
+					)
+					toast.error(
+						'Batch created but navigation failed. Please refresh the page.',
+					)
+					return
 				}
-				updateMetaInfo('batches', data.name, meta)
+
+				if (user.data?.is_system_manager) {
+					try {
+						updateOnboardingStep('create_first_batch', true, false, () => {
+							localStorage.setItem('firstBatch', data.name)
+						})
+					} catch (error) {
+						console.warn('Failed to update onboarding step:', error)
+					}
+				}
+
+				try {
+					updateMetaInfo('batches', data.name, meta)
+				} catch (error) {
+					console.warn('Failed to update meta info:', error)
+				}
+
 				capture('batch_created')
 				router.push({
 					name: 'BatchDetail',
@@ -527,7 +584,7 @@ const createNewBatch = () => {
 			onError(err) {
 				toast.error(err.messages?.[0] || err)
 			},
-		}
+		},
 	)
 }
 
@@ -536,7 +593,26 @@ const editBatchDetails = () => {
 		{},
 		{
 			onSuccess(data) {
-				updateMetaInfo('batches', data.name, meta)
+				console.log('Batch edit response:', data)
+
+				// Ensure data.name exists
+				if (!data?.name) {
+					console.error(
+						'Invalid batch edit response - missing name field:',
+						data,
+					)
+					toast.error(
+						'Batch updated but navigation failed. Please refresh the page.',
+					)
+					return
+				}
+
+				try {
+					updateMetaInfo('batches', data.name, meta)
+				} catch (error) {
+					console.warn('Failed to update meta info:', error)
+				}
+
 				router.push({
 					name: 'BatchDetail',
 					params: {
@@ -547,7 +623,7 @@ const editBatchDetails = () => {
 			onError(err) {
 				toast.error(err.messages?.[0] || err)
 			},
-		}
+		},
 	)
 }
 
@@ -555,7 +631,7 @@ const deleteBatch = () => {
 	$dialog({
 		title: __('Confirm your action to delete'),
 		message: __(
-			'Deleting this batch will also delete all its data including enrolled students, linked courses, assessments, feedback and discussions. Are you sure you want to continue?'
+			'Deleting this batch will also delete all its data including enrolled students, linked courses, assessments, feedback and discussions. Are you sure you want to continue?',
 		),
 		actions: [
 			{

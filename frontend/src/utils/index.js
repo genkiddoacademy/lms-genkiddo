@@ -678,6 +678,41 @@ export const updateMetaInfo = (type, route, meta) => {
 	})
 }
 
+/**
+ * Safely extracts error message from error object to prevent TypeError
+ * @param {*} err - Error object from API response
+ * @param {string} fallback - Fallback message if no error message found
+ * @returns {string} - Safe error message
+ */
+export const getSafeErrorMessage = (err, fallback = 'An error occurred') => {
+	if (!err) return fallback
+
+	// Handle string error
+	if (typeof err === 'string') return err
+
+	// Handle error object with messages array
+	if (
+		err.messages &&
+		Array.isArray(err.messages) &&
+		err.messages.length > 0
+	) {
+		return err.messages[0]
+	}
+
+	// Handle error object with message property
+	if (err.message) return err.message
+
+	// Handle error object with error property
+	if (err.error) return err.error
+
+	// Convert object to string if all else fails
+	try {
+		return err.toString()
+	} catch {
+		return fallback
+	}
+}
+
 export const formatTimestamp = (seconds) => {
 	const date = new Date(seconds * 1000)
 	const minutes = String(date.getUTCMinutes()).padStart(2, '0')

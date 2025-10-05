@@ -94,9 +94,11 @@ const addCourse = (close) => {
 				evaluator.value = null
 			},
 			onError(err) {
-				toast.error(err.messages?.[0] || err)
+				const errorMessage =
+					err?.messages?.[0] || err?.message || err || __('An error occurred')
+				toast.error(errorMessage)
 			},
-		}
+		},
 	)
 }
 </script>

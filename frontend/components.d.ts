@@ -98,6 +98,7 @@ declare module 'vue' {
     SettingFields: typeof import('./src/components/Settings/SettingFields.vue')['default']
     Settings: typeof import('./src/components/Settings/Settings.vue')['default']
     SidebarLink: typeof import('./src/components/SidebarLink.vue')['default']
+    StarRating: typeof import('./src/components/StarRating.vue')['default']
     StudentHeatmap: typeof import('./src/components/StudentHeatmap.vue')['default']
     StudentModal: typeof import('./src/components/Modals/StudentModal.vue')['default']
     Tags: typeof import('./src/components/Tags.vue')['default']

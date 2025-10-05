@@ -60,16 +60,16 @@
 					</template>
 					<template #tab-panel="{ tab }">
 						<div class="pt-5 px-5 pb-10">
-							<div v-if="tab.label == 'Courses'">
+							<div v-if="tab.label == 'Materi'">
 								<BatchCourses :batch="batch.data.name" />
 							</div>
-							<div v-else-if="tab.label == 'Dashboard' && isStudent">
+							<div v-else-if="tab.label == 'Dasbor' && isStudent">
 								<BatchDashboard :batch="batch" :isStudent="isStudent" />
 							</div>
-							<div v-else-if="tab.label == 'Dashboard'">
+							<div v-else-if="tab.label == 'Dasbor'">
 								<BatchStudents :batch="batch" />
 							</div>
-							<div v-else-if="tab.label == 'Classes'">
+							<div v-else-if="tab.label == 'Jadwal'">
 								<LiveClass
 									:batch="batch.data.name"
 									:zoomAccount="batch.data.zoom_account"
@@ -78,10 +78,10 @@
 							<div v-else-if="tab.label == 'Assessments'">
 								<Assessments :batch="batch.data.name" />
 							</div>
-							<div v-else-if="tab.label == 'Announcements'">
+							<div v-else-if="tab.label == 'Pengumuman'">
 								<Announcements :batch="batch.data.name" />
 							</div>
-							<div v-else-if="tab.label == 'Discussions'">
+							<div v-else-if="tab.label == 'Diskusi'">
 								<Discussions
 									doctype="LMS Batch"
 									:docname="batch.data.name"
@@ -97,13 +97,10 @@
 			</div>
 			<div class="p-5">
 				<div class="mb-10">
-					<div class="text-ink-gray-7 font-semibold mb-2">
-						{{ __('About this batch') }}
+					<div class="!text-gradasi-1 !font-bold mb-2 !text-xl">
+						{{ __('Tentang Batch') }}
 					</div>
-					<div
-						v-html="batch.data.description"
-						class="leading-5 mb-4 text-ink-gray-7"
-					></div>
+					<div v-html="batch.data.description" class="leading-5 mb-4"></div>
 
 					<div class="flex items-center avatar-group overlap mb-5">
 						<div
@@ -142,8 +139,8 @@
 					</div>
 				</div>
 				<div v-if="dayjs().isSameOrAfter(dayjs(batch.data.start_date))">
-					<div class="text-ink-gray-7 font-semibold mb-2">
-						{{ __('Feedback') }}
+					<div class="text-gradasi-1 font-bold mb-2 text-xl">
+						{{ __('Umpan Balik') }}
 					</div>
 					<BatchFeedback :batch="batch.data?.name" />
 				</div>
@@ -167,7 +164,7 @@
 				<div v-if="user.data" class="mb-4 leading-6">
 					{{
 						__(
-							'You are not a member of this batch. Please checkout our upcoming batches.'
+							'You are not a member of this batch. Please checkout our upcoming batches.',
 						)
 					}}
 				</div>
@@ -256,17 +253,17 @@ const readOnlyMode = window.read_only_mode
 const tabs = computed(() => {
 	let batchTabs = []
 	batchTabs.push({
-		label: 'Dashboard',
+		label: 'Dasbor',
 		icon: LayoutDashboard,
 	})
 
 	batchTabs.push({
-		label: 'Courses',
+		label: 'Materi',
 		icon: BookOpen,
 	})
 
 	batchTabs.push({
-		label: 'Classes',
+		label: 'Jadwal',
 		icon: Laptop,
 	})
 
@@ -278,12 +275,12 @@ const tabs = computed(() => {
 	}
 
 	batchTabs.push({
-		label: 'Announcements',
+		label: 'Pengumuman',
 		icon: Mail,
 	})
 
 	batchTabs.push({
-		label: 'Discussions',
+		label: 'Diskusi',
 		icon: MessageCircle,
 	})
 	return batchTabs

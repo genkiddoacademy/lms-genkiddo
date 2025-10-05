@@ -7,7 +7,7 @@
 		>
 			{{ __('New {0}').format(singularize(title)) }}
 		</Button>
-		<div class="text-xl font-semibold text-ink-gray-9">
+		<div class="text-3xl text-orange-2 font-bold">
 			{{ __(title) }}
 		</div>
 	</div>

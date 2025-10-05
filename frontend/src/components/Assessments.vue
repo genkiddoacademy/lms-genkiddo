@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="flex items-center justify-between mb-4">
-			<div class="text-lg font-semibold text-ink-gray-9">
+			<div class="text-3xl text-orange-2 font-bold">
 				{{ __('Assessments') }}
 			</div>
 			<Button v-if="canAddAssessments()" @click="showModal = true">
@@ -149,7 +149,7 @@ const removeAssessments = (selections, unselectAll) => {
 				assessments.reload()
 				unselectAll()
 			},
-		}
+		},
 	)
 }
 

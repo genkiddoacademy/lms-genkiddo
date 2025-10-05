@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<div class="flex items-center justify-between mb-4">
-			<div class="text-lg font-semibold text-ink-gray-9">
-				{{ __('Courses') }}
+			<div class="text-3xl text-orange-2 font-bold">
+				{{ __('Materi Belajar') }}
 			</div>
 			<Button v-if="canSeeAddButton()" @click="openCourseModal()">
 				<template #prefix>
@@ -154,7 +154,7 @@ const removeCourses = (selections, unselectAll) => {
 				toast.success(__('Courses deleted successfully'))
 				unselectAll()
 			},
-		}
+		},
 	)
 }
 

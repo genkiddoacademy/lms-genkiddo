@@ -73,7 +73,7 @@ const routes = [
 		component: () => import('@/pages/Statistics.vue'),
 		meta: {
 			requiresAuth: true,
-			requiredRoles: ['Administrator', 'Moderator']
+			requiredRoles: ['Administrator', 'Moderator'],
 		},
 	},
 	{
@@ -118,7 +118,7 @@ const routes = [
 		component: () => import('@/pages/Jobs.vue'),
 		meta: {
 			requiresAuth: true,
-			requiredRoles: ['Administrator', 'Moderator']
+			requiredRoles: ['Administrator', 'Moderator'],
 		},
 	},
 	{
@@ -264,7 +264,13 @@ const routes = [
 			import('@/pages/ProgrammingExercises/ProgrammingExercises.vue'),
 		meta: {
 			requiresAuth: true,
-			requiredRoles: ['Administrator', 'Moderator', 'Course Creator', 'Batch Evaluator', 'LMS Student']
+			requiredRoles: [
+				'Administrator',
+				'Moderator',
+				'Course Creator',
+				'Batch Evaluator',
+				'LMS Student',
+			],
 		},
 	},
 	{
@@ -292,6 +298,10 @@ const routes = [
 let router = createRouter({
 	history: createWebHistory('/lms'),
 	routes,
+	scrollBehavior(to, from, savedPosition) {
+		// Always scroll to top on route change to ensure fresh page feel
+		return { top: 0 }
+	},
 })
 
 router.beforeEach(async (to, from, next) => {
@@ -316,7 +326,9 @@ router.beforeEach(async (to, from, next) => {
 	// Check role-based access control
 	if (to.meta.requiredRoles && isLoggedIn) {
 		const userRoles = userResource.data?.roles || []
-		const hasRequiredRole = to.meta.requiredRoles.some(role => userRoles.includes(role))
+		const hasRequiredRole = to.meta.requiredRoles.some((role) =>
+			userRoles.includes(role),
+		)
 
 		if (!hasRequiredRole) {
 			// User doesn't have required role, redirect to forbidden

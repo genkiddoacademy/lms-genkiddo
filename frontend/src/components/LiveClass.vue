@@ -10,8 +10,8 @@
 	</div>
 
 	<div class="flex items-center justify-between">
-		<div class="text-lg font-semibold text-ink-gray-9">
-			{{ __('Live Class') }}
+		<div class="text-3xl text-orange-2 font-bold">
+			{{ __('Kelas Berlangsung') }}
 		</div>
 		<Button v-if="canCreateClass()" @click="openLiveClassModal">
 			<template #prefix>

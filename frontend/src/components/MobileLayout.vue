@@ -94,6 +94,9 @@ onMounted(() => {
 
 	if (user) {
 		setSidebarLinks()
+		if (userResource.data) {
+			addAdminSidebar()
+		}
 	} else {
 		addGuestSidebar()
 	}
@@ -236,6 +239,44 @@ const limitSidebarToFour = () => {
 	}
 }
 
+const addAdminSidebar = () => {
+	if (
+		!userResource.data?.is_system_manager &&
+		!userResource.data?.is_moderator
+	) {
+		return // Only for admin/moderator users
+	}
+
+	// For admin/moderator users, ensure all admin links are present
+	const adminLinks = [
+		{
+			label: 'Statistics',
+			icon: 'TrendingUp',
+			to: 'Statistics',
+			activeFor: ['Statistics'],
+		},
+		{
+			label: 'Jobs',
+			icon: 'Briefcase',
+			to: 'Jobs',
+			activeFor: ['Jobs', 'JobDetail'],
+		},
+		{
+			label: 'Notifications',
+			icon: 'Bell',
+			to: 'Notifications',
+			activeFor: ['Notifications'],
+		},
+	]
+
+	// Add admin links that aren't already present
+	adminLinks.forEach((adminLink) => {
+		if (!sidebarLinks.value.some((link) => link.label === adminLink.label)) {
+			sidebarLinks.value.push(adminLink)
+		}
+	})
+}
+
 const addPrograms = () => {
 	if (userResource.data?.is_system_manager || userResource.data?.is_moderator) {
 		return // Admin sidebar already set
@@ -309,14 +350,18 @@ const addAssignments = () => {
 }
 
 watch(userResource, () => {
-	if (userResource.data) {
-		isModerator.value = userResource.data.is_moderator
-		isInstructor.value = userResource.data.is_instructor
-		addAdminSidebar()
-		addPrograms()
-		addQuizzes()
-		addAssignments()
-		limitSidebarToFour()
+	try {
+		if (userResource.data) {
+			isModerator.value = userResource.data.is_moderator
+			isInstructor.value = userResource.data.is_instructor
+			addAdminSidebar()
+			addPrograms()
+			addQuizzes()
+			addAssignments()
+			limitSidebarToFour()
+		}
+	} catch (error) {
+		console.error('Error in userResource watcher:', error)
 	}
 })
 
@@ -349,23 +394,29 @@ let isActive = (tab) => {
 	return tab.activeFor?.includes(router.currentRoute.value.name)
 }
 
-const handleClick = (tab) => {
-	if (tab.label == 'Log in') window.location.href = '/login'
-	else if (tab.label == 'Register') window.location.href = '/register'
-	else if (tab.label == 'Toggle Theme') handleThemeClick()
-	else if (tab.label == 'Settings') settingsStore.isSettingsOpen = true
-	else if (tab.label == 'Log out')
-		logout.submit().then(() => {
-			isLoggedIn = false
-		})
-	else if (tab.label == 'Profile')
-		router.push({
-			name: 'Profile',
-			params: {
-				username: userResource.data?.username,
-			},
-		})
-	else router.push({ name: tab.to })
+const handleClick = async (tab) => {
+	try {
+		if (tab.label == 'Log in') window.location.href = '/login'
+		else if (tab.label == 'Register') window.location.href = '/register'
+		else if (tab.label == 'Toggle Theme') handleThemeClick()
+		else if (tab.label == 'Settings') settingsStore.isSettingsOpen = true
+		else if (tab.label == 'Log out')
+			logout.submit().then(() => {
+				isLoggedIn = false
+			})
+		else if (tab.label == 'Profile')
+			await router.push({
+				name: 'Profile',
+				params: {
+					username: userResource.data?.username,
+				},
+			})
+		else if (tab.to) {
+			await router.push({ name: tab.to })
+		}
+	} catch (error) {
+		console.error('Navigation error in mobile layout:', error)
+	}
 }
 
 const isVisible = (tab) => {

@@ -8,30 +8,50 @@
 		<div class="m-5 pb-10">
 			<div class="flex justify-between w-full">
 				<div class="md:w-2/3">
-					<div class="text-3xl font-semibold text-ink-gray-9">
+					<!-- Background image above title -->
+					<div class="relative mb-4">
+						<img
+							src="/batches-bg.png"
+							alt="Batch Background"
+							class="w-full h-40 object-cover rounded-lg"
+						/>
+					</div>
+					<div class="text-[44px] font-bold text-gradasi-1">
 						{{ batch.data.title }}
 					</div>
-					<div class="my-3 leading-6 text-ink-gray-7">
-						{{ batch.data.description }}
-					</div>
-					<div class="flex avatar-group overlap">
-						<div
-							class="h-6 mr-1"
-							:class="{
-								'avatar-group overlap': batch.data.instructors.length > 1,
-							}"
-						>
-							<UserAvatar
-								v-for="instructor in batch.data.instructors"
-								:user="instructor"
-							/>
+					<div class="flex flex-col gap-2 overlap mt-4">
+						<div class="flex avatar-group">
+							<div
+								class="h-6 mr-1"
+								:class="{
+									'avatar-group overlap': batch.data.instructors.length > 1,
+								}"
+							>
+								Oleh:
+								<UserAvatar
+									v-for="instructor in batch.data.instructors"
+									:user="instructor"
+								/>
+							</div>
+							<CourseInstructors :instructors="batch.data.instructors" />
 						</div>
-						<CourseInstructors :instructors="batch.data.instructors" />
+						<div>{{ batch.data.description }}</div>
 					</div>
-					<div
-						class="ProseMirror prose prose-table:table-fixed prose-td:p-2 prose-th:p-2 prose-td:border prose-th:border prose-td:border-outline-gray-2 prose-th:border-outline-gray-2 prose-td:relative prose-th:relative prose-th:bg-surface-gray-2 prose-sm max-w-none !whitespace-normal mt-10"
-						v-html="batch.data.batch_details"
-					></div>
+
+					<div class="my-10 leading-6 text-ink-gray-7">
+						<div class="text-2xl font-extrabold text-gradasi-1">Deskripsi</div>
+						<div class="flex items-start gap-3">
+							<img
+								src="/icon-kiko-halo.png"
+								alt="Kiko Icon"
+								class="w-auto h-[120px] mt-1 flex-shrink-0"
+							/>
+							<div
+								class="ProseMirror prose prose-table:table-fixed prose-td:p-2 prose-th:p-2 prose-td:border prose-th:border prose-td:border-outline-gray-2 prose-th:border-outline-gray-2 prose-td:relative prose-th:relative prose-th:bg-surface-gray-2 prose-sm max-w-none !whitespace-normal"
+								v-html="batch.data.batch_details"
+							></div>
+						</div>
+					</div>
 				</div>
 				<div class="hidden md:block">
 					<BatchOverlay :batch="batch" />
@@ -40,8 +60,8 @@
 			<BatchOverlay :batch="batch" class="md:hidden mt-5" />
 			<div v-if="batch.data.courses.length">
 				<div class="flex items-center mt-10">
-					<div class="text-2xl font-semibold">
-						{{ __('Courses') }}
+					<div class="text-2xl font-extrabold text-gradasi-1">
+						{{ __('Kursus') }}
 					</div>
 				</div>
 				<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-5">

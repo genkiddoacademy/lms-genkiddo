@@ -57,12 +57,12 @@
 			<div class="flex-row flex gap-2 items-center w-full !text-lg">
 				Learning Path:
 				<Select
-					v-if="categories.length"
 					v-model="currentCategory"
 					:options="categories"
-					:placeholder="__('Category')"
+					:placeholder="__('Semua Jalur')"
 					@change="updateCourses()"
-					class="!min-w-36 !w-fit !text-lg !placeholder:text-white !bg-orange-2 !text-white flex !h-[40px]"
+					class="!min-w-36 !w-fit !text-lg !bg-orange-2 flex !h-[40px]"
+					style="color: white !important; --tw-placeholder-color: white"
 				/>
 			</div>
 		</div>
@@ -100,7 +100,7 @@ import {
 	TabButtons,
 	usePageMeta,
 } from 'frappe-ui'
-import { computed, inject, onMounted, ref, watch } from 'vue'
+import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue'
 import { Plus, Search } from 'lucide-vue-next'
 import { sessionStore } from '@/stores/session'
 import { canCreateCourse } from '@/utils'
@@ -122,15 +122,23 @@ const { brand } = sessionStore()
 const courseCount = ref(0)
 
 onMounted(() => {
-	setFiltersFromQuery()
-	updateCourses()
-	getCourseCount()
+	// Reset state to ensure clean load
 	categories.value = [
 		{
-			label: '',
+			label: 'Semua Jalur',
 			value: null,
 		},
 	]
+	currentCategory.value = null
+	title.value = ''
+	certification.value = false
+	filters.value = {}
+
+	// Force reload courses data
+	courses.reload()
+	setFiltersFromQuery()
+	updateCourses()
+	getCourseCount()
 })
 
 const setFiltersFromQuery = () => {
@@ -143,9 +151,10 @@ const setFiltersFromQuery = () => {
 const courses = createListResource({
 	doctype: 'LMS Course',
 	url: 'lms.lms.utils.get_courses',
-	cache: ['courses', user.data?.name],
+	cache: ['courses', user.data?.name, Date.now()],
 	pageLength: pageLength.value,
 	start: start.value,
+	auto: true,
 	onSuccess(data) {
 		setCategories(data)
 	},
@@ -156,9 +165,7 @@ const setCategories = (data) => {
 	allCategories = allCategories.filter(
 		(category, index) => allCategories.indexOf(category) === index && category,
 	)
-	if (categories.value.length <= allCategories.length) {
-		updateCategories(data)
-	}
+	updateCategories(data)
 }
 
 const isPersonaCaptured = async () => {
@@ -297,20 +304,57 @@ const setQueryParams = () => {
 }
 
 const updateCategories = (data) => {
+	// Reset categories but keep 'Semua Jalur' at first position
+	const baseCategories = [
+		{
+			label: 'Semua Jalur',
+			value: null,
+		},
+	]
+
 	data.forEach((course) => {
 		if (
 			course.category &&
-			!categories.value.find((category) => category.value === course.category)
-		)
-			categories.value.push({
+			!baseCategories.find((category) => category.value === course.category)
+		) {
+			baseCategories.push({
 				label: course.category,
 				value: course.category,
 			})
+		}
 	})
+
+	categories.value = baseCategories
 }
 
 watch(currentTab, () => {
 	updateCourses()
+})
+
+watch(
+	currentCategory,
+	() => {
+		updateCourses()
+	},
+	{ immediate: false },
+)
+
+onUnmounted(() => {
+	try {
+		// Reset state when leaving page
+		categories.value = []
+		currentCategory.value = null
+		title.value = ''
+		certification.value = false
+		filters.value = {}
+
+		// Reset courses data if possible
+		if (courses && typeof courses.reset === 'function') {
+			courses.reset()
+		}
+	} catch (error) {
+		console.error('Error in Courses unmount:', error)
+	}
 })
 
 const courseTabs = computed(() => {

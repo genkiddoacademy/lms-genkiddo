@@ -20,8 +20,13 @@
 			</div>
 		</div>
 	</div>
-	<div v-else class="text-sm italic text-ink-gray-5">
-		{{ __('No announcements') }}
+	<div v-else>
+		<div class="text-3xl text-orange-2 font-bold mb-2">
+			{{ __('Pengumuman') }}
+		</div>
+		<div class="text-sm italic text-ink-gray-5">
+			{{ __('No announcements') }}
+		</div>
 	</div>
 </template>
 <script setup>

@@ -7,7 +7,7 @@
 		>
 			{{ __('Write a Review') }}
 		</Button>
-		<div class="flex items-center font-bold text-2xl text-gradasi-1">
+		<div class="flex items-center font-bold text-3xl text-gradasi-1">
 			{{ __('Testimoni Siswa') }}
 		</div>
 		<div class="grid gap-8 mt-10">

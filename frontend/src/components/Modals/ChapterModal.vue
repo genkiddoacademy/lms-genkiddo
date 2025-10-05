@@ -114,7 +114,7 @@ const chapterResource = createResource({
 			is_scorm_package: chapter.is_scorm_package ? 1 : 0,
 		}
 
-		// Only add scorm_package if it's a SCORM package
+		// Only add scorm_package if it's a SCORM package and has a valid value
 		if (chapter.is_scorm_package && chapter.scorm_package) {
 			params.scorm_package = chapter.scorm_package
 		}
@@ -144,14 +144,6 @@ const chapterReference = createResource({
 })
 
 const addChapter = async (close) => {
-	// Log the chapter data being submitted for debugging
-	console.log('Creating chapter with data:', {
-		title: chapter.title,
-		course: props.course,
-		is_scorm_package: chapter.is_scorm_package,
-		scorm_package: chapter.scorm_package,
-	})
-
 	chapterResource.submit(
 		{},
 		{

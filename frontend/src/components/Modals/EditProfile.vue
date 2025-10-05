@@ -7,6 +7,7 @@
 				{
 					label: 'Save',
 					variant: 'solid',
+					class: 'bg-orange-2 font-bold',
 					onClick: (close) => saveProfile(close),
 				},
 			],
@@ -157,7 +158,7 @@ const saveProfile = (close) => {
 			onError(err) {
 				toast.error(err.messages?.[0] || err)
 			},
-		}
+		},
 	)
 }
 
@@ -186,6 +187,6 @@ watch(
 			profile.bio = newVal.bio
 			if (newVal.user_image) imageResource.submit({ image: newVal.user_image })
 		}
-	}
+	},
 )
 </script>

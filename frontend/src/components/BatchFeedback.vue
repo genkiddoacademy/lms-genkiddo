@@ -31,8 +31,13 @@
 					:rows="9"
 					:readonly="readOnly"
 				/>
-				<Button v-if="!readOnly" @click="submitFeedback">
-					{{ __('Submit Feedback') }}
+				<Button
+					v-if="!readOnly"
+					@click="submitFeedback"
+					variant="outline"
+					class="!border-orange-2 text-orange-2"
+				>
+					{{ __('Kirim Feedback') }}
 				</Button>
 			</div>
 		</div>
@@ -142,7 +147,7 @@ watch(
 				average[key] = average[key] / data.length
 			})
 		}
-	}
+	},
 )
 
 const submitFeedback = () => {
@@ -160,7 +165,7 @@ const submitFeedback = () => {
 				feedbackList.reload()
 				showFeedbackForm.value = false
 			},
-		}
+		},
 	)
 }
 </script>

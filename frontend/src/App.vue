@@ -2,7 +2,7 @@
 	<FrappeUIProvider>
 		<Layout>
 			<div class="text-base">
-				<router-view />
+				<router-view :key="route.fullPath" />
 			</div>
 		</Layout>
 		<Dialogs />
@@ -26,7 +26,7 @@ import DesktopLayout from './components/DesktopLayout.vue'
 import MobileLayout from './components/MobileLayout.vue'
 import NoSidebarLayout from './components/NoSidebarLayout.vue'
 import { usersStore } from '@/stores/user'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { posthogSettings } from '@/telemetry'
 import Settings from '@/components/Settings/Settings.vue'
 import { useSettings } from '@/stores/settings'
@@ -35,6 +35,7 @@ import { Toasts as ToastsComponent } from 'frappe-ui/src/components/Toast/index'
 
 const screenSize = useScreenSize()
 const router = useRouter()
+const route = useRoute()
 const noSidebar = ref(false)
 const { userResource } = usersStore()
 const settingsStore = useSettings()
@@ -68,4 +69,23 @@ watch(userResource, () => {
 		posthogSettings.reload()
 	}
 })
+
+// Global error handler for unhandled promise rejections
+window.addEventListener('unhandledrejection', (event) => {
+	console.error('Unhandled promise rejection:', event.reason)
+	// Prevent the default behavior (which would log the error to console)
+	event.preventDefault()
+})
 </script>
+
+<style scoped>
+.page-enter-active,
+.page-leave-active {
+	transition: opacity 0.2s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+	opacity: 0;
+}
+</style>

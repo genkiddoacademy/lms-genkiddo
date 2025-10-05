@@ -67,12 +67,13 @@
 </template>
 <script setup>
 import { Tooltip } from 'frappe-ui'
-import { computed, watchEffect, nextTick, onMounted } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import * as icons from 'lucide-vue-next'
 
 const router = useRouter()
 const emit = defineEmits(['openModal', 'deletePage'])
+const isNavigating = ref(false)
 
 const props = defineProps({
 	link: {
@@ -89,7 +90,10 @@ const props = defineProps({
 	},
 })
 
-function handleClick() {
+async function handleClick() {
+	// Prevent rapid double clicks
+	if (isNavigating.value) return
+
 	// Check if there's a custom onClick handler
 	if (props.link.onClick && typeof props.link.onClick === 'function') {
 		props.link.onClick()
@@ -97,10 +101,30 @@ function handleClick() {
 	}
 
 	// Default navigation behavior
-	if (router.hasRoute(props.link.to)) {
-		router.push({ name: props.link.to })
-	} else if (props.link.to) {
-		window.location.href = `/${props.link.to}`
+	isNavigating.value = true
+	try {
+		if (props.link.to && router.hasRoute(props.link.to)) {
+			// Simple navigation - let Vue router handle everything
+			await router.push({ name: props.link.to })
+		} else if (props.link.to) {
+			// For external or non-Vue routes
+			window.location.href = props.link.to.startsWith('/')
+				? props.link.to
+				: `/${props.link.to}`
+		}
+	} catch (error) {
+		console.error('Navigation error:', error)
+		// Fallback to window navigation
+		if (props.link.to) {
+			window.location.href = props.link.to.startsWith('/')
+				? props.link.to
+				: `/${props.link.to}`
+		}
+	} finally {
+		// Reset loading state
+		setTimeout(() => {
+			isNavigating.value = false
+		}, 100)
 	}
 }
 
@@ -113,29 +137,36 @@ const isActive = computed(() => {
 	const currentRoute = router.currentRoute.value
 	if (!currentRoute?.name) return false
 
-	if (props.link?.activeFor) {
+	// First check activeFor array if it exists
+	if (props.link?.activeFor && Array.isArray(props.link.activeFor)) {
 		return props.link.activeFor.includes(currentRoute.name)
 	}
-	// For web pages without activeFor, check if current route matches
-	if (router.hasRoute(props.link.to)) {
-		return currentRoute.name === props.link.to
-	} else {
-		return currentRoute.path === `/${props.link.to}`
+
+	// Then check exact route name match
+	if (props.link?.to) {
+		// For Vue routes
+		if (router.hasRoute(props.link.to)) {
+			return currentRoute.name === props.link.to
+		}
+		// For non-Vue routes, check path
+		const linkPath = props.link.to.startsWith('/')
+			? props.link.to
+			: `/${props.link.to}`
+		return (
+			currentRoute.path === linkPath || currentRoute.path.startsWith(linkPath)
+		)
 	}
+
+	return false
 })
 
-// Use watchEffect to ensure reactivity on mount and route changes
-watchEffect(async () => {
-	const currentRoute = router.currentRoute.value
-	if (currentRoute) {
-		await nextTick()
-	}
-	// This will trigger whenever currentRoute changes
-})
-
+// Ensure router is ready on mount
 onMounted(async () => {
-	await router.isReady()
-	// Ensure router is ready
+	try {
+		await router.isReady()
+	} catch (error) {
+		console.error('Router not ready:', error)
+	}
 })
 
 const openModal = (link) => {

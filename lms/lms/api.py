@@ -1069,7 +1069,7 @@ def give_discussions_permission():
 
 
 @frappe.whitelist()
-def upsert_chapter(title, course, is_scorm_package=0, scorm_package=None, name=None, **kwargs):
+def upsert_chapter(title, course, is_scorm_package=0, name=None, scorm_package=None):
 	"""
 	Create or update a chapter
 
@@ -1077,10 +1077,14 @@ def upsert_chapter(title, course, is_scorm_package=0, scorm_package=None, name=N
 		title: Chapter title
 		course: Course name
 		is_scorm_package: Whether this is a SCORM package (0 or 1, default 0)
-		scorm_package: SCORM package file info (optional, required if is_scorm_package=1)
 		name: Chapter name (optional, for editing existing chapter)
-		**kwargs: Additional optional parameters
+		scorm_package: SCORM package file info (optional, required if is_scorm_package=1)
 	"""
+	# Convert is_scorm_package to int
+	is_scorm_package = int(is_scorm_package)
+
+	if not title or not course:
+		frappe.throw("Title and course are required parameters")
 	values = frappe._dict(
 		{"title": title, "course": course, "is_scorm_package": is_scorm_package}
 	)

@@ -57,12 +57,12 @@
 			<div class="flex-row flex gap-2 items-center w-full !text-lg">
 				Learning Path:
 				<Select
-					v-if="categories.length"
 					v-model="currentCategory"
 					:options="categories"
-					:placeholder="__('Category')"
+					:placeholder="__('Semua Jalur')"
 					@change="updateBatches()"
-					class="!min-w-36 !w-fit !text-lg !placeholder:text-white !bg-orange-2 !text-white flex !h-[40px]"
+					class="!min-w-36 !w-fit !text-lg !bg-orange-2 flex !h-[40px]"
+					style="color: white !important; --tw-placeholder-color: white"
 				/>
 			</div>
 		</div>
@@ -100,7 +100,7 @@ import {
 	TabButtons,
 	usePageMeta,
 } from 'frappe-ui'
-import { computed, inject, onMounted, ref, watch } from 'vue'
+import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue'
 import { Plus, Search } from 'lucide-vue-next'
 import { sessionStore } from '@/stores/session'
 import BatchCard from '@/components/BatchCard.vue'
@@ -122,14 +122,22 @@ const orderBy = ref('start_date')
 const readOnlyMode = window.read_only_mode
 
 onMounted(() => {
-	setFiltersFromQuery()
-	updateBatches()
+	// Reset state to ensure clean load
 	categories.value = [
 		{
-			label: '',
+			label: 'Semua Jalur',
 			value: null,
 		},
 	]
+	currentCategory.value = null
+	title.value = ''
+	certification.value = false
+	filters.value = {}
+
+	// Force reload batches data
+	batches.reload()
+	setFiltersFromQuery()
+	updateBatches()
 })
 
 const setFiltersFromQuery = () => {
@@ -142,18 +150,17 @@ const setFiltersFromQuery = () => {
 const batches = createListResource({
 	doctype: 'LMS Batch',
 	url: 'lms.lms.utils.get_batches',
-	cache: ['batches', user.data?.name],
+	cache: ['batches', user.data?.name, Date.now()],
 	pageLength: pageLength.value,
 	start: start.value,
+	auto: true,
 	onSuccess(data) {
 		let allCategories = data.map((batch) => batch.category)
 		allCategories = allCategories.filter(
 			(category, index) =>
 				allCategories.indexOf(category) === index && category,
 		)
-		if (categories.value.length <= allCategories.length) {
-			updateCategories(data)
-		}
+		updateCategories(data)
 	},
 })
 
@@ -259,20 +266,57 @@ const setQueryParams = () => {
 }
 
 const updateCategories = (data) => {
+	// Reset categories but keep 'Semua Jalur' at first position
+	const baseCategories = [
+		{
+			label: 'Semua Jalur',
+			value: null,
+		},
+	]
+
 	data.forEach((batch) => {
 		if (
 			batch.category &&
-			!categories.value.find((category) => category.value === batch.category)
-		)
-			categories.value.push({
+			!baseCategories.find((category) => category.value === batch.category)
+		) {
+			baseCategories.push({
 				label: batch.category,
 				value: batch.category,
 			})
+		}
 	})
+
+	categories.value = baseCategories
 }
 
 watch(currentTab, () => {
 	updateBatches()
+})
+
+watch(
+	currentCategory,
+	() => {
+		updateBatches()
+	},
+	{ immediate: false },
+)
+
+onUnmounted(() => {
+	try {
+		// Reset state when leaving page
+		categories.value = []
+		currentCategory.value = null
+		title.value = ''
+		certification.value = false
+		filters.value = {}
+
+		// Reset batches data if possible
+		if (batches && typeof batches.reset === 'function') {
+			batches.reset()
+		}
+	} catch (error) {
+		console.error('Error in Batches unmount:', error)
+	}
 })
 
 const batchTabs = computed(() => {

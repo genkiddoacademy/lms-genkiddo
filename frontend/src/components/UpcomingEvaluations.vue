@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<div class="flex items-center justify-between mb-4">
-			<div class="text-lg text-ink-gray-9 font-semibold">
-				{{ __('Upcoming Evaluations') }}
+			<div class="text-3xl text-orange-2 font-bold">
+				{{ __('Evaluasi yang Akan Datang') }}
 			</div>
 			<Button
 				v-if="upcoming_evals.data?.length != evaluationCourses.length"
@@ -170,7 +170,7 @@ const cancelEvaluation = (evl) => {
 	$dialog({
 		title: __('Cancel this evaluation?'),
 		message: __(
-			'Are you sure you want to cancel this evaluation? This action cannot be undone.'
+			'Are you sure you want to cancel this evaluation? This action cannot be undone.',
 		),
 		actions: [
 			{
@@ -181,7 +181,7 @@ const cancelEvaluation = (evl) => {
 					call('lms.lms.api.cancel_evaluation', { evaluation: evl }).then(
 						() => {
 							upcoming_evals.reload()
-						}
+						},
 					)
 					close()
 				},

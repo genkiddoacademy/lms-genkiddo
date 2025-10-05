@@ -357,7 +357,7 @@ import { usersStore } from '@/stores/user'
 import { sessionStore } from '@/stores/session'
 import { useSidebar } from '@/stores/sidebar'
 import { useSettings } from '@/stores/settings'
-import { Button, createResource, Tooltip } from 'frappe-ui'
+import { Button, createResource, Tooltip, call } from 'frappe-ui'
 import PageModal from '@/components/Modals/PageModal.vue'
 import { capture } from '@/telemetry'
 import LMSLogo from '@/components/Icons/LMSLogo.vue'
@@ -425,6 +425,9 @@ onMounted(() => {
 	if (user) {
 		addNotifications()
 		setSidebarLinks()
+		if (userResource.data) {
+			addAdminSidebar()
+		}
 	} else {
 		addGuestSidebar()
 	}
@@ -585,6 +588,45 @@ const addAssignments = () => {
 	}
 }
 
+const addAdminSidebar = () => {
+	if (
+		!userResource.data?.is_system_manager &&
+		!userResource.data?.is_moderator
+	) {
+		return // Only for admin/moderator users
+	}
+
+	// For admin/moderator users, ensure all admin links are present
+	const adminLinks = [
+		{
+			label: 'Statistics',
+			icon: 'TrendingUp',
+			to: 'Statistics',
+			activeFor: ['Statistics'],
+		},
+		{
+			label: 'Jobs',
+			icon: 'Briefcase',
+			to: 'Jobs',
+			activeFor: ['Jobs', 'JobDetail'],
+		},
+		{
+			label: 'Notifications',
+			icon: 'Bell',
+			to: 'Notifications',
+			activeFor: ['Notifications'],
+			count: unreadCount.value,
+		},
+	]
+
+	// Add admin links that aren't already present
+	adminLinks.forEach((adminLink) => {
+		if (!sidebarLinks.value.some((link) => link.label === adminLink.label)) {
+			sidebarLinks.value.push(adminLink)
+		}
+	})
+}
+
 const addPrograms = () => {
 	if (userResource.data?.is_system_manager || userResource.data?.is_moderator) {
 		return // Admin sidebar already set
@@ -696,13 +738,17 @@ const goToHome = () => {
 	window.open('https://genkiddo.id/', '_blank')
 }
 
-const goToProfile = () => {
-	router.push({
-		name: 'Profile',
-		params: {
-			username: userResource.data?.username,
-		},
-	})
+const goToProfile = async () => {
+	try {
+		await router.push({
+			name: 'Profile',
+			params: {
+				username: userResource.data?.username,
+			},
+		})
+	} catch (error) {
+		console.error('Navigation to profile failed:', error)
+	}
 }
 
 const goToSettings = () => {
@@ -737,11 +783,15 @@ const steps = reactive([
 		title: __('Create your first course'),
 		icon: markRaw(h(BookOpen, iconProps)),
 		completed: false,
-		onClick: () => {
+		onClick: async () => {
 			minimize.value = true
-			router.push({
-				name: 'Courses',
-			})
+			try {
+				await router.push({
+					name: 'Courses',
+				})
+			} catch (error) {
+				console.error('Navigation error:', error)
+			}
 		},
 	},
 	{
@@ -752,11 +802,18 @@ const steps = reactive([
 		dependsOn: 'create_first_course',
 		onClick: async () => {
 			minimize.value = true
-			let course = await getFirstCourse()
-			if (course) {
-				router.push({ name: 'CourseForm', params: { courseName: course } })
-			} else {
-				router.push({ name: 'CourseForm' })
+			try {
+				let course = await getFirstCourse()
+				if (course) {
+					await router.push({
+						name: 'CourseForm',
+						params: { courseName: course },
+					})
+				} else {
+					await router.push({ name: 'CourseForm' })
+				}
+			} catch (error) {
+				console.error('Navigation error:', error)
 			}
 		},
 	},
@@ -768,14 +825,18 @@ const steps = reactive([
 		dependsOn: 'create_first_chapter',
 		onClick: async () => {
 			minimize.value = true
-			let course = await getFirstCourse()
-			if (course) {
-				router.push({
-					name: 'CourseForm',
-					params: { courseName: course },
-				})
-			} else {
-				router.push({ name: 'Courses' })
+			try {
+				let course = await getFirstCourse()
+				if (course) {
+					await router.push({
+						name: 'CourseForm',
+						params: { courseName: course },
+					})
+				} else {
+					await router.push({ name: 'Courses' })
+				}
+			} catch (error) {
+				console.error('Navigation error:', error)
 			}
 		},
 	},
@@ -785,9 +846,13 @@ const steps = reactive([
 		icon: markRaw(h(CircleHelp, iconProps)),
 		completed: false,
 		dependsOn: 'create_first_course',
-		onClick: () => {
+		onClick: async () => {
 			minimize.value = true
-			router.push({ name: 'Quizzes' })
+			try {
+				await router.push({ name: 'Quizzes' })
+			} catch (error) {
+				console.error('Navigation error:', error)
+			}
 		},
 	},
 	{
@@ -806,9 +871,13 @@ const steps = reactive([
 		title: __('Create your first batch'),
 		icon: markRaw(h(Users, iconProps)),
 		completed: false,
-		onClick: () => {
+		onClick: async () => {
 			minimize.value = true
-			router.push({ name: 'Batches' })
+			try {
+				await router.push({ name: 'Batches' })
+			} catch (error) {
+				console.error('Navigation error:', error)
+			}
 		},
 	},
 	{
@@ -819,16 +888,20 @@ const steps = reactive([
 		dependsOn: 'create_first_batch',
 		onClick: async () => {
 			minimize.value = true
-			let batch = await getFirstBatch()
-			if (batch) {
-				router.push({
-					name: 'Batch',
-					params: {
-						batchName: batch,
-					},
-				})
-			} else {
-				router.push({ name: 'Batch' })
+			try {
+				let batch = await getFirstBatch()
+				if (batch) {
+					await router.push({
+						name: 'Batch',
+						params: {
+							batchName: batch,
+						},
+					})
+				} else {
+					await router.push({ name: 'Batch' })
+				}
+			} catch (error) {
+				console.error('Navigation error:', error)
 			}
 		},
 	},
@@ -840,17 +913,21 @@ const steps = reactive([
 		dependsOn: 'create_first_batch',
 		onClick: async () => {
 			minimize.value = true
-			let batch = await getFirstBatch()
-			if (batch) {
-				router.push({
-					name: 'Batch',
-					params: {
-						batchName: batch,
-					},
-					hash: '#courses',
-				})
-			} else {
-				router.push({ name: 'Batch' })
+			try {
+				let batch = await getFirstBatch()
+				if (batch) {
+					await router.push({
+						name: 'Batch',
+						params: {
+							batchName: batch,
+						},
+						hash: '#courses',
+					})
+				} else {
+					await router.push({ name: 'Batch' })
+				}
+			} catch (error) {
+				console.error('Navigation error:', error)
 			}
 		},
 	},
@@ -928,14 +1005,18 @@ const setUpOnboarding = () => {
 }
 
 watch(userResource, () => {
-	if (userResource.data) {
-		isModerator.value = userResource.data.is_moderator
-		isInstructor.value = userResource.data.is_instructor
-		addAdminSidebar()
-		addPrograms()
-		addQuizzes()
-		addAssignments()
-		setUpOnboarding()
+	try {
+		if (userResource.data) {
+			isModerator.value = userResource.data.is_moderator
+			isInstructor.value = userResource.data.is_instructor
+			addAdminSidebar()
+			addPrograms()
+			addQuizzes()
+			addAssignments()
+			setUpOnboarding()
+		}
+	} catch (error) {
+		console.error('Error in userResource watcher:', error)
 	}
 })
 

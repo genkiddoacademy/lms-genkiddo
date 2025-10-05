@@ -107,6 +107,15 @@ doc_events = {
 		"validate": "lms.lms.user.validate_username_duplicates",
 		"after_insert": "lms.lms.user.after_insert",
 	},
+	"LMS Enrollment": {
+		"after_insert": "lms.lms.doctype.lms_enrollment.lms_enrollment.update_course_enrollment_count",
+		"on_trash": "lms.lms.doctype.lms_enrollment.lms_enrollment.update_course_enrollment_count",
+	},
+	"LMS Course Review": {
+		"after_insert": "lms.lms.doctype.lms_course_review.lms_course_review.update_course_rating",
+		"on_update": "lms.lms.doctype.lms_course_review.lms_course_review.update_course_rating",
+		"on_trash": "lms.lms.doctype.lms_course_review.lms_course_review.update_course_rating",
+	},
 }
 
 # Scheduled Tasks

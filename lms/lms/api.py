@@ -918,6 +918,7 @@ def get_payment_gateway_details(payment_gateway):
 
 
 def update_course_statistics():
+	"""Update statistics for all courses - called by scheduler hourly"""
 	courses = frappe.get_all("LMS Course", fields=["name"])
 
 	for course in courses:
@@ -935,6 +936,20 @@ def update_course_statistics():
 			course.name,
 			{"lessons": lessons, "enrollments": enrollments, "rating": avg_rating},
 		)
+
+
+@frappe.whitelist(allow_guest=False)
+def sync_course_statistics():
+	"""Manual trigger to sync all course statistics - whitelisted API endpoint"""
+	update_course_statistics()
+	frappe.db.commit()
+
+	courses_count = frappe.db.count("LMS Course")
+	return {
+		"success": True,
+		"message": f"Successfully updated statistics for {courses_count} courses",
+		"courses_updated": courses_count
+	}
 
 
 @frappe.whitelist()
@@ -1054,25 +1069,21 @@ def give_discussions_permission():
 
 
 @frappe.whitelist()
-def upsert_chapter(title, course, is_scorm_package, **kwargs):
+def upsert_chapter(title, course, is_scorm_package=0, scorm_package=None, name=None, **kwargs):
 	"""
 	Create or update a chapter
 
 	Args:
 		title: Chapter title
 		course: Course name
-		is_scorm_package: Whether this is a SCORM package (0 or 1)
-		**kwargs: Optional parameters
-			- scorm_package: SCORM package file info (required if is_scorm_package=1)
-			- name: Chapter name (for editing existing chapter)
+		is_scorm_package: Whether this is a SCORM package (0 or 1, default 0)
+		scorm_package: SCORM package file info (optional, required if is_scorm_package=1)
+		name: Chapter name (optional, for editing existing chapter)
+		**kwargs: Additional optional parameters
 	"""
 	values = frappe._dict(
 		{"title": title, "course": course, "is_scorm_package": is_scorm_package}
 	)
-
-	# Get optional parameters
-	scorm_package = kwargs.get('scorm_package')
-	name = kwargs.get('name')
 
 	if is_scorm_package and scorm_package:
 		scorm_package = frappe._dict(scorm_package)

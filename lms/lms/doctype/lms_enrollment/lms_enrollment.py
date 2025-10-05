@@ -115,3 +115,100 @@ def update_current_membership(batch, course, member):
 	)
 	if len(current_membership):
 		frappe.db.set_value("LMS Enrollment", current_membership[0].name, "is_current", 1)
+
+
+def update_course_enrollment_count(doc, method=None):
+	"""Update enrollment count for a course when enrollment is created or deleted"""
+	try:
+		if doc.course:
+			from lms.lms.utils import get_lesson_count
+
+			# Count only Student enrollments
+			enrollments = frappe.db.count(
+				"LMS Enrollment",
+				{"course": doc.course, "member_type": "Student"}
+			)
+
+			# Update the course
+			frappe.db.set_value(
+				"LMS Course",
+				doc.course,
+				"enrollments",
+				enrollments,
+				update_modified=False
+			)
+			frappe.db.commit()
+	except Exception as e:
+		frappe.log_error(f"Error updating enrollment count: {str(e)}", "Update Enrollment Count")
+
+
+def sync_all_courses():
+	"""
+	Manual sync function to update statistics for all courses.
+	Run this ONCE after adding hooks to sync existing data.
+
+	Usage:
+		bench --site [your-site] execute lms.lms.doctype.lms_enrollment.lms_enrollment.sync_all_courses
+	"""
+	from lms.lms.utils import get_lesson_count, get_average_rating
+	from frappe.utils import flt
+
+	print("=" * 60)
+	print("SYNCING ALL COURSE STATISTICS")
+	print("=" * 60)
+
+	# Get all courses
+	courses = frappe.get_all("LMS Course", fields=["name", "title"])
+	total = len(courses)
+
+	print(f"\nFound {total} courses to update\n")
+
+	updated_count = 0
+	for idx, course in enumerate(courses, 1):
+		try:
+			# Get lesson count
+			lesson_count = get_lesson_count(course.name)
+
+			# Get enrollment count (only students)
+			enrollments = frappe.db.count(
+				"LMS Enrollment",
+				{"course": course.name, "member_type": "Student"}
+			)
+
+			# Get average rating
+			avg_rating = get_average_rating(course.name) or 0
+			avg_rating = flt(avg_rating, 3)
+
+			# Update the course
+			frappe.db.set_value(
+				"LMS Course",
+				course.name,
+				{
+					"lesson_count": lesson_count,
+					"enrollments": enrollments,
+					"rating": avg_rating
+				},
+				update_modified=False
+			)
+
+			print(f"[{idx}/{total}] Updated: {course.title}")
+			print(f"          Lessons: {lesson_count} | Enrollments: {enrollments} | Rating: {avg_rating}")
+
+			updated_count += 1
+
+		except Exception as e:
+			print(f"[{idx}/{total}] ERROR: {course.title} - {str(e)}")
+			frappe.log_error(f"Error syncing course {course.name}: {str(e)}", "Sync Course Stats")
+
+	# Commit all changes
+	frappe.db.commit()
+
+	print("\n" + "=" * 60)
+	print(f"SYNC COMPLETED: {updated_count}/{total} courses updated")
+	print("=" * 60)
+
+	return {
+		"success": True,
+		"total": total,
+		"updated": updated_count
+	}

@@ -60,7 +60,7 @@
 					theme="blue"
 					size="lg"
 				>
-					{{ __('Contact the Administrator to enroll for this course.') }}
+					{{ __('Hubungi admin untuk mengambil kelas ini.') }}
 				</Badge>
 				<Button
 					v-else-if="!user.data?.is_moderator && !is_instructor()"
@@ -277,7 +277,7 @@ const certificate = createResource({
 			`/api/method/frappe.utils.print_format.download_pdf?doctype=LMS+Certificate&name=${
 				data.name
 			}&format=${encodeURIComponent(data.template)}`,
-			'_blank'
+			'_blank',
 		)
 	},
 })

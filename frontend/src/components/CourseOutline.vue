@@ -2,14 +2,14 @@
 	<div class="">
 		<div
 			v-if="title && (outline.data?.length || allowEdit)"
-			class="flex items-center justify-between space-x-2 mb-4 px-2"
+			class="flex items-center justify-between space-x-2 mb-4"
 			:class="{
 				'sticky top-0 z-10 bg-surface-white border-b px-3 py-2.5 sm:px-5':
 					allowEdit,
 			}"
 		>
 			<div
-				class="font-semibold text-lg leading-5 text-gradasi-1"
+				class="text-3xl font-extrabold text-gradasi-1 leading-5"
 				:class="{ 'font-medium text-p-base': allowEdit }"
 			>
 				{{ __(title) }}
@@ -51,7 +51,7 @@
 									class="h-4 w-4 text-ink-gray-9 stroke-1"
 								/>
 								<div
-									class="text-base text-left text-ink-gray-9 font-medium leading-5 ml-2"
+									class="text-lg text-left font-bold text-ink-gray-9 leading-5 ml-2"
 									@click="redirectToChapter(chapter)"
 								>
 									{{ chapter.title }}

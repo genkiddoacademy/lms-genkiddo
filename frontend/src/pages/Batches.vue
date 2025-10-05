@@ -2,7 +2,9 @@
 	<header
 		class="sticky flex items-center justify-between top-0 z-10 border-b bg-surface-white px-3 py-2.5 sm:px-5"
 	>
-		<Breadcrumbs :items="breadcrumbs" />
+		<div class="!font-bold">
+			<Breadcrumbs :items="breadcrumbs" class="!text-3xl !font-bold" />
+		</div>
 		<router-link
 			v-if="canCreateBatch()"
 			:to="{
@@ -18,50 +20,55 @@
 			</Button>
 		</router-link>
 	</header>
-	<div class="p-5 pb-10">
-		<div
-			class="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:items-center justify-between mb-5"
-		>
-			<div class="text-lg text-ink-gray-9 font-semibold">
-				{{ __('All Batches') }}
-			</div>
-			<div
-				class="flex flex-col space-y-2 lg:space-y-0 lg:flex-row lg:items-center lg:space-x-4"
-			>
+	<div class="p-5 pb-10 w-full flex flex-col">
+		<div class="flex flex-col w-full gap-4 mb-6">
+			<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 				<TabButtons
-					v-if="user.data"
 					:buttons="batchTabs"
 					v-model="currentTab"
+					class="flex-1 lg:w-fit custom-tab-buttons"
 				/>
-				<FormControl
-					v-model="certification"
-					:label="__('Certification')"
-					type="checkbox"
-					@change="updateBatches()"
-				/>
-				<div class="grid grid-cols-2 gap-2">
+
+				<div
+					class="flex flex-row items-center gap-2 w-full justify-between lg:justify-end lg:w-full"
+				>
+					<FormControl
+						v-model="certification"
+						:label="__('Tersedia Sertifikat')"
+						type="checkbox"
+						class="!checked:bg-orange-2"
+						@change="updateBatches()"
+					/>
+
 					<FormControl
 						v-model="title"
-						:placeholder="__('Search by Title')"
+						:placeholder="__('Cari Berdasarkan Judul')"
 						type="text"
-						class="min-w-40 lg:min-w-0 lg:w-32 xl:w-40"
+						class="ring-1 ring-orange-2 rounded-sm !bg-white !text-gray-900 !placeholder-white focus:!bg-orange-50 focus:ring-2 focus:ring-orange-300 transition-all duration-200"
 						@input="updateBatches()"
-					/>
-					<div class="min-w-40 lg:min-w-0 lg:w-32 xl:w-40">
-						<Select
-							v-if="categories.length"
-							v-model="currentCategory"
-							:options="categories"
-							:placeholder="__('Category')"
-							@change="updateBatches()"
-						/>
-					</div>
+					>
+						<template #prefix>
+							<Search class="h-4 w-4" />
+						</template>
+					</FormControl>
 				</div>
+			</div>
+
+			<div class="flex-row flex gap-2 items-center w-full !text-lg">
+				Learning Path:
+				<Select
+					v-if="categories.length"
+					v-model="currentCategory"
+					:options="categories"
+					:placeholder="__('Category')"
+					@change="updateBatches()"
+					class="!min-w-36 !w-fit !text-lg !placeholder:text-white !bg-orange-2 !text-white flex !h-[40px]"
+				/>
 			</div>
 		</div>
 		<div
 			v-if="batches.data?.length"
-			class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+			class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5"
 		>
 			<router-link
 				v-for="batch in batches.data"
@@ -94,7 +101,7 @@ import {
 	usePageMeta,
 } from 'frappe-ui'
 import { computed, inject, onMounted, ref, watch } from 'vue'
-import { Plus } from 'lucide-vue-next'
+import { Plus, Search } from 'lucide-vue-next'
 import { sessionStore } from '@/stores/session'
 import BatchCard from '@/components/BatchCard.vue'
 import EmptyState from '@/components/EmptyState.vue'
@@ -103,7 +110,7 @@ const user = inject('$user')
 const dayjs = inject('$dayjs')
 const { brand } = sessionStore()
 const start = ref(0)
-const pageLength = ref(20)
+const pageLength = ref(30)
 const categories = ref([])
 const currentCategory = ref(null)
 const title = ref('')
@@ -141,7 +148,8 @@ const batches = createListResource({
 	onSuccess(data) {
 		let allCategories = data.map((batch) => batch.category)
 		allCategories = allCategories.filter(
-			(category, index) => allCategories.indexOf(category) === index && category
+			(category, index) =>
+				allCategories.indexOf(category) === index && category,
 		)
 		if (categories.value.length <= allCategories.length) {
 			updateCategories(data)
@@ -270,7 +278,12 @@ watch(currentTab, () => {
 const batchTabs = computed(() => {
 	let tabs = [
 		{
-			label: __('All'),
+			label: __('👩‍💻 Terbuka'),
+			value: 'All',
+		},
+		{
+			label: __('⚡ Akan Datang'),
+			value: 'Upcoming',
 		},
 	]
 
@@ -279,11 +292,10 @@ const batchTabs = computed(() => {
 		user.data?.is_instructor ||
 		user.data?.is_evaluator
 	) {
-		tabs.push({ label: __('Upcoming') })
-		tabs.push({ label: __('Archived') })
-		tabs.push({ label: __('Unpublished') })
+		tabs.push({ label: __('📝 Archived'), value: 'Archived' })
+		tabs.push({ label: __('🔒 Unpublished'), value: 'Unpublished' })
 	} else if (user.data) {
-		tabs.push({ label: __('Enrolled') })
+		tabs.push({ label: __('📚 Enrolled'), value: 'Enrolled' })
 	}
 	return tabs
 })
@@ -296,7 +308,7 @@ const canCreateBatch = () => {
 
 const breadcrumbs = computed(() => [
 	{
-		label: __('Batches'),
+		label: __('🧑‍🤝‍🧑 Batch > Semua Batch'),
 		route: { name: 'Batches' },
 	},
 ])

@@ -7,8 +7,8 @@
 		>
 			{{ __('Write a Review') }}
 		</Button>
-		<div class="flex items-center font-semibold text-2xl text-ink-gray-9">
-			{{ __('Student Reviews') }}
+		<div class="flex items-center font-bold text-2xl text-gradasi-1">
+			{{ __('Testimoni Siswa') }}
 		</div>
 		<div class="grid gap-8 mt-10">
 			<div v-for="(review, index) in reviews.data">
@@ -28,7 +28,7 @@
 								params: { username: review.owner_details.username },
 							}"
 						>
-							<span class="text-lg font-medium mr-4 text-ink-gray-7">
+							<span class="text-lg font-bold mr-4 text-ink-gray-7">
 								{{ review.owner_details.full_name }}
 							</span>
 						</router-link>
@@ -113,7 +113,7 @@ watch(
 	() => props.courseName,
 	() => {
 		reviews.reload()
-	}
+	},
 )
 
 const showReviewModal = ref(false)

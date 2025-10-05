@@ -33,7 +33,7 @@
 					<div class="mt-1 mb-4 text-ink-gray-7">
 						{{
 							__(
-								'This lesson is not available for preview. Please enroll in the course to access it.'
+								'This lesson is not available for preview. Please enroll in the course to access it.',
 							)
 						}}
 					</div>
@@ -50,7 +50,7 @@
 						v-else-if="lesson.data.disable_self_learning"
 						class="mt-2"
 					>
-						{{ __('Contact the Administrator to enroll for this course.') }}
+						{{ __('Hubungi admin untuk mengambil kelas ini.') }}
 					</Badge>
 					<Button v-else @click="redirectToLogin()">
 						<template #prefix>
@@ -387,7 +387,7 @@ const setupLesson = (data) => {
 	)
 		instructorEditor.value = renderEditor(
 			'instructor-content',
-			data.instructor_content
+			data.instructor_content,
 		)
 	editor.value?.isReady.then(() => {
 		checkIfDiscussionsAllowed()
@@ -473,7 +473,7 @@ watch(
 	[() => route.params.chapterNumber, () => route.params.lessonNumber],
 	async (
 		[newChapterNumber, newLessonNumber],
-		[oldChapterNumber, oldLessonNumber]
+		[oldChapterNumber, oldLessonNumber],
 	) => {
 		if (newChapterNumber || newLessonNumber) {
 			plyrSources.value = []
@@ -481,7 +481,7 @@ watch(
 			resetLessonState(newChapterNumber, newLessonNumber)
 			startTimer()
 		}
-	}
+	},
 )
 
 const resetLessonState = (newChapterNumber, newLessonNumber) => {
@@ -547,7 +547,7 @@ watch(
 		setupLesson(data)
 		getPlyrSource()
 		if (data.icon == 'icon-youtube') clearInterval(timerInterval)
-	}
+	},
 )
 
 const getPlyrSource = async () => {
@@ -665,7 +665,7 @@ const enrollStudent = () => {
 			onSuccess() {
 				window.location.reload()
 			},
-		}
+		},
 	)
 }
 

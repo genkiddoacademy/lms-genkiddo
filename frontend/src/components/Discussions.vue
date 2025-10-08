@@ -2,7 +2,7 @@
 	<div>
 		<Button
 			v-if="!singleThread && !readOnlyMode"
-			class="float-right"
+			class="float-right !bg-orange-2 !text-white"
 			@click="openTopicModal()"
 		>
 			{{ __('New {0}').format(singularize(title)) }}

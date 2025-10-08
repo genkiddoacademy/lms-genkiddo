@@ -106,7 +106,11 @@
 									<MessageCircleQuestion class="w-4 h-4 stroke-1.5" />
 								</template>
 							</Button>
-							<Button v-if="lesson.data.prev" @click="switchLesson('prev')">
+							<Button
+								v-if="lesson.data.prev"
+								@click="switchLesson('prev')"
+								class="!bg-orange-2 !p-4 !text-white"
+							>
 								<template #prefix>
 									<ChevronLeft class="w-4 h-4 stroke-1" />
 								</template>
@@ -126,12 +130,16 @@
 									},
 								}"
 							>
-								<Button>
+								<Button class="!bg-orange-2 !p-4 !text-white">
 									{{ __('Edit') }}
 								</Button>
 							</router-link>
 
-							<Button v-if="lesson.data.next" @click="switchLesson('next')">
+							<Button
+								v-if="lesson.data.next"
+								@click="switchLesson('next')"
+								class="!bg-orange-2 !p-4 !text-white"
+							>
 								<template #suffix>
 									<ChevronRight class="w-4 h-4 stroke-1" />
 								</template>

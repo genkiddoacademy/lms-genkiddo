@@ -130,7 +130,11 @@
 				<div class="text-lg font-semibold text-ink-gray-9">
 					{{ __('Questions') }}
 				</div>
-				<Button v-if="!readOnlyMode" @click="openQuestionModal()">
+				<Button
+					v-if="!readOnlyMode"
+					@click="openQuestionModal()"
+					class="!bg-orange-2 !p-4 !text-white"
+				>
 					<template #prefix>
 						<Plus class="w-4 h-4" />
 					</template>
@@ -284,7 +288,7 @@ watch(
 		if (newVal) {
 			quizDetails.reload()
 		}
-	}
+	},
 )
 
 const quizDetails = createDocumentResource({
@@ -312,7 +316,7 @@ const submitQuiz = () => {
 			onError(err) {
 				toast.error(err.messages?.[0] || err)
 			},
-		}
+		},
 	)
 }
 
@@ -386,7 +390,7 @@ const deleteQuestions = (selections, unselectAll) => {
 				quizDetails.reload()
 				unselectAll()
 			},
-		}
+		},
 	)
 }
 

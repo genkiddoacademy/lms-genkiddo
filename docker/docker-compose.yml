@@ -1,3 +1,4 @@
+version: "3.7"
 name: lms
 services:
     mariadb:
@@ -14,8 +15,6 @@ services:
 
     redis:
         image: redis:alpine
-        volumes:
-            - redis-data:/data
 
     frappe:
         image: frappe/bench:latest
@@ -28,10 +27,6 @@ services:
         ports:
             - 8000:8000
             - 9000:9000
-        depends_on:
-            - mariadb
-            - redis
 
 volumes:
     mariadb-data:
-    redis-data:

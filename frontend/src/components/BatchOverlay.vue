@@ -64,7 +64,10 @@
 					},
 				}"
 			>
-				<Button variant="solid" class="w-full mt-4">
+				<Button
+					variant="solid"
+					class="w-full mt-4 !text-white !p-4 !bg-orange-2"
+				>
 					<template #prefix>
 						<Settings v-if="isModerator" class="size-4 stroke-1.5" />
 						<LogIn v-else class="size-4 stroke-1.5" />
@@ -186,7 +189,7 @@ const enrollInBatch = () => {
 					},
 				})
 			},
-		}
+		},
 	)
 }
 

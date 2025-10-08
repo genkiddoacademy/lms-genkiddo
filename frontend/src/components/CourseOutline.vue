@@ -9,7 +9,7 @@
 			}"
 		>
 			<div
-				class="text-3xl font-extrabold text-gradasi-1 leading-5"
+				class="text-3xl font-extrabold text-gradasi-1"
 				:class="{ 'font-medium text-p-base': allowEdit }"
 			>
 				{{ __(title) }}

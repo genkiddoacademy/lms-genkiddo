@@ -1069,7 +1069,7 @@ def give_discussions_permission():
 
 
 @frappe.whitelist()
-def upsert_chapter(title, course, is_scorm_package=0, name=None, scorm_package=None):
+def upsert_chapter(title, course, is_scorm_package=0, scorm_package=None, name=None):
 	"""
 	Create or update a chapter
 

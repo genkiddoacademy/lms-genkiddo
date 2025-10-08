@@ -7,6 +7,7 @@
 			<Button
 				v-if="upcoming_evals.data?.length != evaluationCourses.length"
 				@click="openEvalModal"
+				class="!bg-orange-2 !text-white !p-4"
 			>
 				{{ __('Schedule Evaluation') }}
 			</Button>

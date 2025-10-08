@@ -25,7 +25,7 @@
 							},
 						}"
 					>
-						<Button variant="solid" size="md" class="w-full">
+						<Button variant="solid" size="md" class="w-full !bg-orange-2">
 							<template #prefix>
 								<BookText class="size-4 stroke-1.5" />
 							</template>
@@ -66,7 +66,7 @@
 					v-else-if="!user.data?.is_moderator && !is_instructor()"
 					@click="enrollStudent()"
 					variant="solid"
-					class="w-full"
+					class="w-full !bg-orange-2"
 					size="md"
 				>
 					<template #prefix>

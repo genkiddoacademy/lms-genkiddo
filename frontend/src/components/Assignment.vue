@@ -42,7 +42,11 @@
 						>
 							{{ submissionResource.doc?.status }}
 						</Badge>
-						<Button variant="solid" @click="submitAssignment()">
+						<Button
+							variant="solid"
+							@click="submitAssignment()"
+							class="!bg-orange-2 !p-4 !text-white"
+						>
 							{{ __('Save') }}
 						</Button>
 					</div>
@@ -58,7 +62,7 @@
 					{{ __("You've successfully submitted the assignment.") }}
 					{{
 						__(
-							"Once the moderator grades your submission, you'll find the details here."
+							"Once the moderator grades your submission, you'll find the details here.",
 						)
 					}}
 					{{ __('Feel free to make edits to your submission if needed.') }}
@@ -341,7 +345,7 @@ const submitAssignment = () => {
 				onSuccess(data) {
 					toast.success(__('Changes saved successfully'))
 				},
-			}
+			},
 		)
 	} else {
 		addNewSubmission()
@@ -373,7 +377,7 @@ const addNewSubmission = () => {
 			onError(err) {
 				toast.error(err.messages?.[0] || err)
 			},
-		}
+		},
 	)
 }
 

@@ -49,6 +49,7 @@ declare module 'vue' {
     CreateOutline: typeof import('./src/components/CreateOutline.vue')['default']
     DateRange: typeof import('./src/components/Common/DateRange.vue')['default']
     DesktopLayout: typeof import('./src/components/DesktopLayout.vue')['default']
+    DetailedProgressBar: typeof import('./src/components/DetailedProgressBar.vue')['default']
     DiscussionModal: typeof import('./src/components/Modals/DiscussionModal.vue')['default']
     DiscussionReplies: typeof import('./src/components/DiscussionReplies.vue')['default']
     Discussions: typeof import('./src/components/Discussions.vue')['default']

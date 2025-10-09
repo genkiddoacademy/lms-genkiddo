@@ -12,21 +12,21 @@ export default {
 	],
 	theme: {
 		extend: {
-			fontSize: {
-				xs: '0.5rem', // 12px
-				sm: '0.75rem', // 16px
-				base: '1rem', // 20px
-				lg: '1.25rem', // 24px
-				xl: '1.5rem', // 28px
-				'2xl': '1.75rem', // 32px
-				'3xl': '2rem', // 36px
-				'4xl': '2.25rem', // 40px
-				'5xl': '2.5rem', // 44px
-				'6xl': '2.75rem', // 48px
-				'7xl': '3rem', // 52px
-				'8xl': '3.25rem', // 52px
-				'9xl': '3.5rem', // 56px
-			},
+			// fontSize: {
+			// 	xs: '0.25rem', // 12px
+			// 	sm: '0.5rem', // 16px
+			// 	base: '0.75rem', // 20px
+			// 	lg: '1rem', // 24px
+			// 	xl: '1.25rem', // 28px
+			// 	'2xl': '1.5rem', // 32px
+			// 	'3xl': '1.75rem', // 36px
+			// 	'4xl': '2rem', // 40px
+			// 	'5xl': '2.25rem', // 44px
+			// 	'6xl': '2.5rem', // 48px
+			// 	'7xl': '2.75rem', // 52px
+			// 	'8xl': '3rem', // 52px
+			// 	'9xl': '3.25rem', // 56px
+			// },
 			// spacing: {
 			// 	0: '0',
 			// 	px: '1px',

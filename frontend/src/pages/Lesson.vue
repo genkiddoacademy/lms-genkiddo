@@ -69,7 +69,7 @@
 				}"
 			>
 				<div
-					class="border-r container pt-5 pb-10 px-5 h-full"
+					class="container pt-5 pb-10 px-5 h-full"
 					:class="{
 						'w-full md:w-3/5 mx-auto border-none !pt-10': zenModeEnabled,
 					}"
@@ -78,13 +78,13 @@
 						class="flex flex-col md:flex-row md:items-center justify-between"
 					>
 						<div class="flex flex-col">
-							<div class="text-3xl font-semibold text-ink-gray-9">
+							<div class="text-[36px] font-bold text-orange-2">
 								{{ lesson.data.title }}
 							</div>
 
 							<div
 								v-if="zenModeEnabled"
-								class="relative flex items-center space-x-2 text-sm mt-1 text-ink-gray-7 group w-fit mt-2"
+								class="relative flex items-center space-x-2 text-sm text-ink-gray-7 group w-fit mt-2"
 							>
 								<span>
 									{{ lesson.data.chapter_title }} -
@@ -155,7 +155,7 @@
 									params: { courseName: courseName },
 								}"
 							>
-								<Button>
+								<Button class="!bg-orange-2 !p-4 !text-white">
 									{{ __('Back to Course') }}
 								</Button>
 							</router-link>
@@ -186,7 +186,7 @@
 							JSON.parse(lesson.data.instructor_content)?.blocks?.length > 1 &&
 							allowInstructorContent()
 						"
-						class="bg-surface-gray-2 p-3 rounded-md mt-6"
+						class="p-3 rounded-md mt-6"
 					>
 						<div class="text-ink-gray-5 font-medium">
 							{{ __('Instructor Notes') }}
@@ -231,21 +231,20 @@
 				</div>
 			</div>
 			<div class="sticky top-10">
-				<div class="bg-surface-menu-bar py-5 px-2 border-b">
-					<div class="text-lg font-semibold text-ink-gray-9">
+				<div class="py-5 px-2">
+					<div class="font-bold text-2xl text-ink-gray-9 mb-4">
 						{{ lesson.data.course_title }}
 					</div>
-					<div
-						v-if="user && lesson.data.membership"
-						class="text-sm mt-4 mb-2 text-ink-gray-5"
-					>
-						{{ Math.ceil(lessonProgress) }}% {{ __('completed') }}
-					</div>
-
 					<ProgressBar
 						v-if="user && lesson.data.membership"
 						:progress="lessonProgress"
 					/>
+					<div
+						v-if="user && lesson.data.membership"
+						class="text-sm mt-2 text-green-500 font-bold"
+					>
+						{{ Math.ceil(lessonProgress) }}% {{ __('selesai') }}
+					</div>
 				</div>
 				<CourseOutline
 					:courseName="courseName"

@@ -18,11 +18,7 @@
 				{{ __('Add Chapter') }}
 			</Button>
 		</div>
-		<div
-			:class="{
-				'border-2 rounded-md py-2 px-2': showOutline && outline.data?.length,
-			}"
-		>
+		<div class="border rounded-md">
 			<Draggable
 				:list="outline.data"
 				:disabled="!allowEdit"
@@ -32,123 +28,151 @@
 			>
 				<template #item="{ element: chapter, index }">
 					<div class="chapter-item">
-						<Disclosure
-							v-slot="{ open }"
-							:key="chapter.name"
-							:defaultOpen="openChapterDetail(chapter.idx)"
-						>
-							<DisclosureButton
-								ref=""
-								class="flex items-center w-full p-2 group"
-							>
-								<ChevronRight
-									:class="{
-										'rotate-90 transform duration-200': open,
-										'duration-200': !open,
-										hidden: chapter.is_scorm_package,
-										open: index == 1,
-									}"
-									class="h-4 w-4 text-ink-gray-9 stroke-1"
-								/>
+						<div class="w-full">
+							<button class="w-full" @click="toggleChapter(chapter.name)">
 								<div
-									class="text-lg text-left font-bold text-ink-gray-9 leading-5 ml-2"
-									@click="redirectToChapter(chapter)"
+									class="flex items-center p-3 transition-colors duration-200 group"
+									:class="[
+										getChapterRoundedClass(index),
+										isChapterOpen(chapter.name)
+											? 'bg-orange-2 text-white'
+											: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
+									]"
 								>
-									{{ chapter.title }}
+									<ChevronRight
+										:class="{
+											'rotate-90 transform duration-200': isChapterOpen(
+												chapter.name,
+											),
+											'duration-200': !isChapterOpen(chapter.name),
+											hidden: chapter.is_scorm_package,
+										}"
+										class="h-4 w-4 mr-2"
+									/>
+									<div
+										class="text-lg text-left font-bold leading-5 flex-1"
+										@click.stop="redirectToChapter(chapter)"
+									>
+										{{ chapter.title }}
+									</div>
+									<div v-if="allowEdit" class="flex ml-auto space-x-2">
+										<Tooltip :text="__('Edit Chapter')" placement="bottom">
+											<FilePenLine
+												@click.stop.prevent="openChapterModal(chapter)"
+												class="h-4 w-4 opacity-75 hover:opacity-100 invisible group-hover:visible"
+											/>
+										</Tooltip>
+										<Tooltip :text="__('Delete Chapter')" placement="bottom">
+											<Trash2
+												@click.stop.prevent="trashChapter(chapter.name)"
+												class="h-4 w-4 text-red-300 opacity-75 hover:opacity-100 invisible group-hover:visible"
+											/>
+										</Tooltip>
+									</div>
 								</div>
-								<div class="flex ml-auto space-x-4">
-									<Tooltip :text="__('Edit Chapter')" placement="bottom">
-										<FilePenLine
-											v-if="allowEdit"
-											@click.prevent="openChapterModal(chapter)"
-											class="h-4 w-4 text-ink-gray-9 invisible group-hover:visible"
-										/>
-									</Tooltip>
-									<Tooltip :text="__('Delete Chapter')" placement="bottom">
-										<Trash2
-											v-if="allowEdit"
-											@click.prevent="trashChapter(chapter.name)"
-											class="h-4 w-4 text-ink-red-3 invisible group-hover:visible"
-										/>
-									</Tooltip>
-								</div>
-							</DisclosureButton>
-							<DisclosurePanel v-if="!chapter.is_scorm_package">
-								<Draggable
-									v-if="!chapter.is_scorm_package"
-									:list="chapter.lessons"
-									:disabled="!allowEdit"
-									item-key="name"
-									group="items"
-									@end="updateOutline"
-									:data-chapter="chapter.name"
-								>
-									<template #item="{ element: lesson }">
-										<div
-											class="outline-lesson pl-8 py-2 pr-4 text-ink-gray-9"
-											:class="
-												isActiveLesson(lesson.number) ? 'bg-surface-gray-3' : ''
-											"
-										>
-											<router-link
-												:to="{
-													name: allowEdit ? 'LessonForm' : 'Lesson',
-													params: {
-														courseName: courseName,
-														chapterNumber: lesson.number.split('.')[0],
-														lessonNumber: lesson.number.split('.')[1],
-													},
-												}"
+							</button>
+							<div
+								v-if="!chapter.is_scorm_package && isChapterOpen(chapter.name)"
+								class="mt-2"
+							>
+								<div class="rounded-lg p-2">
+									<Draggable
+										v-if="!chapter.is_scorm_package"
+										:list="chapter.lessons"
+										:disabled="!allowEdit"
+										item-key="name"
+										group="items"
+										@end="updateOutline"
+										:data-chapter="chapter.name"
+									>
+										<template #item="{ element: lesson }">
+											<div
+												class="lesson-item flex items-center p-2 hover:bg-yellow-100 rounded transition-colors group"
+												:class="
+													isActiveLesson(lesson.number) ? 'bg-yellow-100' : ''
+												"
 											>
-												<div class="flex items-center text-sm leading-5 group">
-													<MonitorPlay
-														v-if="lesson.icon === 'icon-youtube'"
-														class="h-4 w-4 stroke-1 mr-2"
-													/>
-													<HelpCircle
-														v-else-if="lesson.icon === 'icon-quiz'"
-														class="h-4 w-4 stroke-1 mr-2"
-													/>
-													<FileText
-														v-else-if="lesson.icon === 'icon-list'"
-														class="h-4 w-4 text-ink-gray-9 stroke-1 mr-2"
-													/>
-													{{ lesson.title }}
+												<router-link
+													:to="{
+														name: allowEdit ? 'LessonForm' : 'Lesson',
+														params: {
+															courseName: courseName,
+															chapterNumber: lesson.number.split('.')[0],
+															lessonNumber: lesson.number.split('.')[1],
+														},
+													}"
+													class="flex items-center flex-1 text-sm"
+													@click="ensureChapterOpen(chapter.name)"
+												>
+													<div class="flex items-center flex-1">
+														<!-- Lesson Icon -->
+														<MonitorPlay
+															v-if="lesson.icon === 'icon-youtube'"
+															class="h-4 w-4 stroke-1 mr-3 text-gray-600"
+														/>
+														<HelpCircle
+															v-else-if="lesson.icon === 'icon-quiz'"
+															class="h-4 w-4 stroke-1 mr-3 text-gray-600"
+														/>
+														<FileText
+															v-else
+															class="h-4 w-4 stroke-1 mr-3 text-gray-600"
+														/>
+
+														<!-- Lesson Title -->
+														<div class="lesson-title text-gray-900">
+															{{ lesson.title }}
+														</div>
+													</div>
+												</router-link>
+
+												<!-- Completion Status -->
+												<div class="completion-status flex items-center ml-2">
 													<Trash2
 														v-if="allowEdit"
 														@click.prevent="
 															trashLesson(lesson.name, chapter.name)
 														"
-														class="h-4 w-4 text-ink-red-3 ml-auto invisible group-hover:visible"
+														class="h-4 w-4 text-red-500 mr-2 opacity-0 group-hover:opacity-100 transition-opacity"
 													/>
-													<Check
-														v-if="lesson.is_complete"
-														class="h-4 w-4 text-green-700 ml-2"
-													/>
+													<div class="relative">
+														<Check
+															v-if="lesson.is_complete"
+															class="h-5 w-5 text-green-600 bg-green-100 rounded-full p-1"
+														/>
+														<div
+															v-else-if="lesson.icon === 'icon-quiz'"
+															class="h-5 w-5 bg-yellow-300 rounded-full border-2 border-yellow-500"
+														></div>
+														<div
+															v-else
+															class="h-5 w-5 bg-gray-200 rounded-full border-2 border-gray-300"
+														></div>
+													</div>
 												</div>
-											</router-link>
-										</div>
-									</template>
-								</Draggable>
-								<div v-if="allowEdit" class="flex mt-2 mb-4 pl-8">
-									<router-link
-										v-if="!chapter.is_scorm_package"
-										:to="{
-											name: 'LessonForm',
-											params: {
-												courseName: courseName,
-												chapterNumber: chapter.idx,
-												lessonNumber: chapter.lessons.length + 1,
-											},
-										}"
-									>
-										<Button>
-											{{ __('Add Lesson') }}
-										</Button>
-									</router-link>
+											</div>
+										</template>
+									</Draggable>
+									<div v-if="allowEdit" class="flex mt-2 mb-2 pl-8">
+										<router-link
+											v-if="!chapter.is_scorm_package"
+											:to="{
+												name: 'LessonForm',
+												params: {
+													courseName: courseName,
+													chapterNumber: chapter.idx,
+													lessonNumber: chapter.lessons.length + 1,
+												},
+											}"
+										>
+											<Button size="sm">
+												{{ __('Add Lesson') }}
+											</Button>
+										</router-link>
+									</div>
 								</div>
-							</DisclosurePanel>
-						</Disclosure>
+							</div>
+						</div>
 					</div>
 				</template>
 			</Draggable>
@@ -164,9 +188,8 @@
 </template>
 <script setup>
 import { Button, createResource, Tooltip, toast } from 'frappe-ui'
-import { getCurrentInstance, inject, ref, watch } from 'vue'
+import { getCurrentInstance, inject, ref, watch, onMounted } from 'vue'
 import Draggable from 'vuedraggable'
-import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import {
 	Check,
 	ChevronRight,
@@ -184,8 +207,27 @@ const router = useRouter()
 const user = inject('$user')
 const showChapterModal = ref(false)
 const currentChapter = ref(null)
+const activeChapter = ref(null)
 const app = getCurrentInstance()
 const { $dialog } = app.appContext.config.globalProperties
+
+// Function to get localStorage key for this course
+const getStorageKey = () => `accordion_state_${props.courseName}`
+
+// Function to save accordion state to localStorage
+const saveAccordionState = () => {
+	if (activeChapter.value) {
+		localStorage.setItem(getStorageKey(), activeChapter.value)
+	} else {
+		localStorage.removeItem(getStorageKey())
+	}
+}
+
+// Function to load accordion state from localStorage
+const loadAccordionState = () => {
+	const savedState = localStorage.getItem(getStorageKey())
+	return savedState
+}
 
 const props = defineProps({
 	courseName: {
@@ -220,14 +262,123 @@ const outline = createResource({
 		}
 	},
 	auto: true,
+	onSuccess(data) {
+		if (data && data.length > 0) {
+			// Always prioritize current route chapter when navigating to a lesson
+			const currentChapterIdx = route.params.chapterNumber
+			const currentLessonIdx = route.params.lessonNumber
+
+			if (currentChapterIdx && currentLessonIdx) {
+				// User is viewing a specific lesson, ensure its chapter is open
+				const targetChapter = data.find(
+					(chapter) => chapter.idx == currentChapterIdx,
+				)
+				if (targetChapter) {
+					activeChapter.value = targetChapter.name
+					saveAccordionState()
+					return
+				}
+			}
+
+			// If not viewing a specific lesson, try to restore from localStorage
+			const savedState = loadAccordionState()
+			if (savedState) {
+				// Check if saved chapter still exists in the data
+				const savedChapter = data.find((chapter) => chapter.name === savedState)
+				if (savedChapter) {
+					activeChapter.value = savedState
+					return
+				}
+			}
+
+			// If no saved state or saved chapter doesn't exist, set based on current route or default
+			if (!activeChapter.value) {
+				const currentChapterIdx = route.params.chapterNumber || 1
+				const targetChapter = data.find(
+					(chapter) => chapter.idx == currentChapterIdx,
+				)
+				if (targetChapter) {
+					activeChapter.value = targetChapter.name
+				} else {
+					activeChapter.value = data[0].name // Default to first chapter
+				}
+			}
+		}
+	},
 })
 
 watch(
 	() => props.courseName,
 	() => {
+		// Clear localStorage for old course and reset active chapter when course changes
+		localStorage.removeItem(getStorageKey())
+		activeChapter.value = null
 		outline.reload()
 	},
 )
+
+// Watch for route changes to ensure current chapter is open
+watch(
+	() => [route.params.chapterNumber, route.params.lessonNumber],
+	([newChapterNumber, newLessonNumber]) => {
+		if (newChapterNumber && outline.data) {
+			const targetChapter = outline.data.find(
+				(chapter) => chapter.idx == newChapterNumber,
+			)
+			// Always open the chapter that contains the current lesson
+			if (targetChapter) {
+				activeChapter.value = targetChapter.name
+				saveAccordionState()
+			}
+		}
+	},
+	{ immediate: true }, // Execute immediately when watcher is created
+)
+
+// Watch activeChapter changes to save state automatically
+watch(activeChapter, () => {
+	saveAccordionState()
+})
+
+// Watch when outline data becomes available and ensure current lesson's chapter is open
+watch(
+	() => outline.data,
+	(newData) => {
+		if (newData && newData.length > 0) {
+			const currentChapterIdx = route.params.chapterNumber
+			const currentLessonIdx = route.params.lessonNumber
+
+			// If viewing a specific lesson and no chapter is currently open
+			if (currentChapterIdx && currentLessonIdx && !activeChapter.value) {
+				const targetChapter = newData.find(
+					(chapter) => chapter.idx == currentChapterIdx,
+				)
+				if (targetChapter) {
+					activeChapter.value = targetChapter.name
+					saveAccordionState()
+				}
+			}
+		}
+	},
+	{ immediate: true },
+)
+
+// Ensure accordion is open when component mounts
+onMounted(() => {
+	// Double-check accordion state after component mounts
+	const currentChapterIdx = route.params.chapterNumber
+	const currentLessonIdx = route.params.lessonNumber
+
+	if (currentChapterIdx && currentLessonIdx && outline.data) {
+		const targetChapter = outline.data.find(
+			(chapter) => chapter.idx == currentChapterIdx,
+		)
+		if (targetChapter && !activeChapter.value) {
+			activeChapter.value = targetChapter.name
+			saveAccordionState()
+		}
+	}
+})
 
 const deleteLesson = createResource({
 	url: 'lms.lms.api.delete_lesson',
@@ -299,6 +450,25 @@ const openChapterDetail = (index) => {
 	return index == route.params.chapterNumber || index == 1
 }
 
+const toggleChapter = (chapterName) => {
+	if (activeChapter.value === chapterName) {
+		activeChapter.value = null
+	} else {
+		activeChapter.value = chapterName
+	}
+	// Save state to localStorage whenever accordion is toggled
+	saveAccordionState()
+}
+
+const isChapterOpen = (chapterName) => {
+	return activeChapter.value === chapterName
+}
+
+const ensureChapterOpen = (chapterName) => {
+	activeChapter.value = chapterName
+	saveAccordionState()
+}
+
 const openChapterModal = (chapter = null) => {
 	currentChapter.value = chapter
 	showChapterModal.value = true
@@ -306,6 +476,26 @@ const openChapterModal = (chapter = null) => {
 
 const getCurrentChapter = () => {
 	return currentChapter.value
+}
+
+const getChapterRoundedClass = (index) => {
+	if (!outline.data || outline.data.length === 0) return 'rounded-md'
+
+	const totalChapters = outline.data.length
+
+	if (totalChapters === 1) {
+		// Jika hanya ada satu chapter, gunakan rounded penuh
+		return 'rounded-md'
+	} else if (index === 0) {
+		// Chapter pertama: rounded atas saja
+		return 'rounded-t-md'
+	} else if (index === totalChapters - 1) {
+		// Chapter terakhir: rounded bawah saja
+		return 'rounded-b-md'
+	} else {
+		// Chapter tengah: tidak ada rounded
+		return ''
+	}
 }
 
 const updateOutline = (e) => {

@@ -4,50 +4,44 @@
 			class="bg-surface-blue-2 space-y-2 py-2 px-3 mb-4 rounded-md text-sm text-ink-blue-2 leading-5"
 		>
 			<div v-if="inVideo">
-				{{ __('You will have to complete the quiz to continue the video') }}
+				{{ __('Kamu harus menyelesaikan kuis ini untuk melanjutkan video') }}
 			</div>
 			<div class="leading-5">
 				{{
-					__('This quiz consists of {0} questions.').format(questions.length)
+					__('Kuis ini terdiri dari {0} pertanyaan.').format(questions.length)
 				}}
 			</div>
 			<div v-if="quiz.data?.duration" class="leading-5">
 				{{
 					__(
-						'Please ensure that you complete all the questions in {0} minutes.'
+						'Pastikan kamu menyelesaikan semua pertanyaan dalam waktu {0} menit.',
 					).format(quiz.data.duration)
 				}}
 			</div>
 			<div v-if="quiz.data?.duration" class="leading-5">
 				{{
 					__(
-						'If you fail to do so, the quiz will be automatically submitted when the timer ends.'
+						'Jika kamu gagal melakukannya, kuis akan secara otomatis disubmit ketika timer berakhir.',
 					)
 				}}
 			</div>
 			<div v-if="quiz.data.passing_percentage" class="leading-relaxed">
 				{{
 					__(
-						'You will have to get {0}% correct answers in order to pass the quiz.'
+						'Kamu harus mendapatkan {0}% jawaban yang benar agar lulus kuis ini.',
 					).format(quiz.data.passing_percentage)
 				}}
 			</div>
 			<div v-if="quiz.data.max_attempts" class="leading-5">
-				{{
-					__('You can attempt this quiz {0}.').format(
-						quiz.data.max_attempts == 1
-							? '1 time'
-							: `${quiz.data.max_attempts} times`
-					)
-				}}
+				{{ __('Kamu hanya bisa mencoba kuis ini {0} kali.') }}
 			</div>
 			<div v-if="quiz.data.enable_negative_marking" class="leading-5">
 				{{
 					__(
-						'If you answer incorrectly, {0} {1} will be deducted from your score for each incorrect answer.'
+						'Jika kamu menjawab dengan salah, {0} {1} akan dikurangi dari skormu untuk setiap jawaban yang salah.',
 					).format(
 						quiz.data.marks_to_cut,
-						quiz.data.marks_to_cut == 1 ? 'mark' : 'marks'
+						quiz.data.marks_to_cut == 1 ? 'point' : 'points',
 					)
 				}}
 			</div>
@@ -94,7 +88,7 @@
 				>
 					{{
 						__(
-							'You have already exceeded the maximum number of attempts allowed for this quiz.'
+							'You have already exceeded the maximum number of attempts allowed for this quiz.',
 						)
 					}}
 				</div>
@@ -104,30 +98,32 @@
 			<div v-for="(question, qtidx) in questions">
 				<div
 					v-if="qtidx == activeQuestion - 1 && questionDetails.data"
-					class="border rounded-md p-5"
+					class="p-5"
 				>
 					<div class="flex justify-between">
 						<div class="text-sm text-ink-gray-5">
 							<span class="mr-2">
-								{{ __('Question {0}').format(activeQuestion) }}:
+								{{ __('🧐 Pertanyaan {0}').format(activeQuestion) }}:
 							</span>
 							<span>
 								{{ getInstructions(questionDetails.data) }}
 							</span>
 						</div>
-						<div class="text-ink-gray-9 text-sm font-semibold item-left">
+						<div
+							class="bg-surface-blue-2 font-semibold item-left rounded-md text-sm text-ink-blue-2 px-2 py-1"
+						>
 							{{ question.marks }}
-							{{ question.marks == 1 ? __('Mark') : __('Marks') }}
+							{{ question.marks == 1 ? __('Point') : __('Points') }}
 						</div>
 					</div>
 					<div
-						class="text-ink-gray-9 font-semibold mt-2 leading-5"
+						class="text-ink-gray-9 font-bold text-lg mt-2 leading-5"
 						v-html="questionDetails.data.question"
 					></div>
 					<div v-if="questionDetails.data.type == 'Choices'" v-for="index in 4">
 						<label
 							v-if="questionDetails.data[`option_${index}`]"
-							class="flex items-center bg-surface-gray-3 rounded-md p-3 mt-4 w-full cursor-pointer focus:border-blue-600"
+							class="flex items-center bg-orange-2/10 rounded-md p-3 mt-4 w-full cursor-pointer focus:border-blue-600"
 						>
 							<input
 								v-if="!showAnswers.length && !questionDetails.data.multiple"
@@ -211,9 +207,9 @@
 					<div class="flex items-center justify-between mt-4">
 						<div class="text-sm text-ink-gray-5">
 							{{
-								__('Question {0} of {1}').format(
+								__('Pertanyaan {0} of {1}').format(
 									activeQuestion,
-									questions.length
+									questions.length,
 								)
 							}}
 						</div>
@@ -256,18 +252,18 @@
 			>
 				{{
 					__(
-						"Your submission has been successfully saved. The instructor will review and grade it shortly, and you'll be notified of your final result."
+						"Your submission has been successfully saved. The instructor will review and grade it shortly, and you'll be notified of your final result.",
 					)
 				}}
 			</div>
 			<div v-else>
 				{{
 					__(
-						'You got {0}% correct answers with a score of {1} out of {2}'
+						'You got {0}% correct answers with a score of {1} out of {2}',
 					).format(
 						Math.ceil(quizSubmission.data.percentage),
 						quizSubmission.data.score,
-						quizSubmission.data.score_out_of
+						quizSubmission.data.score_out_of,
 					)
 				}}
 			</div>
@@ -461,7 +457,7 @@ watch(
 			attempts.reload()
 			resetQuiz()
 		}
-	}
+	},
 )
 
 const quizSubmission = createResource({
@@ -496,7 +492,7 @@ watch(
 		if (newName) {
 			quiz.reload()
 		}
-	}
+	},
 )
 
 const startQuiz = () => {
@@ -626,7 +622,7 @@ const createSubmission = () => {
 					}, 3000)
 				}
 			},
-		}
+		},
 	)
 }
 
@@ -642,7 +638,7 @@ const resetQuiz = () => {
 const getInstructions = (question) => {
 	if (question.type == 'Choices')
 		if (question.multiple) return __('Choose all answers that apply')
-		else return __('Choose one answer')
+		else return __('Pilih salah satu jawaban yang benar')
 	else return __('Type your answer')
 }
 

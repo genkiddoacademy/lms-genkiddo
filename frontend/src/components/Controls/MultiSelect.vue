@@ -137,7 +137,7 @@ const props = defineProps({
 	},
 })
 
-const values = defineModel()
+const values = defineModel<any>({ default: [] })
 const attrs = useAttrs()
 const emails = ref([])
 const search = ref(null)

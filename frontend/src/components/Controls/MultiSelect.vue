@@ -104,7 +104,7 @@ import {
 	ComboboxOption,
 } from '@headlessui/vue'
 import { createResource, Popover, Button } from 'frappe-ui'
-import { ref, computed, nextTick, useAttrs } from 'vue'
+import { ref, computed, nextTick, useAttrs, watch } from 'vue'
 import { watchDebounced } from '@vueuse/core'
 import { X, Plus } from 'lucide-vue-next'
 
@@ -135,9 +135,24 @@ const props = defineProps({
 	required: {
 		type: Boolean,
 	},
+	modelValue: {
+		type: Array,
+		default: () => [],
+	},
 })
 
-const values = defineModel<any>({ default: [] })
+const emit = defineEmits(['update:modelValue'])
+
+const values = ref([...props.modelValue])
+
+watch(
+	() => props.modelValue,
+	(newVal) => {
+		values.value = [...newVal]
+	},
+	{ immediate: true },
+)
+
 const attrs = useAttrs()
 const emails = ref([])
 const search = ref(null)
@@ -165,7 +180,7 @@ watchDebounced(
 		text.value = val
 		reload(val)
 	},
-	{ debounce: 300, immediate: true }
+	{ debounce: 300, immediate: true },
 )
 
 const filterOptions = createResource({
@@ -219,10 +234,12 @@ const addValue = (value) => {
 		})
 		!error.value && (value = '')
 	}
+	emit('update:modelValue', [...values.value])
 }
 
 const removeValue = (value) => {
 	values.value = values.value.filter((v) => v !== value)
+	emit('update:modelValue', [...values.value])
 }
 
 const removeLastValue = () => {
@@ -231,6 +248,7 @@ const removeLastValue = () => {
 	let emailRef = emails.value[emails.value.length - 1]?.$el
 	if (document.activeElement === emailRef) {
 		values.value.pop()
+		emit('update:modelValue', [...values.value])
 		nextTick(() => {
 			if (values.value.length) {
 				emailRef = emails.value[emails.value.length - 1].$el

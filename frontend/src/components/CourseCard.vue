@@ -22,9 +22,11 @@
 				<div
 					v-if="course.tags"
 					v-for="tag in course.tags?.split(', ')"
-					class="text-xs bg-white text-gray-800 px-2 py-0.5 rounded-md mb-1 mr-1"
+					:class="getTagClasses(tag)"
+					class="text-xs px-2 py-0.5 rounded-md mb-1 mr-1 flex items-center gap-1"
 				>
-					{{ tag }}
+					<component :is="getTagIcon(tag)" class="w-3 h-3" />
+					{{ getDisplayTag(tag) }}
 				</div>
 			</div>
 			<div v-if="!course.image" class="image-placeholder">
@@ -121,7 +123,16 @@
 	</div>
 </template>
 <script setup>
-import { BookOpen, Users, Star } from 'lucide-vue-next'
+import {
+	BookOpen,
+	Users,
+	Star,
+	Code,
+	Zap,
+	Leaf,
+	Award,
+	Crown,
+} from 'lucide-vue-next'
 import UserAvatar from '@/components/UserAvatar.vue'
 import { sessionStore } from '@/stores/session'
 import { Badge, Tooltip } from 'frappe-ui'
@@ -136,6 +147,28 @@ const props = defineProps({
 		default: null,
 	},
 })
+
+// Tag mapping with icons and colors
+const tagMapping = {
+	'Programmer Kecil': { icon: Code, color: 'bg-orange-200 text-orange-800' },
+	'Programmer Muda': { icon: Zap, color: 'bg-blue-200 text-blue-800' },
+	Beginner: { icon: Leaf, color: 'bg-green-200 text-green-800' },
+	Intermediate: { icon: Award, color: 'bg-yellow-200 text-yellow-800' },
+	Advance: { icon: Crown, color: 'bg-purple-200 text-purple-800' },
+}
+
+const getTagIcon = (tag) => {
+	return tagMapping[tag]?.icon || Code
+}
+
+const getTagClasses = (tag) => {
+	return tagMapping[tag]?.color || 'bg-gray-200 text-gray-800'
+}
+
+const getDisplayTag = (tag) => {
+	// Return the tag as is if it exists in our mapping, otherwise return the original tag
+	return tagMapping[tag] ? tag : tag
+}
 </script>
 <style>
 .course-image {

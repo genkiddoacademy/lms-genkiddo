@@ -7,7 +7,7 @@
 		</header>
 		<div class="m-5 pb-10">
 			<div class="flex justify-between w-full">
-				<div class="md:w-2/3">
+				<div class="md:w-full">
 					<!-- Background image above title -->
 					<div class="relative mb-4">
 						<img
@@ -15,26 +15,39 @@
 							alt="Batch Background"
 							class="w-full h-40 object-cover rounded-lg"
 						/>
+						<!-- Seats Left overlay -->
+						<div
+							v-if="batch.data.seat_count"
+							class="absolute bottom-3 left-3 text-sm px-3 py-1.5 rounded-md font-medium"
+							:class="
+								batch.data.seat_count - (batch.data.students?.length || 0) > 0
+									? 'bg-green-100 text-green-700'
+									: 'bg-red-100 text-red-700'
+							"
+						>
+							<span
+								v-if="
+									batch.data.seat_count - (batch.data.students?.length || 0) > 0
+								"
+							>
+								{{ batch.data.seat_count - (batch.data.students?.length || 0) }}
+								Slot Tersedia
+							</span>
+							<span v-else>
+								{{ __('Sold Out') }}
+							</span>
+						</div>
 					</div>
+
 					<div class="text-[44px] font-bold text-gradasi-1">
 						{{ batch.data.title }}
 					</div>
+
+					<div class="hidden md:block">
+						<BatchOverlay :batch="batch" />
+					</div>
+
 					<div class="flex flex-col gap-2 overlap mt-4">
-						<div class="flex avatar-group">
-							<div
-								class="h-6 mr-1"
-								:class="{
-									'avatar-group overlap': batch.data.instructors.length > 1,
-								}"
-							>
-								Oleh:
-								<UserAvatar
-									v-for="instructor in batch.data.instructors"
-									:user="instructor"
-								/>
-							</div>
-							<CourseInstructors :instructors="batch.data.instructors" />
-						</div>
 						<div>{{ batch.data.description }}</div>
 					</div>
 
@@ -47,14 +60,11 @@
 								class="w-auto h-[120px] mt-1 flex-shrink-0"
 							/>
 							<div
-								class="ProseMirror prose prose-table:table-fixed prose-td:p-2 prose-th:p-2 prose-td:border prose-th:border prose-td:border-outline-gray-2 prose-th:border-outline-gray-2 prose-td:relative prose-th:relative prose-th:bg-surface-gray-2 prose-sm max-w-none !whitespace-normal"
+								class="ProseMirror mt-2 ml-2 prose prose-table:table-fixed prose-td:p-2 prose-th:p-2 prose-td:border prose-th:border prose-td:border-outline-gray-2 prose-th:border-outline-gray-2 prose-td:relative prose-th:relative prose-th:bg-surface-gray-2 prose-sm max-w-none !whitespace-normal"
 								v-html="batch.data.batch_details"
 							></div>
 						</div>
 					</div>
-				</div>
-				<div class="hidden md:block">
-					<BatchOverlay :batch="batch" />
 				</div>
 			</div>
 			<BatchOverlay :batch="batch" class="md:hidden mt-5" />

@@ -58,12 +58,13 @@
 					</div>
 					<div v-if="course.data.tags" class="flex my-4 w-fit">
 						<Badge
-							theme="gray"
 							size="lg"
-							class="mr-2 text-ink-gray-9"
+							:class="getTagClasses(tag)"
+							class="mr-2 flex items-center gap-1"
 							v-for="tag in course.data.tags.split(', ')"
 						>
-							{{ tag }}
+							<component :is="getTagIcon(tag)" class="w-4 h-4" />
+							{{ getDisplayTag(tag) }}
 						</Badge>
 					</div>
 					<div class="md:hidden mb-4">
@@ -107,7 +108,7 @@ import {
 	usePageMeta,
 } from 'frappe-ui'
 import { computed, watch } from 'vue'
-import { Users, Star } from 'lucide-vue-next'
+import { Users, Star, Code, Zap, Leaf, Award, Crown } from 'lucide-vue-next'
 import { sessionStore } from '@/stores/session'
 import CourseCardOverlay from '@/components/CourseCardOverlay.vue'
 import CourseOutline from '@/components/CourseOutline.vue'
@@ -151,6 +152,28 @@ const breadcrumbs = computed(() => {
 	})
 	return items
 })
+
+// Tag mapping with icons and colors
+const tagMapping = {
+	'Programmer Kecil': { icon: Code, color: 'bg-orange-200 text-orange-800' },
+	'Programmer Muda': { icon: Zap, color: 'bg-blue-200 text-blue-800' },
+	Beginner: { icon: Leaf, color: 'bg-green-200 text-green-800' },
+	Intermediate: { icon: Award, color: 'bg-yellow-200 text-yellow-800' },
+	Advance: { icon: Crown, color: 'bg-purple-200 text-purple-800' },
+}
+
+const getTagIcon = (tag) => {
+	return tagMapping[tag]?.icon || Code
+}
+
+const getTagClasses = (tag) => {
+	return tagMapping[tag]?.color || 'bg-gray-200 text-gray-800'
+}
+
+const getDisplayTag = (tag) => {
+	// Return the tag as is if it exists in our mapping, otherwise return the original tag
+	return tagMapping[tag] ? tag : tag
+}
 
 usePageMeta(() => {
 	return {

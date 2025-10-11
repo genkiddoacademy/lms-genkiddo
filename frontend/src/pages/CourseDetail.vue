@@ -57,15 +57,14 @@
 						</div>
 					</div>
 					<div v-if="course.data.tags" class="flex my-4 w-fit">
-						<Badge
-							size="lg"
+						<div
 							:class="getTagClasses(tag)"
-							class="mr-2 flex items-center gap-1"
+							class="mr-2 flex items-center gap-1 px-2 py-1 rounded-md text-sm"
 							v-for="tag in course.data.tags.split(', ')"
 						>
 							<component :is="getTagIcon(tag)" class="w-4 h-4" />
 							{{ getDisplayTag(tag) }}
-						</Badge>
+						</div>
 					</div>
 					<div class="md:hidden mb-4">
 						<CourseCardOverlay :course="course" />
@@ -100,13 +99,7 @@
 	</div>
 </template>
 <script setup>
-import {
-	createResource,
-	Breadcrumbs,
-	Badge,
-	Tooltip,
-	usePageMeta,
-} from 'frappe-ui'
+import { createResource, Breadcrumbs, Tooltip, usePageMeta } from 'frappe-ui'
 import { computed, watch } from 'vue'
 import { Users, Star, Code, Zap, Leaf, Award, Crown } from 'lucide-vue-next'
 import { sessionStore } from '@/stores/session'
@@ -116,6 +109,7 @@ import CourseReviews from '@/components/CourseReviews.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
 import CourseInstructors from '@/components/CourseInstructors.vue'
 import RelatedCourses from '@/components/RelatedCourses.vue'
+import { getTagIcon, getTagClasses, getDisplayTag } from '@/utils/tag'
 
 const { brand } = sessionStore()
 
@@ -152,28 +146,6 @@ const breadcrumbs = computed(() => {
 	})
 	return items
 })
-
-// Tag mapping with icons and colors
-const tagMapping = {
-	'Programmer Kecil': { icon: Code, color: 'bg-orange-200 text-orange-800' },
-	'Programmer Muda': { icon: Zap, color: 'bg-blue-200 text-blue-800' },
-	Beginner: { icon: Leaf, color: 'bg-green-200 text-green-800' },
-	Intermediate: { icon: Award, color: 'bg-yellow-200 text-yellow-800' },
-	Advance: { icon: Crown, color: 'bg-purple-200 text-purple-800' },
-}
-
-const getTagIcon = (tag) => {
-	return tagMapping[tag]?.icon || Code
-}
-
-const getTagClasses = (tag) => {
-	return tagMapping[tag]?.color || 'bg-gray-200 text-gray-800'
-}
-
-const getDisplayTag = (tag) => {
-	// Return the tag as is if it exists in our mapping, otherwise return the original tag
-	return tagMapping[tag] ? tag : tag
-}
 
 usePageMeta(() => {
 	return {

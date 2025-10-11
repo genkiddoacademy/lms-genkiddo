@@ -351,6 +351,7 @@ import {
 	updateMetaInfo,
 	validateFile,
 } from '@/utils'
+import { getTagIcon, getTagClasses, getDisplayTag } from '@/utils/tag'
 import Link from '@/components/Controls/Link.vue'
 import CourseOutline from '@/components/CourseOutline.vue'
 import MultiSelect from '@/components/Controls/MultiSelect.vue'
@@ -638,28 +639,6 @@ watch(
 		}
 	},
 )
-
-// Tag mapping with icons and colors
-const tagMapping = {
-	'Programmer Kecil': { icon: Code, color: 'bg-orange-200 text-orange-800' },
-	'Programmer Muda': { icon: Zap, color: 'bg-blue-200 text-blue-800' },
-	Beginner: { icon: Leaf, color: 'bg-green-200 text-green-800' },
-	Intermediate: { icon: Award, color: 'bg-yellow-200 text-yellow-800' },
-	Advance: { icon: Crown, color: 'bg-purple-200 text-purple-800' },
-}
-
-const getTagIcon = (tag) => {
-	return tagMapping[tag]?.icon || Code
-}
-
-const getTagClasses = (tag) => {
-	return tagMapping[tag]?.color || 'bg-surface-gray-2 text-ink-gray-7'
-}
-
-const getDisplayTag = (tag) => {
-	// Return the tag as is if it exists in our mapping, otherwise return the original tag
-	return tagMapping[tag] ? tag : tag
-}
 
 const updateTags = () => {
 	if (newTag.value) {

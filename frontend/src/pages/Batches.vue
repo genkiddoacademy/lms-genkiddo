@@ -36,7 +36,7 @@
 						v-model="certification"
 						:label="__('Tersedia Sertifikat')"
 						type="checkbox"
-						class="!checked:bg-orange-2"
+						class="checkbox-orange"
 						@change="updateBatches()"
 					/>
 
@@ -44,7 +44,7 @@
 						v-model="title"
 						:placeholder="__('Cari Berdasarkan Judul')"
 						type="text"
-						class="ring-1 ring-orange-2 rounded-sm !bg-white !text-gray-900 !placeholder-white focus:!bg-orange-50 focus:ring-2 focus:ring-orange-300 transition-all duration-200"
+						class="search-input-white ring-1 ring-orange-2 rounded-sm focus:ring-2 focus:ring-orange-2 transition-all duration-200"
 						@input="updateBatches()"
 					>
 						<template #prefix>
@@ -55,14 +55,12 @@
 			</div>
 
 			<div class="flex-row flex gap-2 items-center w-full !text-lg">
-				Learning Path:
-				<Select
+				<label class="font-medium text-gray-700">Jalur Pembelajaran:</label>
+				<GradientSelect
 					v-model="currentCategory"
 					:options="categories"
 					:placeholder="__('Semua Jalur')"
 					@change="updateBatches()"
-					class="!min-w-36 !w-fit !text-lg !bg-orange-2 flex !h-[40px]"
-					style="color: white !important; --tw-placeholder-color: white"
 				/>
 			</div>
 		</div>
@@ -105,13 +103,21 @@ import { Plus, Search } from 'lucide-vue-next'
 import { sessionStore } from '@/stores/session'
 import BatchCard from '@/components/BatchCard.vue'
 import EmptyState from '@/components/EmptyState.vue'
+import GradientSelect from '@/components/GradientSelect.vue'
+import { setupSelectGradientWatcher } from '@/utils/selectGradient'
 
 const user = inject('$user')
 const dayjs = inject('$dayjs')
 const { brand } = sessionStore()
 const start = ref(0)
 const pageLength = ref(30)
-const categories = ref([])
+
+const categories = ref([
+	{
+		label: 'Semua Jalur',
+		value: null,
+	},
+])
 const currentCategory = ref(null)
 const title = ref('')
 const certification = ref(false)
@@ -122,50 +128,75 @@ const orderBy = ref('start_date')
 const readOnlyMode = window.read_only_mode
 
 onMounted(() => {
-	// Reset state to ensure clean load
-	categories.value = [
-		{
-			label: 'Semua Jalur',
-			value: null,
-		},
-	]
-	currentCategory.value = null
-	title.value = ''
-	certification.value = false
-	filters.value = {}
-
-	// Force reload batches data
-	batches.reload()
 	setFiltersFromQuery()
 	updateBatches()
+	getAllCategories()
+
+	// Force apply form control styling
+	setTimeout(() => {
+		// Force checkbox orange styling
+		const checkboxes = document.querySelectorAll(
+			'.checkbox-orange input[type="checkbox"]',
+		)
+		checkboxes.forEach((checkbox) => {
+			const updateCheckboxStyle = () => {
+				if (checkbox.checked) {
+					checkbox.style.setProperty('background-color', '#EF7F1F', 'important')
+					checkbox.style.setProperty('border-color', '#EF7F1F', 'important')
+				}
+			}
+			checkbox.addEventListener('change', updateCheckboxStyle)
+			updateCheckboxStyle()
+		})
+
+		// Force search input white background
+		const searchInputs = document.querySelectorAll('.search-input-white input')
+		searchInputs.forEach((input) => {
+			input.style.setProperty('background-color', 'white', 'important')
+			input.style.setProperty('color', '#374151', 'important')
+		})
+	}, 100)
 })
 
 const setFiltersFromQuery = () => {
 	let queries = new URLSearchParams(location.search)
 	title.value = queries.get('title') || ''
-	currentCategory.value = queries.get('category') || null
-	certification.value = queries.get('certification') || false
+
+	// Don't set category if it's "Semua Jalur" or similar
+	const categoryParam = queries.get('category')
+	if (
+		categoryParam &&
+		categoryParam !== 'Semua Jalur' &&
+		categoryParam !== 'Semua+Jalur'
+	) {
+		currentCategory.value = categoryParam
+	} else {
+		currentCategory.value = null
+	}
+
+	certification.value = queries.get('certification') === 'true'
 }
 
 const batches = createListResource({
 	doctype: 'LMS Batch',
 	url: 'lms.lms.utils.get_batches',
-	cache: ['batches', user.data?.name, Date.now()],
+	cache: ['batches', user.data?.name],
 	pageLength: pageLength.value,
 	start: start.value,
 	auto: true,
 	onSuccess(data) {
-		let allCategories = data.map((batch) => batch.category)
-		allCategories = allCategories.filter(
-			(category, index) =>
-				allCategories.indexOf(category) === index && category,
-		)
-		updateCategories(data)
+		// Don't update categories here anymore, get them separately
 	},
 })
 
 const updateBatches = () => {
 	updateFilters()
+
+	// Debug logging
+	console.log('Batches - Current filters:', filters.value)
+	console.log('Batches - Current category:', currentCategory.value)
+	console.log('Batches - Current tab:', currentTab.value)
+
 	batches.update({
 		filters: filters.value,
 		orderBy: orderBy.value,
@@ -173,7 +204,19 @@ const updateBatches = () => {
 	batches.reload()
 }
 
+const getAllCategories = () => {
+	call('lms.lms.api.get_categories', {
+		doctype: 'LMS Batch',
+		filters: {}, // Get all categories, not just from published batches
+	}).then((data) => {
+		updateCategories(data)
+	})
+}
+
 const updateFilters = () => {
+	// Reset filters first to avoid conflicts
+	filters.value = {}
+
 	updateCategoryFilter()
 	updateTitleFilter()
 	updateCertificationFilter()
@@ -183,11 +226,15 @@ const updateFilters = () => {
 }
 
 const updateCategoryFilter = () => {
-	if (currentCategory.value) {
+	if (
+		currentCategory.value &&
+		currentCategory.value !== null &&
+		currentCategory.value !== 'Semua Jalur' &&
+		currentCategory.value !== 'Semua+Jalur'
+	) {
 		filters.value['category'] = currentCategory.value
-	} else {
-		delete filters.value['category']
 	}
+	// No need to delete since filters are reset at the start of updateFilters()
 }
 
 const updateTitleFilter = () => {
@@ -211,16 +258,18 @@ const updateTabFilter = () => {
 	if (!user.data) {
 		return
 	}
+
+	delete filters.value['enrolled']
+	delete filters.value['start_date']
+	delete filters.value['published']
+
 	if (currentTab.value == 'Enrolled' && is_student.value) {
 		filters.value['enrolled'] = 1
-		delete filters.value['start_date']
-		delete filters.value['published']
 		orderBy.value = 'start_date desc'
 	} else if (is_student.value) {
-		delete filters.value['enrolled']
+		filters.value['start_date'] = ['>=', dayjs().format('YYYY-MM-DD')]
+		filters.value['published'] = 1
 	} else {
-		delete filters.value['start_date']
-		delete filters.value['published']
 		orderBy.value = 'start_date desc'
 		if (currentTab.value == 'Upcoming') {
 			filters.value['start_date'] = ['>=', dayjs().format('YYYY-MM-DD')]
@@ -245,7 +294,10 @@ const setQueryParams = () => {
 	let queries = new URLSearchParams(location.search)
 	let filterKeys = {
 		title: title.value,
-		category: currentCategory.value,
+		category:
+			currentCategory.value && currentCategory.value !== 'Semua Jalur'
+				? currentCategory.value
+				: null,
 		certification: certification.value,
 	}
 
@@ -266,7 +318,7 @@ const setQueryParams = () => {
 }
 
 const updateCategories = (data) => {
-	// Reset categories but keep 'Semua Jalur' at first position
+	// Start with "Semua Jalur" option
 	const baseCategories = [
 		{
 			label: 'Semua Jalur',
@@ -274,17 +326,15 @@ const updateCategories = (data) => {
 		},
 	]
 
-	data.forEach((batch) => {
-		if (
-			batch.category &&
-			!baseCategories.find((category) => category.value === batch.category)
-		) {
+	// Add categories from API response
+	if (data && Array.isArray(data)) {
+		data.forEach((category) => {
 			baseCategories.push({
-				label: batch.category,
-				value: batch.category,
+				label: category.label,
+				value: category.value,
 			})
-		}
-	})
+		})
+	}
 
 	categories.value = baseCategories
 }
@@ -301,10 +351,25 @@ watch(
 	{ immediate: false },
 )
 
+// Watch certification checkbox changes to ensure orange styling
+watch(certification, () => {
+	setTimeout(() => {
+		const checkboxes = document.querySelectorAll(
+			'.checkbox-orange input[type="checkbox"]',
+		)
+		checkboxes.forEach((checkbox) => {
+			if (checkbox.checked) {
+				checkbox.style.setProperty('background-color', '#EF7F1F', 'important')
+				checkbox.style.setProperty('border-color', '#EF7F1F', 'important')
+			}
+		})
+	}, 10)
+})
+
 onUnmounted(() => {
 	try {
 		// Reset state when leaving page
-		categories.value = []
+		categories.value = [{ label: 'Semua Jalur', value: null }]
 		currentCategory.value = null
 		title.value = ''
 		certification.value = false
@@ -364,3 +429,21 @@ usePageMeta(() => {
 	}
 })
 </script>
+
+<style scoped>
+/* Custom styling for form controls */
+.checkbox-orange :deep(input[type='checkbox']:checked) {
+	background-color: #ef7f1f !important;
+	border-color: #ef7f1f !important;
+	background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e") !important;
+}
+
+.search-input-white :deep(input) {
+	background-color: white !important;
+	color: #374151 !important;
+}
+
+.search-input-white :deep(input::placeholder) {
+	color: #9ca3af !important;
+}
+</style>

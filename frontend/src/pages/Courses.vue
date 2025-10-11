@@ -144,10 +144,18 @@ onMounted(() => {
 				if (checkbox.checked) {
 					checkbox.style.setProperty('background-color', '#EF7F1F', 'important')
 					checkbox.style.setProperty('border-color', '#EF7F1F', 'important')
+				} else {
+					// Reset to transparent background and black border when unchecked
+					checkbox.style.setProperty(
+						'background-color',
+						'transparent',
+						'important',
+					)
+					checkbox.style.setProperty('border-color', '#000000', 'important')
 				}
 			}
 			checkbox.addEventListener('change', updateCheckboxStyle)
-			updateCheckboxStyle()
+			updateCheckboxStyle() // Apply initial state
 		})
 
 		// Force search input white background
@@ -392,6 +400,14 @@ watch(certification, () => {
 			if (checkbox.checked) {
 				checkbox.style.setProperty('background-color', '#EF7F1F', 'important')
 				checkbox.style.setProperty('border-color', '#EF7F1F', 'important')
+			} else {
+				// Reset to transparent background and black border when unchecked
+				checkbox.style.setProperty(
+					'background-color',
+					'transparent',
+					'important',
+				)
+				checkbox.style.setProperty('border-color', '#000000', 'important')
 			}
 		})
 	}, 10)
@@ -465,6 +481,11 @@ usePageMeta(() => {
 
 <style scoped>
 /* Custom styling for form controls */
+.checkbox-orange :deep(input[type='checkbox']) {
+	border-color: #000000 !important;
+	background-color: transparent !important;
+}
+
 .checkbox-orange :deep(input[type='checkbox']:checked) {
 	background-color: #ef7f1f !important;
 	border-color: #ef7f1f !important;

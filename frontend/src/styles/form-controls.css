@@ -1,0 +1,122 @@
+/* Custom styling for checkbox and search input */
+
+/* Checkbox styling - force orange-2 when checked */
+.checkbox-orange input[type='checkbox']:checked {
+	background-color: #ef7f1f !important; /* orange-2 color */
+	border-color: #ef7f1f !important;
+	background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e") !important;
+}
+
+.checkbox-orange input[type='checkbox']:focus {
+	box-shadow: 0 0 0 3px rgba(239, 127, 31, 0.2) !important;
+	border-color: #ef7f1f !important;
+}
+
+/* Hover state for checkbox */
+.checkbox-orange input[type='checkbox']:hover {
+	border-color: #ef7f1f !important;
+}
+
+/* Search input styling - force white background */
+.search-input-white {
+	background-color: white !important;
+	background: white !important;
+}
+
+.search-input-white input {
+	background-color: white !important;
+	background: white !important;
+	color: #374151 !important; /* gray-700 */
+}
+
+.search-input-white input::placeholder {
+	color: #9ca3af !important; /* gray-400 */
+	opacity: 1 !important;
+}
+
+.search-input-white input:focus {
+	background-color: #fef7f0 !important; /* orange-50 */
+	background: #fef7f0 !important;
+}
+
+/* Force white background on FormControl wrapper */
+.search-input-white .form-control {
+	background-color: white !important;
+	background: white !important;
+}
+
+.search-input-white .form-control > div {
+	background-color: white !important;
+	background: white !important;
+}
+
+/* Additional specificity for Frappe UI components */
+html body .checkbox-orange .form-control input[type='checkbox']:checked {
+	background-color: #ef7f1f !important;
+	border-color: #ef7f1f !important;
+	background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e") !important;
+}
+
+html body .search-input-white .form-control input {
+	background-color: white !important;
+	background: white !important;
+	color: #374151 !important;
+}
+
+html body .search-input-white .form-control input::placeholder {
+	color: #9ca3af !important;
+	opacity: 1 !important;
+}
+
+/* Ensure search icon is visible */
+.search-input-white .form-control-prefix {
+	color: #6b7280 !important; /* gray-500 */
+}
+
+.search-input-white .form-control-prefix svg {
+	color: #6b7280 !important;
+	stroke: #6b7280 !important;
+}
+
+/* Focus states */
+html body .search-input-white .form-control input:focus {
+	background-color: #fef7f0 !important;
+	background: #fef7f0 !important;
+}
+
+html body .checkbox-orange .form-control input[type='checkbox']:focus {
+	box-shadow: 0 0 0 3px rgba(239, 127, 31, 0.2) !important;
+	border-color: #ef7f1f !important;
+}
+
+/* Nuclear option - maximum specificity selectors */
+[data-v-inspector] .checkbox-orange input[type='checkbox']:checked,
+html body div.checkbox-orange input[type='checkbox']:checked,
+body .checkbox-orange .form-control input[type='checkbox']:checked {
+	background-color: #ef7f1f !important;
+	border-color: #ef7f1f !important;
+	background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e") !important;
+}
+
+[data-v-inspector] .search-input-white input,
+html body div.search-input-white input,
+body .search-input-white .form-control input {
+	background-color: white !important;
+	background: white !important;
+	color: #374151 !important;
+}
+
+[data-v-inspector] .search-input-white input::placeholder,
+html body div.search-input-white input::placeholder,
+body .search-input-white .form-control input::placeholder {
+	color: #9ca3af !important;
+	opacity: 1 !important;
+}
+
+/* Ensure form control wrapper backgrounds are correct */
+.search-input-white .form-control,
+.search-input-white .form-control > div,
+.search-input-white .form-control > div > div {
+	background-color: white !important;
+	background: white !important;
+}

@@ -1,0 +1,148 @@
+/* Override CSS khusus untuk Select gradien - Super high specificity */
+
+/* Target langsung ke Frappe UI Select structure */
+[data-v-inspector] .learning-path-select button[type='button'],
+.learning-path-select.bg-gradasi-1 button[type='button'],
+body .learning-path-select button[type='button'],
+html body .learning-path-select button[type='button'] {
+	background: linear-gradient(90deg, #f86300 0%, #dd3a3a 100%) !important;
+	background-image: linear-gradient(
+		90deg,
+		#f86300 0%,
+		#dd3a3a 100%
+	) !important;
+	background-color: #f86300 !important;
+	color: white !important;
+	border: 1px solid transparent !important;
+	border-color: transparent !important;
+	width: 100% !important;
+	position: relative !important;
+}
+
+/* Memastikan tidak ada background lain yang mengoverride */
+[data-v-inspector] .learning-path-select button[type='button']:before,
+.learning-path-select.bg-gradasi-1 button[type='button']:before,
+body .learning-path-select button[type='button']:before,
+html body .learning-path-select button[type='button']:before {
+	display: none !important;
+}
+
+[data-v-inspector] .learning-path-select button[type='button']:after,
+.learning-path-select.bg-gradasi-1 button[type='button']:after,
+body .learning-path-select button[type='button']:after,
+html body .learning-path-select button[type='button']:after {
+	display: none !important;
+}
+
+/* Target untuk text dan icon */
+[data-v-inspector] .learning-path-select button span,
+.learning-path-select.bg-gradasi-1 button span,
+body .learning-path-select button span,
+html body .learning-path-select button span {
+	color: white !important;
+}
+
+/* Target untuk SVG icon */
+[data-v-inspector] .learning-path-select button svg,
+.learning-path-select.bg-gradasi-1 button svg,
+body .learning-path-select button svg,
+html body .learning-path-select button svg {
+	color: white !important;
+	stroke: white !important;
+	fill: white !important;
+}
+
+/* Hover state */
+[data-v-inspector] .learning-path-select button[type='button']:hover,
+.learning-path-select.bg-gradasi-1 button[type='button']:hover,
+body .learning-path-select button[type='button']:hover,
+html body .learning-path-select button[type='button']:hover {
+	background: linear-gradient(90deg, #e55a00 0%, #c23030 100%) !important;
+	background-color: #e55a00 !important;
+}
+
+/* Focus state */
+[data-v-inspector] .learning-path-select button[type='button']:focus,
+.learning-path-select.bg-gradasi-1 button[type='button']:focus,
+body .learning-path-select button[type='button']:focus,
+html body .learning-path-select button[type='button']:focus {
+	background: linear-gradient(90deg, #f86300 0%, #dd3a3a 100%) !important;
+	background-color: #f86300 !important;
+	box-shadow: 0 0 0 3px rgba(248, 99, 0, 0.2) !important;
+}
+
+/* Active state */
+[data-v-inspector] .learning-path-select button[type='button']:active,
+.learning-path-select.bg-gradasi-1 button[type='button']:active,
+body .learning-path-select button[type='button']:active,
+html body .learning-path-select button[type='button']:active {
+	background: linear-gradient(90deg, #f86300 0%, #dd3a3a 100%) !important;
+	background-color: #f86300 !important;
+}
+
+/* Override any Tailwind utilities */
+.learning-path-select.bg-gradasi-1 {
+	--tw-bg-opacity: 1 !important;
+}
+
+/* Nuclear option - override everything */
+* .learning-path-select button,
+* .learning-path-select.bg-gradasi-1 button {
+	background-image: linear-gradient(
+		90deg,
+		#f86300 0%,
+		#dd3a3a 100%
+	) !important;
+	background-color: #f86300 !important;
+	color: white !important;
+}
+
+/* Remove any box-shadows or borders that might interfere */
+.learning-path-select button[type='button'] {
+	box-shadow: none !important;
+	border-image: none !important;
+	background-attachment: scroll !important;
+	background-clip: border-box !important;
+	background-origin: padding-box !important;
+	background-repeat: no-repeat !important;
+	background-size: 100% 100% !important;
+}
+
+/* Force gradien pada semua child elements yang mungkin mengoverride */
+.learning-path-select button > *,
+.learning-path-select button > div,
+.learning-path-select button > span {
+	background: transparent !important;
+	background-color: transparent !important;
+	background-image: none !important;
+}
+
+/* Pastikan parent container tidak ada background yang mengoverride */
+.learning-path-select,
+.learning-path-select.bg-gradasi-1 {
+	background: transparent !important;
+	background-color: transparent !important;
+	background-image: none !important;
+}
+
+/* Additional comprehensive selectors for complete coverage */
+.learning-path-select button[type='button'],
+.learning-path-select.bg-gradasi-1 button[type='button'] {
+	/* Ensure gradient covers entire button */
+	box-sizing: border-box !important;
+	overflow: hidden !important;
+	position: relative !important;
+	z-index: 1 !important;
+}
+
+/* Fallback untuk browser yang tidak support gradient */
+.learning-path-select button[type='button'] {
+	background-color: #f86300 !important;
+}
+
+/* Ensure no margin/padding issues */
+.learning-path-select button[type='button'] * {
+	box-sizing: border-box !important;
+	margin: 0 !important;
+	padding: inherit !important;
+}

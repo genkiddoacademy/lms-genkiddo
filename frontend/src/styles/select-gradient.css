@@ -1,0 +1,275 @@
+/* Custom Select Styling untuk Learning Path, Batches, dan Courses */
+/* Using Tailwind config gradasi-1 gradient */
+
+/* High specificity selector untuk Frappe UI Select component */
+.learning-path-select button,
+.learning-path-select .form-control button,
+div.learning-path-select button,
+div.learning-path-select .form-control button {
+	/* Button utama select menggunakan gradasi-1 dari tailwind config */
+	background: linear-gradient(90deg, #f86300 0%, #dd3a3a 100%) !important;
+	color: white !important;
+	border: none !important;
+	font-weight: 500 !important;
+	transition: all 0.3s ease !important;
+	box-shadow: 0 2px 4px rgba(248, 99, 0, 0.2) !important;
+}
+
+.learning-path-select button:hover,
+.learning-path-select .form-control button:hover,
+div.learning-path-select button:hover,
+div.learning-path-select .form-control button:hover {
+	/* Hover state dengan gradasi yang lebih gelap */
+	background: linear-gradient(90deg, #e55a00 0%, #c23030 100%) !important;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(248, 99, 0, 0.4) !important;
+}
+
+.learning-path-select button span {
+	/* Text dalam button */
+	color: white !important;
+	font-weight: 500 !important;
+}
+
+.learning-path-select .form-control-prefix,
+.learning-path-select .form-control-suffix {
+	/* Icon dan suffix */
+	color: white !important;
+}
+
+/* Dropdown menu styling */
+.learning-path-select .dropdown {
+	border: 1px solid #e2e8f0;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+}
+
+.learning-path-select .dropdown-item {
+	padding: 10px 16px;
+	transition: all 0.2s ease;
+}
+
+.learning-path-select .dropdown-item:hover {
+	background: linear-gradient(135deg, #fff5f0, #ffeee6) !important;
+	color: #ff6b35 !important;
+}
+
+.learning-path-select .dropdown-item.selected {
+	background: linear-gradient(135deg, #ff6b35, #f7931e) !important;
+	color: white !important;
+}
+
+/* Active/Focus states */
+.learning-path-select button:focus {
+	background: linear-gradient(135deg, #ff6b35, #f7931e) !important;
+	color: white !important;
+	box-shadow: 0 0 0 3px rgba(247, 147, 30, 0.2) !important;
+	outline: none !important;
+}
+
+/* Specific targeting for frappe-ui Select component */
+.learning-path-select .form-control > button {
+	background: linear-gradient(135deg, #ff6b35, #f7931e) !important;
+	color: white !important;
+	border-color: transparent !important;
+}
+
+.learning-path-select .form-control > button > span {
+	color: white !important;
+}
+
+.learning-path-select .form-control > button svg {
+	color: white !important;
+	stroke: white !important;
+}
+
+/* Dropdown list items */
+.learning-path-select [role='listbox'] {
+	background: white;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	max-height: 200px;
+	overflow-y: auto;
+}
+
+.learning-path-select [role='option'] {
+	padding: 10px 16px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.learning-path-select [role='option']:hover {
+	background: linear-gradient(135deg, #fff5f0, #ffeee6);
+	color: #ff6b35;
+}
+
+.learning-path-select [role='option'][aria-selected='true'] {
+	background: linear-gradient(135deg, #ff6b35, #f7931e);
+	color: white;
+}
+
+/* Alternative selectors for different DOM structures */
+.learning-path-select .select-button {
+	background: linear-gradient(135deg, #ff6b35, #f7931e) !important;
+	color: white !important;
+	border: none !important;
+}
+
+.learning-path-select .select-button:hover {
+	background: linear-gradient(135deg, #ff5722, #e68900) !important;
+}
+
+/* Headless UI specific selectors */
+.learning-path-select [role='button'] {
+	background: linear-gradient(135deg, #ff6b35, #f7931e) !important;
+	color: white !important;
+	border: none !important;
+}
+
+.learning-path-select [role='button']:hover {
+	background: linear-gradient(135deg, #ff5722, #e68900) !important;
+}
+
+.learning-path-select [role='button'] * {
+	color: white !important;
+}
+
+/* For Frappe UI components with specific class names */
+.learning-path-select .frappe-select button,
+.learning-path-select .frappe-multiselect button {
+	background: linear-gradient(135deg, #ff6b35, #f7931e) !important;
+	color: white !important;
+	border: none !important;
+}
+
+.learning-path-select .frappe-select button:hover,
+.learning-path-select .frappe-multiselect button:hover {
+	background: linear-gradient(135deg, #ff5722, #e68900) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.learning-path-select {
+		min-width: 200px;
+	}
+
+	.learning-path-select button {
+		padding: 8px 12px !important;
+		font-size: 14px !important;
+	}
+}
+
+/* Dark mode compatibility */
+.dark .learning-path-select button {
+	background: linear-gradient(135deg, #ff6b35, #f7931e) !important;
+	color: white !important;
+}
+
+/* Ensure text is always white in gradient backgrounds */
+.learning-path-select button *,
+.learning-path-select .form-control button *,
+.learning-path-select button .form-control-prefix *,
+.learning-path-select button .form-control-suffix *,
+.learning-path-select .multiselect button *,
+.learning-path-select .multiselect .form-control button * {
+	color: white !important;
+}
+
+/* Force white text on all children including icons and text nodes */
+.learning-path-select button,
+.learning-path-select .form-control > button {
+	color: white !important;
+}
+
+.learning-path-select button > *,
+.learning-path-select .form-control > button > * {
+	color: white !important;
+}
+
+/* Specific targeting for icon colors */
+.learning-path-select svg,
+.learning-path-select .form-control svg,
+.learning-path-select button svg,
+.learning-path-select .form-control button svg {
+	color: white !important;
+	fill: white !important;
+	stroke: white !important;
+}
+
+/* Force gradient background on all select states dengan specificity tinggi */
+.learning-path-select button,
+.learning-path-select .form-control > button,
+.learning-path-select [data-headlessui-state] button,
+.learning-path-select > button,
+.learning-path-select > .form-control > button,
+.learning-path-select > div > button,
+.learning-path-select > div > .form-control > button,
+div.learning-path-select button,
+div.learning-path-select .form-control > button {
+	background: linear-gradient(90deg, #f86300 0%, #dd3a3a 100%) !important;
+	color: white !important;
+	border: none !important;
+}
+
+/* Additional selectors for nested structures */
+.learning-path-select * button,
+.learning-path-select * .form-control > button {
+	background: linear-gradient(90deg, #f86300 0%, #dd3a3a 100%) !important;
+	color: white !important;
+	border: none !important;
+}
+
+/* Selector sangat spesifik untuk override Frappe UI */
+body .learning-path-select button[type='button'],
+body .learning-path-select .form-control button[type='button'],
+body div.learning-path-select button[type='button'] {
+	background: linear-gradient(90deg, #f86300 0%, #dd3a3a 100%) !important;
+	background-color: #f86300 !important;
+	color: white !important;
+	border-color: transparent !important;
+}
+
+/* MultiSelect component styling */
+.learning-path-select.multiselect button,
+.learning-path-select.multiselect .form-control > button {
+	background: linear-gradient(135deg, #ff6b35, #f7931e) !important;
+	color: white !important;
+	border: none !important;
+}
+
+.learning-path-select.multiselect button:hover,
+.learning-path-select.multiselect .form-control > button:hover {
+	background: linear-gradient(135deg, #ff5722, #e68900) !important;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(247, 147, 30, 0.3) !important;
+}
+
+.learning-path-select.multiselect button span,
+.learning-path-select.multiselect .form-control > button span {
+	color: white !important;
+}
+
+.learning-path-select.multiselect button svg,
+.learning-path-select.multiselect .form-control > button svg {
+	color: white !important;
+	stroke: white !important;
+}
+
+/* MultiSelect selected items styling */
+.learning-path-select.multiselect .selected-item {
+	background: linear-gradient(135deg, #ff6b35, #f7931e);
+	color: white;
+	border-radius: 4px;
+	padding: 2px 8px;
+	margin: 2px;
+}
+
+.learning-path-select.multiselect .selected-item .remove-btn {
+	color: white;
+	opacity: 0.8;
+}
+
+.learning-path-select.multiselect .selected-item .remove-btn:hover {
+	opacity: 1;
+}

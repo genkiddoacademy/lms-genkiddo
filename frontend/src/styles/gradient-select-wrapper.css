@@ -1,0 +1,98 @@
+/* Simple and direct gradient styling for select components */
+
+.gradient-select-wrapper {
+	position: relative;
+	display: inline-block;
+	border-radius: 6px;
+	background: linear-gradient(90deg, #f86300 0%, #dd3a3a 100%);
+	padding: 1px; /* Thin border effect */
+}
+
+.gradient-select-wrapper .learning-path-select {
+	position: relative;
+	z-index: 2;
+}
+
+/* Override Frappe UI Select styling completely with maximum specificity */
+html body .gradient-select-wrapper .learning-path-select button,
+html body .gradient-select-wrapper .learning-path-select .form-control > button,
+html body .gradient-select-wrapper button[type='button'],
+html body div.gradient-select-wrapper button,
+html body div.gradient-select-wrapper .form-control button {
+	background: linear-gradient(90deg, #f86300 0%, #dd3a3a 100%) !important;
+	background-image: linear-gradient(
+		90deg,
+		#f86300 0%,
+		#dd3a3a 100%
+	) !important;
+	background-color: #f86300 !important;
+	border: none !important;
+	color: white !important;
+	border-radius: 6px !important;
+	padding: 8px 16px !important;
+	font-weight: 500 !important;
+	box-shadow: none !important;
+}
+
+html body .gradient-select-wrapper .learning-path-select button:hover,
+html
+	body
+	.gradient-select-wrapper
+	.learning-path-select
+	.form-control
+	> button:hover,
+html body div.gradient-select-wrapper button:hover {
+	background: linear-gradient(90deg, #e55a00 0%, #c23030 100%) !important;
+	background-image: linear-gradient(
+		90deg,
+		#e55a00 0%,
+		#c23030 100%
+	) !important;
+	background-color: #e55a00 !important;
+}
+
+/* Force all text and icons to be white */
+.gradient-select-wrapper button *,
+.gradient-select-wrapper .learning-path-select button *,
+.gradient-select-wrapper .form-control button * {
+	color: white !important;
+}
+
+.gradient-select-wrapper svg,
+.gradient-select-wrapper .learning-path-select svg {
+	color: white !important;
+	stroke: white !important;
+	fill: white !important;
+}
+
+/* Remove any background from child elements */
+.gradient-select-wrapper button > div,
+.gradient-select-wrapper button > span,
+.gradient-select-wrapper .learning-path-select button > div,
+.gradient-select-wrapper .learning-path-select button > span {
+	background: transparent !important;
+	background-color: transparent !important;
+}
+
+/* Dropdown styling */
+.gradient-select-wrapper .dropdown {
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	background: white;
+}
+
+.gradient-select-wrapper .dropdown-item {
+	color: #374151;
+	padding: 10px 16px;
+}
+
+.gradient-select-wrapper .dropdown-item:hover {
+	background: linear-gradient(90deg, #fff5f0 0%, #ffeee6 100%);
+	color: #f86300;
+}
+
+.gradient-select-wrapper .dropdown-item.selected {
+	background: linear-gradient(90deg, #f86300 0%, #dd3a3a 100%);
+	color: white;
+}

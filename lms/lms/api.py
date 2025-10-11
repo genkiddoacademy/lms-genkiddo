@@ -698,6 +698,7 @@ def update_chapter_index(chapter, course, idx):
 
 
 @frappe.whitelist(allow_guest=True)
+@frappe.whitelist(allow_guest=True)
 def get_categories(doctype, filters):
 	categoryOptions = []
 
@@ -1069,25 +1070,25 @@ def give_discussions_permission():
 
 
 @frappe.whitelist()
-def upsert_chapter(title, course, is_scorm_package=0, scorm_package=None, name=None):
+def upsert_chapter(title, course, is_scorm_package, **kwargs):
 	"""
 	Create or update a chapter
 
 	Args:
 		title: Chapter title
 		course: Course name
-		is_scorm_package: Whether this is a SCORM package (0 or 1, default 0)
-		name: Chapter name (optional, for editing existing chapter)
-		scorm_package: SCORM package file info (optional, required if is_scorm_package=1)
+		is_scorm_package: Whether this is a SCORM package (0 or 1)
+		**kwargs: Optional parameters
+			- scorm_package: SCORM package file info (required if is_scorm_package=1)
+			- name: Chapter name (for editing existing chapter)
 	"""
-	# Convert is_scorm_package to int
-	is_scorm_package = int(is_scorm_package)
-
-	if not title or not course:
-		frappe.throw("Title and course are required parameters")
 	values = frappe._dict(
 		{"title": title, "course": course, "is_scorm_package": is_scorm_package}
 	)
+
+	# Get optional parameters
+	scorm_package = kwargs.get('scorm_package')
+	name = kwargs.get('name')
 
 	if is_scorm_package and scorm_package:
 		scorm_package = frappe._dict(scorm_package)

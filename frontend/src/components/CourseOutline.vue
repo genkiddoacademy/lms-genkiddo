@@ -29,48 +29,44 @@
 				<template #item="{ element: chapter, index }">
 					<div class="chapter-item">
 						<div class="w-full">
-							<button class="w-full" @click="toggleChapter(chapter.name)">
-								<div
-									class="flex items-center p-3 transition-colors duration-200 group"
-									:class="[
-										getChapterRoundedClass(index),
-										isChapterOpen(chapter.name)
-											? 'bg-orange-2 text-white'
-											: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
-									]"
-								>
-									<ChevronRight
-										:class="{
-											'rotate-90 transform duration-200': isChapterOpen(
-												chapter.name,
-											),
-											'duration-200': !isChapterOpen(chapter.name),
-											hidden: chapter.is_scorm_package,
-										}"
-										class="h-4 w-4 mr-2"
-									/>
-									<div
-										class="text-lg text-left font-bold leading-5 flex-1"
-										@click.stop="redirectToChapter(chapter)"
-									>
-										{{ chapter.title }}
-									</div>
-									<div v-if="allowEdit" class="flex ml-auto space-x-2">
-										<Tooltip :text="__('Edit Chapter')" placement="bottom">
-											<FilePenLine
-												@click.stop.prevent="openChapterModal(chapter)"
-												class="h-4 w-4 opacity-75 hover:opacity-100 invisible group-hover:visible"
-											/>
-										</Tooltip>
-										<Tooltip :text="__('Delete Chapter')" placement="bottom">
-											<Trash2
-												@click.stop.prevent="trashChapter(chapter.name)"
-												class="h-4 w-4 text-red-300 opacity-75 hover:opacity-100 invisible group-hover:visible"
-											/>
-										</Tooltip>
-									</div>
+							<div
+								class="flex items-center p-3 transition-colors duration-200 group cursor-pointer"
+								:class="[
+									getChapterRoundedClass(index),
+									isChapterOpen(chapter.name)
+										? 'bg-orange-2 text-white'
+										: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
+								]"
+								@click="handleChapterClick(chapter)"
+							>
+								<ChevronRight
+									:class="{
+										'rotate-90 transform duration-200': isChapterOpen(
+											chapter.name,
+										),
+										'duration-200': !isChapterOpen(chapter.name),
+										hidden: chapter.is_scorm_package,
+									}"
+									class="h-4 w-4 mr-2"
+								/>
+								<div class="text-lg text-left font-bold leading-5 flex-1">
+									{{ chapter.title }}
 								</div>
-							</button>
+								<div v-if="allowEdit" class="flex ml-auto space-x-2">
+									<Tooltip :text="__('Edit Chapter')" placement="bottom">
+										<FilePenLine
+											@click.stop.prevent="openChapterModal(chapter)"
+											class="h-4 w-4 opacity-75 hover:opacity-100 invisible group-hover:visible"
+										/>
+									</Tooltip>
+									<Tooltip :text="__('Delete Chapter')" placement="bottom">
+										<Trash2
+											@click.stop.prevent="trashChapter(chapter.name)"
+											class="h-4 w-4 text-red-300 opacity-75 hover:opacity-100 invisible group-hover:visible"
+										/>
+									</Tooltip>
+								</div>
+							</div>
 							<div
 								v-if="!chapter.is_scorm_package && isChapterOpen(chapter.name)"
 								class="mt-2"
@@ -548,9 +544,18 @@ const trashChapter = (chapterName) => {
 	})
 }
 
+const handleChapterClick = (chapter) => {
+	// If it's a SCORM package, redirect to the SCORM chapter
+	if (chapter.is_scorm_package) {
+		redirectToChapter(chapter)
+	} else {
+		// Otherwise, toggle the accordion
+		toggleChapter(chapter.name)
+	}
+}
+
 const redirectToChapter = (chapter) => {
 	if (!chapter.is_scorm_package) return
-	event.preventDefault()
 	if (props.allowEdit) return
 	if (!user.data) {
 		toast.success(__('Please enroll for this course to view this lesson'))

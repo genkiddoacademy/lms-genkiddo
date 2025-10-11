@@ -230,7 +230,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="sticky top-10">
+			<div class="sticky top-10 mr-4">
 				<div class="py-5 px-2">
 					<div class="font-bold text-2xl text-ink-gray-9 mb-4">
 						{{ lesson.data.course_title }}

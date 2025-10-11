@@ -64,6 +64,7 @@ declare module 'vue' {
     ExplanationVideos: typeof import('./src/components/Modals/ExplanationVideos.vue')['default']
     FeedbackModal: typeof import('./src/components/Modals/FeedbackModal.vue')['default']
     FrappeCloudIcon: typeof import('./src/components/Icons/FrappeCloudIcon.vue')['default']
+    GradientSelect: typeof import('./src/components/GradientSelect.vue')['default']
     IconPicker: typeof import('./src/components/Controls/IconPicker.vue')['default']
     IndicatorIcon: typeof import('./src/components/Icons/IndicatorIcon.vue')['default']
     InviteIcon: typeof import('./src/components/Icons/InviteIcon.vue')['default']

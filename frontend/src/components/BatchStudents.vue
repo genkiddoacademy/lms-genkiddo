@@ -1,7 +1,7 @@
 <template>
 	<div v-if="batch.data" class="">
 		<div class="w-full flex items-center justify-between pb-4">
-			<div class="font-medium text-ink-gray-7">
+			<div class="text-3xl text-orange-2 font-bold">
 				{{ __('Statistics') }}
 			</div>
 		</div>
@@ -63,7 +63,7 @@
 
 	<div>
 		<div class="flex items-center justify-between mb-4">
-			<div class="text-ink-gray-7 font-medium">
+			<div class="text-3xl text-orange-2 font-bold">
 				{{ __('Students') }}
 			</div>
 			<Button v-if="!readOnlyMode" @click="openStudentModal()">
@@ -285,7 +285,7 @@ const removeStudents = (selections, unselectAll) => {
 				toast.success(__('Students deleted successfully'))
 				unselectAll()
 			},
-		}
+		},
 	)
 }
 
@@ -315,7 +315,7 @@ const countAssessments = (row, tasks) => {
 				: tasks.push({
 						value: 1,
 						label: assessment,
-				  })
+					})
 		}
 	})
 	return tasks
@@ -329,7 +329,7 @@ const countCourses = (row, tasks) => {
 				: tasks.push({
 						value: 1,
 						label: course,
-				  })
+					})
 		}
 	})
 	return tasks

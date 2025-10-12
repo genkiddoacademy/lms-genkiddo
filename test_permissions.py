@@ -24,8 +24,8 @@ class PermissionTest:
             "/batches": {"required_roles": ["all"]},
             "/programming-exercises": {"required_roles": ["all"]},
             "/certified-participants": {"required_roles": ["all"]},
-            "/statistics": {"required_roles": ["Administrator", "Moderator"]},
-            "/job-openings": {"required_roles": ["Administrator", "Moderator"]},
+            "/statistics": {"required_roles": ["Administrator", "System Manager", "Moderator"]},
+            "/job-openings": {"required_roles": ["Administrator", "System Manager", "Moderator"]},
             "/notifications": {"required_roles": ["all"]},
             "/settings": {"required_roles": ["Administrator"]},
         }
@@ -35,8 +35,8 @@ class PermissionTest:
             "Batches": {"roles": ["all"]},
             "Programming Exercises": {"roles": ["all"]},
             "Certified Members": {"roles": ["all"]},
-            "Statistics": {"roles": ["Administrator", "Moderator"]},
-            "Jobs": {"roles": ["Administrator", "Moderator"]},
+            "Statistics": {"roles": ["Administrator", "System Manager", "Moderator"]},
+            "Jobs": {"roles": ["Administrator", "System Manager", "Moderator"]},
             "Notifications": {"roles": ["all"]},
             "Settings": {"roles": ["Administrator"]},
         }

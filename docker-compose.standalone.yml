@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+    mariadb:
+        image: mariadb:10.8
+        command:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+            - --skip-character-set-client-handshake
+            - --skip-innodb-read-only-compressed
+        environment:
+            MYSQL_ROOT_PASSWORD: 123
+            MYSQL_DATABASE: lms
+        volumes:
+            - mariadb-data:/var/lib/mysql
+        ports:
+            - "3306:3306"
+        networks:
+            - lms-network
+
+    redis:
+        image: redis:alpine
+        volumes:
+            - redis-data:/data
+        ports:
+            - "6379:6379"
+        networks:
+            - lms-network
+
+    lms-app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        depends_on:
+            - mariadb
+            - redis
+        ports:
+            - "8000:8000"
+            - "9000:9000"
+        environment:
+            - SHELL=/bin/bash
+        networks:
+            - lms-network
+        volumes:
+            - ./sites:/home/frappe/frappe-bench/sites
+        restart: unless-stopped
+
+volumes:
+    mariadb-data:
+    redis-data:
+
+networks:
+    lms-network:
+        driver: bridge

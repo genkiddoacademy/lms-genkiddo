@@ -512,7 +512,7 @@ def get_assigned_badges(member):
 
 @frappe.whitelist()
 def get_all_users():
-	frappe.only_for(["Moderator", "Course Creator", "Batch Evaluator"])
+	frappe.only_for(["Moderator", "Course Creator", "Batch Evaluator", "System Manager"])
 	users = frappe.get_all(
 		"User",
 		{
@@ -859,7 +859,7 @@ def save_certificate_details(
 
 @frappe.whitelist()
 def delete_documents(doctype, documents):
-	frappe.only_for("Moderator")
+	frappe.only_for(["Moderator", "System Manager"])
 	for doc in documents:
 		frappe.delete_doc(doctype, doc)
 
@@ -1029,6 +1029,7 @@ def delete_course(course):
 
 @frappe.whitelist()
 def delete_batch(batch):
+	frappe.only_for(["Moderator", "System Manager"])
 	frappe.db.delete("LMS Batch Enrollment", {"batch": batch})
 	frappe.db.delete("Batch Course", {"parent": batch, "parenttype": "LMS Batch"})
 	frappe.db.delete("LMS Assessment", {"parent": batch, "parenttype": "LMS Batch"})
@@ -1448,7 +1449,7 @@ def get_certification_details(course):
 
 @frappe.whitelist()
 def save_role(user, role, value):
-	frappe.only_for("Moderator")
+	frappe.only_for(["Moderator", "System Manager"])
 	if cint(value):
 		doc = frappe.get_doc(
 			{
@@ -1467,7 +1468,7 @@ def save_role(user, role, value):
 
 @frappe.whitelist()
 def add_an_evaluator(email):
-	frappe.only_for("Moderator")
+	frappe.only_for(["Moderator", "System Manager"])
 	if not frappe.db.exists("User", email):
 		user = frappe.new_doc("User")
 		user.update(
@@ -1489,7 +1490,7 @@ def add_an_evaluator(email):
 
 @frappe.whitelist()
 def delete_evaluator(evaluator):
-	frappe.only_for("Moderator")
+	frappe.only_for(["Moderator", "System Manager"])
 	if not frappe.db.exists("Course Evaluator", evaluator):
 		frappe.throw(_("Evaluator does not exist."))
 

@@ -27,6 +27,7 @@ class LMSBatch(Document):
 		self.validate_duplicate_courses()
 		self.validate_payments_app()
 		self.validate_amount_and_currency()
+		self.validate_assessments_exist()
 		self.validate_duplicate_assessments()
 		self.validate_membership()
 		self.validate_timetable()
@@ -68,6 +69,26 @@ class LMSBatch(Document):
 	def validate_amount_and_currency(self):
 		if self.paid_batch and (not self.amount or not self.currency):
 			frappe.throw(_("Amount and currency are required for paid batches."))
+
+	def validate_assessments_exist(self):
+		"""Validate that all referenced assessments exist in the database"""
+		for assessment in self.assessment:
+			if assessment.assessment_type and assessment.assessment_name:
+				if not frappe.db.exists(assessment.assessment_type, assessment.assessment_name):
+					assessment_title = assessment.assessment_name
+					try:
+						# Try to get title if document exists (though it shouldn't at this point)
+						if frappe.db.exists(assessment.assessment_type, assessment.assessment_name):
+							assessment_title = frappe.db.get_value(assessment.assessment_type, assessment.assessment_name, "title") or assessment.assessment_name
+					except Exception:
+						pass
+
+					frappe.throw(
+						_("The {0} '{1}' does not exist. Please create it first or select a different assessment.").format(
+							assessment.assessment_type,
+							assessment_title
+						)
+					)
 
 	def validate_duplicate_assessments(self):
 		assessments = [row.assessment_name for row in self.assessment]

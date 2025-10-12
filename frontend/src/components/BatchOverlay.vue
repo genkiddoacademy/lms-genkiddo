@@ -208,7 +208,7 @@ const isStudent = computed(() => {
 })
 
 const isModerator = computed(() => {
-	return user.data?.is_moderator
+	return user.data?.is_moderator || user.data?.is_system_manager
 })
 </script>
 

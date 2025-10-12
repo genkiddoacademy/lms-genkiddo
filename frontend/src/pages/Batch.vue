@@ -1,12 +1,18 @@
 <template>
-	<div v-if="user.data?.is_moderator || isStudent" class="">
+	<div
+		v-if="user.data?.is_moderator || user.data?.is_system_manager || isStudent"
+		class=""
+	>
 		<header
 			class="sticky top-0 z-10 flex items-center justify-between border-b bg-surface-white px-3 py-2.5 sm:px-5"
 		>
 			<Breadcrumbs class="h-7" :items="breadcrumbs" />
 			<div class="flex items-center space-x-2">
 				<Button
-					v-if="user.data?.is_moderator && batch.data?.certification"
+					v-if="
+						(user.data?.is_moderator || user.data?.is_system_manager) &&
+						batch.data?.certification
+					"
 					@click="openCertificateDialog = true"
 				>
 					{{ __('Generate Certificates') }}
@@ -267,7 +273,7 @@ const tabs = computed(() => {
 		icon: Laptop,
 	})
 
-	if (user.data?.is_moderator) {
+	if (user.data?.is_moderator || user.data?.is_system_manager) {
 		batchTabs.push({
 			label: 'Assessments',
 			icon: BookOpenCheck,
@@ -361,7 +367,11 @@ const canMakeAnnouncement = () => {
 
 	if (!batch.data?.students?.length) return false
 
-	return user.data?.is_moderator || user.data?.is_evaluator
+	return (
+		user.data?.is_moderator ||
+		user.data?.is_evaluator ||
+		user.data?.is_system_manager
+	)
 }
 
 usePageMeta(() => {
@@ -371,3 +381,54 @@ usePageMeta(() => {
 	}
 })
 </script>
+
+<style>
+/* Target Headless UI tab buttons yang selected */
+[role='tab'][aria-selected='true'] {
+	color: #ef7f1f !important;
+	font-weight: 700 !important;
+	border-bottom-color: #ef7f1f !important;
+	border-bottom-width: 2px !important;
+}
+
+[role='tab'][aria-selected='true'] svg {
+	color: #ef7f1f !important;
+	stroke: #ef7f1f !important;
+}
+
+/* Target dengan data-headlessui-state="selected" */
+[data-headlessui-state='selected'] {
+	color: #ef7f1f !important;
+	font-weight: 700 !important;
+	border-bottom-color: #ef7f1f !important;
+	border-bottom-width: 2px !important;
+}
+
+[data-headlessui-state='selected'] svg {
+	color: #ef7f1f !important;
+	stroke: #ef7f1f !important;
+}
+
+/* Fallback dengan ID selector */
+#headlessui-tabs-tab-v-1[data-headlessui-state='selected'],
+#headlessui-tabs-tab-v-2[data-headlessui-state='selected'],
+#headlessui-tabs-tab-v-3[data-headlessui-state='selected'],
+#headlessui-tabs-tab-v-4[data-headlessui-state='selected'],
+#headlessui-tabs-tab-v-5[data-headlessui-state='selected'],
+#headlessui-tabs-tab-v-6[data-headlessui-state='selected'] {
+	color: #ef7f1f !important;
+	font-weight: 700 !important;
+	border-bottom-color: #ef7f1f !important;
+	border-bottom-width: 2px !important;
+}
+
+#headlessui-tabs-tab-v-1[data-headlessui-state='selected'] svg,
+#headlessui-tabs-tab-v-2[data-headlessui-state='selected'] svg,
+#headlessui-tabs-tab-v-3[data-headlessui-state='selected'] svg,
+#headlessui-tabs-tab-v-4[data-headlessui-state='selected'] svg,
+#headlessui-tabs-tab-v-5[data-headlessui-state='selected'] svg,
+#headlessui-tabs-tab-v-6[data-headlessui-state='selected'] svg {
+	color: #ef7f1f !important;
+	stroke: #ef7f1f !important;
+}
+</style>

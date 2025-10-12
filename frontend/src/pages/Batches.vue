@@ -3,7 +3,7 @@
 		class="sticky flex items-center justify-between top-0 z-10 border-b bg-surface-white px-3 py-2.5 sm:px-5"
 	>
 		<div class="!font-bold">
-			<Breadcrumbs :items="breadcrumbs" class="!text-3xl !font-bold" />
+			<CustomBreadcrumbs :items="breadcrumbs" class="!text-lg !font-bold" />
 		</div>
 		<router-link
 			v-if="canCreateBatch()"
@@ -86,7 +86,6 @@
 </template>
 <script setup>
 import {
-	Breadcrumbs,
 	Button,
 	call,
 	createListResource,
@@ -101,6 +100,7 @@ import { sessionStore } from '@/stores/session'
 import BatchCard from '@/components/BatchCard.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import GradientSelect from '@/components/GradientSelect.vue'
+import CustomBreadcrumbs from '@/components/CustomBreadcrumbs.vue'
 import { setupSelectGradientWatcher } from '@/utils/selectGradient'
 
 const user = inject('$user')
@@ -412,7 +412,8 @@ const batchTabs = computed(() => {
 	if (
 		user.data?.is_moderator ||
 		user.data?.is_instructor ||
-		user.data?.is_evaluator
+		user.data?.is_evaluator ||
+		user.data?.is_system_manager
 	) {
 		tabs.push({ label: __('📝 Archived'), value: 'Archived' })
 		tabs.push({ label: __('🔒 Unpublished'), value: 'Unpublished' })
@@ -424,13 +425,22 @@ const batchTabs = computed(() => {
 
 const canCreateBatch = () => {
 	if (readOnlyMode) return false
-	if (user.data?.is_moderator || user.data?.is_instructor) return true
+	if (
+		user.data?.is_moderator ||
+		user.data?.is_instructor ||
+		user.data?.is_system_manager
+	)
+		return true
 	return false
 }
 
 const breadcrumbs = computed(() => [
 	{
-		label: __('🧑‍🤝‍🧑 Batch > Semua Batch'),
+		label: __('Batch'),
+		route: { name: 'Batches' },
+	},
+	{
+		label: __('Semua Batch'),
 		route: { name: 'Batches' },
 	},
 ])

@@ -168,7 +168,11 @@ const canCreateClass = () => {
 }
 
 const hasPermission = () => {
-	return user.data?.is_moderator || user.data?.is_evaluator
+	return (
+		user.data?.is_moderator ||
+		user.data?.is_evaluator ||
+		user.data?.is_system_manager
+	)
 }
 
 const canAccessClass = (cls) => {

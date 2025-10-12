@@ -3,7 +3,7 @@
 		class="sticky flex items-center justify-between top-0 z-10 border-b bg-surface-white px-3 py-2.5 sm:px-5"
 	>
 		<div class="!font-bold">
-			<Breadcrumbs :items="breadcrumbs" class="!text-3xl !font-bold" />
+			<CustomBreadcrumbs :items="breadcrumbs" class="!text-lg !font-bold" />
 		</div>
 		<router-link
 			v-if="canCreateCourse()"
@@ -89,7 +89,6 @@
 </template>
 <script setup>
 import {
-	Breadcrumbs,
 	Button,
 	call,
 	createListResource,
@@ -105,6 +104,7 @@ import { canCreateCourse } from '@/utils'
 import CourseCard from '@/components/CourseCard.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import GradientSelect from '@/components/GradientSelect.vue'
+import CustomBreadcrumbs from '@/components/CustomBreadcrumbs.vue'
 import router from '../router'
 import { setupSelectGradientWatcher } from '@/utils/selectGradient'
 
@@ -466,7 +466,11 @@ const courseTabs = computed(() => {
 
 const breadcrumbs = computed(() => [
 	{
-		label: __('📖 Kursus > Semua Kursus'),
+		label: __('Courses'),
+		route: { name: 'Courses' },
+	},
+	{
+		label: __('Semua Kursus'),
 		route: { name: 'Courses' },
 	},
 ])

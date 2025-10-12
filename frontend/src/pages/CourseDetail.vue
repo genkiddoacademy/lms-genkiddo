@@ -3,7 +3,7 @@
 		<header
 			class="sticky top-0 z-10 flex items-center justify-between border-b bg-surface-white px-3 py-2.5 sm:px-5"
 		>
-			<Breadcrumbs class="h-7" :items="breadcrumbs" />
+			<CustomBreadcrumbs class="h-7" :items="breadcrumbs" />
 		</header>
 		<div class="m-5">
 			<div class="flex justify-between w-full space-x-5">
@@ -99,7 +99,8 @@
 	</div>
 </template>
 <script setup>
-import { createResource, Breadcrumbs, Tooltip, usePageMeta } from 'frappe-ui'
+import { createResource, Tooltip, usePageMeta } from 'frappe-ui'
+import CustomBreadcrumbs from '@/components/CustomBreadcrumbs.vue'
 import { computed, watch } from 'vue'
 import { Users, Star, Code, Zap, Leaf, Award, Crown } from 'lucide-vue-next'
 import { sessionStore } from '@/stores/session'

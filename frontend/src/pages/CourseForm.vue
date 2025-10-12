@@ -5,7 +5,7 @@
 				<header
 					class="sticky top-0 z-10 flex flex-col md:flex-row md:items-center justify-between border-b bg-surface-white px-3 py-2.5 sm:px-5"
 				>
-					<Breadcrumbs class="h-7" :items="breadcrumbs" />
+					<CustomBreadcrumbs class="h-7" :items="breadcrumbs" />
 					<div class="flex items-center mt-3 md:mt-0">
 						<Button v-if="courseResource.data?.name" @click="trashCourse()">
 							<template #icon>
@@ -311,7 +311,6 @@
 </template>
 <script setup>
 import {
-	Breadcrumbs,
 	call,
 	TextEditor,
 	Button,
@@ -355,6 +354,7 @@ import { getTagIcon, getTagClasses, getDisplayTag } from '@/utils/tag'
 import Link from '@/components/Controls/Link.vue'
 import CourseOutline from '@/components/CourseOutline.vue'
 import MultiSelect from '@/components/Controls/MultiSelect.vue'
+import CustomBreadcrumbs from '@/components/CustomBreadcrumbs.vue'
 
 const user = inject('$user')
 const newTag = ref('')

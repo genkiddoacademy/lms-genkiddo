@@ -3,7 +3,7 @@
 		<header
 			class="sticky top-0 z-10 flex items-center justify-between border-b bg-surface-white px-3 py-2.5 sm:px-5"
 		>
-			<Breadcrumbs class="h-7" :items="breadcrumbs" />
+			<CustomBreadcrumbs class="h-7" :items="breadcrumbs" />
 			<div class="flex items-center space-x-2">
 				<Button v-if="batchDetail.data?.name" @click="deleteBatch">
 					<template #icon>
@@ -318,7 +318,6 @@ import {
 	ref,
 } from 'vue'
 import {
-	Breadcrumbs,
 	FormControl,
 	FileUploader,
 	Button,
@@ -336,6 +335,7 @@ import { useOnboarding } from 'frappe-ui/frappe'
 import { sessionStore } from '../stores/session'
 import MultiSelect from '@/components/Controls/MultiSelect.vue'
 import Link from '@/components/Controls/Link.vue'
+import CustomBreadcrumbs from '@/components/CustomBreadcrumbs.vue'
 import {
 	openSettings,
 	getMetaInfo,

@@ -14,8 +14,6 @@ services:
 
     redis:
         image: redis:alpine
-        volumes:
-            - redis-data:/data
 
     frappe:
         image: frappe/bench:latest
@@ -31,4 +29,3 @@ services:
 
 volumes:
     mariadb-data:
-    redis-data:

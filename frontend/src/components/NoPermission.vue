@@ -20,7 +20,7 @@
 				</Button>
 			</router-link>
 		</div>
-		<div class="px-5 py-3">
+		<div v-else class="px-5 py-3">
 			<div>
 				{{ __('Please login to access this page.') }}
 			</div>

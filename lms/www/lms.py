@@ -31,7 +31,7 @@ def get_boot():
 	# Ensure CSRF is ignored in development mode
 	if frappe.conf.get("developer_mode") or frappe.local.conf.get("ignore_csrf"):
 		frappe.flags.ignore_csrf = True
-		
+
 	return frappe._dict(
 		{
 			"frappe_version": frappe.__version__,

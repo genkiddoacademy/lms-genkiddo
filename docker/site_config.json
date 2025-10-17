@@ -1,4 +1,4 @@
 {
-  "ignore_csrf": 1,
-  "developer_mode": 1
+	"ignore_csrf": 1,
+	"developer_mode": 1
 }

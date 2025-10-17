@@ -569,6 +569,20 @@ def get_sidebar_settings():
 
 		sidebar_items.web_pages = web_pages
 
+	# Add Apps menu for administrators
+	if frappe.session.user == "Administrator" or "Administrator" in frappe.get_roles():
+		sidebar_items.apps = {
+			"label": "Apps",
+			"icon": "settings",
+			"items": [
+				{
+					"label": "Desk",
+					"route": "/app/lms",
+					"icon": "dashboard"
+				}
+			]
+		}
+
 	return sidebar_items
 
 

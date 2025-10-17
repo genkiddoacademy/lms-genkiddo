@@ -491,6 +491,19 @@ const filterSidebarByRole = () => {
 	const isEvaluator = userRoles.includes('Batch Evaluator')
 	const isStudent = userRoles.includes('LMS Student')
 
+	// Add Desk link for administrators
+	if (isAdmin) {
+		sidebarLinks.value.push({
+			label: 'Desk',
+			icon: 'Settings',
+			to: '/app/lms',
+			activeFor: [],
+			onClick: () => {
+				window.location.href = '/app/lms'
+			},
+		})
+	}
+
 	// Role-based filtering logic
 	sidebarLinks.value = sidebarLinks.value.filter((link) => {
 		switch (link.label) {

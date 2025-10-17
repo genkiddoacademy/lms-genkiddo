@@ -86,26 +86,26 @@ def needs_restart(file_path):
     """Determine if a file change requires bench restart."""
     if not file_path:
         return True  # Full sync always needs restart
-    
+
     # Files that require restart
     restart_files = [
         'hooks.py',
-        'install.py', 
+        'install.py',
         'modules.txt',
         'patches.txt',
         '__init__.py',
         'routing.py'
     ]
-    
+
     # Check if any restart-required file
     for restart_file in restart_files:
         if file_path.endswith(restart_file):
             return True
-    
+
     # Configuration files and doctypes
     if any(folder in file_path for folder in ['fixtures/', 'doctype/', 'patches/']):
         return True
-        
+
     return False
 
 def main():

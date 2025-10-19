@@ -88,6 +88,7 @@ if [ ! -d "./sites/lms.localhost" ]; then
         --no-mariadb-socket
 
     bench --site lms.localhost install-app lms
+    bench build
     bench --site lms.localhost set-config developer_mode 1
     bench --site lms.localhost clear-cache
     bench use lms.localhost

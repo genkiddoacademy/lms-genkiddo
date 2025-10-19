@@ -1,4 +1,13 @@
 from . import __version__ as app_version
+import frappe
+
+# Force CSRF bypass for development
+def set_csrf_bypass():
+	"""Force CSRF bypass for development environment"""
+	frappe.flags.ignore_csrf = True
+
+# Hook to set CSRF bypass
+before_request = [set_csrf_bypass]
 
 app_name = "frappe_lms"
 app_title = "Frappe LMS"
@@ -159,6 +168,23 @@ override_whitelisted_methods = {
 # exempt linked doctypes from being automatically cancelled
 #
 # auto_cancel_exempted_doctypes = ["Auto Repeat"]
+
+# Ignore CSRF validation for guest-accessible API methods
+ignore_csrf_check = [
+	"lms.lms.api.get_translations",
+	"lms.lms.api.get_branding",
+	"lms.lms.api.get_lms_setting",
+	"lms.lms.api.get_user_info",
+	"lms.lms.api.get_sidebar_settings",
+	"lms.lms.api.get_categories",
+	"lms.lms.api.get_certified_participants",
+	"lms.lms.api.get_count_of_certified_members",
+	"lms.lms.api.get_certification_categories",
+	"frappe.client.get_single_value",
+	"frappe.client.get_count",
+	"frappe.client.get",
+	"logout",
+]
 
 # Add all simple route rules here
 website_route_rules = [

@@ -2237,3 +2237,18 @@ def get_related_courses(course):
 
 def persona_captured():
 	frappe.db.set_single_value("LMS Settings", "persona_captured", 1)
+
+
+def before_request_handler():
+	"""Handler to ignore CSRF validation for development and guest-accessible endpoints."""
+	# Ignore CSRF in development mode or when explicitly configured
+	if (
+		frappe.conf.get("developer_mode")
+		or frappe.conf.get("ignore_csrf")
+		or frappe.local.conf.get("ignore_csrf")
+	):
+		frappe.flags.ignore_csrf = True
+
+	# Also ignore CSRF for guest users accessing public endpoints
+	if frappe.session.user == "Guest":
+		frappe.flags.ignore_csrf = True

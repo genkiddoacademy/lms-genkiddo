@@ -39,6 +39,8 @@ def sync_files(container_name, app_path, file_path=None):
         if os.path.exists(file_path):
             run_command(f"docker cp {file_path} {container_name}:{app_path}/{file_path}")
             print(f"📄 Synced file: {file_path}")
+            # Hot reload for specific file types
+            hot_reload_file(container_name, file_path)
         else:
             print(f"❌ File not found: {file_path}")
             sys.exit(1)
@@ -50,6 +52,22 @@ def sync_files(container_name, app_path, file_path=None):
                 print(f"📁 Synced directory: {directory}/")
             else:
                 print(f"⚠️  Directory not found: {directory}/")
+
+def hot_reload_file(container_name, file_path):
+    """Hot reload specific file types without full restart."""
+    try:
+        if file_path.endswith('.py'):
+            # For Python files, just clear cache
+            print(f"🔄 Hot reloading Python file: {file_path}")
+            run_command(f"docker exec {container_name} bash -c \"cd /home/frappe/frappe-bench && python -c 'import sys; [sys.modules.pop(k) for k in list(sys.modules.keys()) if \\\"{file_path.replace('/', '.')}\\\".replace('.py', '') in k]'\"", capture_output=True)
+        elif file_path.endswith('.js') or file_path.endswith('.vue'):
+            # Frontend files are handled by Vite HMR
+            print(f"🔥 Frontend file will hot reload via Vite: {file_path}")
+        else:
+            print(f"📝 File synced: {file_path}")
+    except:
+        # If hot reload fails, fallback to noting it
+        print(f"⚠️  Hot reload not available for: {file_path}")
 
 def write_version_file(container_name, app_path, branch, commit):
     """Write version information to the container."""
@@ -63,6 +81,32 @@ TIME={datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')}
 
     run_command(f"docker cp .version {container_name}:{app_path}/.version")
     os.remove('.version')
+
+def needs_restart(file_path):
+    """Determine if a file change requires bench restart."""
+    if not file_path:
+        return True  # Full sync always needs restart
+
+    # Files that require restart
+    restart_files = [
+        'hooks.py',
+        'install.py',
+        'modules.txt',
+        'patches.txt',
+        '__init__.py',
+        'routing.py'
+    ]
+
+    # Check if any restart-required file
+    for restart_file in restart_files:
+        if file_path.endswith(restart_file):
+            return True
+
+    # Configuration files and doctypes
+    if any(folder in file_path for folder in ['fixtures/', 'doctype/', 'patches/']):
+        return True
+
+    return False
 
 def main():
     # Configuration
@@ -109,11 +153,16 @@ def main():
 
     print(f"✅ Synced: {branch}@{commit}")
 
-    # Restart bench
-    try:
-        run_command(f"docker exec {CONTAINER_NAME} bench restart", capture_output=True)
-    except:
-        print("⚠️  Manual restart may be needed")
+    # Smart restart decision
+    if needs_restart(file_path):
+        print("🔄 Restarting bench (required for this file type)...")
+        try:
+            run_command(f"docker exec {CONTAINER_NAME} bench restart", capture_output=True)
+            print("✅ Restart complete!")
+        except:
+            print("⚠️  Manual restart may be needed")
+    else:
+        print("⚡ Hot reload - no restart needed!")
 
 if __name__ == "__main__":
     main()

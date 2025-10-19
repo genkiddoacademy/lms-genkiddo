@@ -52,19 +52,19 @@
 			<!-- Chat Messages -->
 			<template v-for="(msg, index) in messages" :key="index">
 				<div class="flex items-start space-x-3 chat-message" :class="msg.role === 'user' ? 'justify-end' : ''">
+					<!-- USER -->
 					<template v-if="msg.role === 'user'">
 						<div class="bg-orange-100 p-3 rounded-lg text-gray-800 max-w-lg whitespace-pre-wrap">
-							{{ msg.content }}
+							{{ msg.raw }}
 						</div>
-						<div
-							class="min-w-8 min-h-8 rounded-full bg-orange-500 text-white flex items-center justify-center">
-							U
-						</div>
+						<div class="min-w-8 min-h-8 rounded-full bg-orange-500 text-white flex items-center justify-center">U</div>
 					</template>
+
+					<!-- AI -->
 					<template v-else>
 						<img src="https://kiko.genkiddo.id/static/images/kiko-icon.png" alt="Kiko"
 							class="w-8 h-8 rounded-full" />
-						<div class="bg-white p-3 rounded-lg shadow text-gray-800 max-w-lg whitespace-pre-wrap"
+						<div class="bg-white p-3 rounded-lg shadow text-gray-800 max-w-lg whitespace-pre-wrap message-markdown"
 							v-html="msg.content"></div>
 					</template>
 				</div>
@@ -80,9 +80,9 @@
 		</main>
 
 		<!-- Input footer -->
-		<footer id="chat-footer" v-if="!showWelcome" class="border-t border-gray-200 p-4">
+		<footer v-if="!showWelcome" class="border-t border-gray-200 p-4">
 			<form @submit.prevent="handleSubmit('messageInputFooter')" class="flex items-center space-x-2">
-				<textarea id="messageInputFooter" v-model="inputMessage" rows="1"
+				<textarea v-model="inputMessage" rows="1"
 					placeholder="Tanyakan ke kiko sesuatu..."
 					class="flex-1 px-4 py-2 border border-gray-300 rounded-lg resize-none shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
 					style="min-height: 44px; max-height: 150px" @input="autoResize($event)"
@@ -96,8 +96,6 @@
 							clip-rule="evenodd" />
 					</svg>
 				</button>
-
-
 			</form>
 			<p class="text-xs text-gray-400 mt-2 text-center">
 				Kiko bisa saja salah, periksa jawaban sebelum percaya 100%.
@@ -107,10 +105,15 @@
 </template>
 
 <script>
+import markdownit from "markdown-it";
+import hljs from "highlight.js";
+import "highlight.js/styles/github.css";
+
 export default {
 	name: "ChatKiko",
 	data() {
 		return {
+			md: null,
 			showWelcome: true,
 			inputMessage: "",
 			messages: [],
@@ -122,26 +125,45 @@ export default {
 				"Apa saja pilihan paket belajarnya?",
 				"Apakah saya bisa mencoba kelas terlebih dahulu sebelum mendaftar?",
 			],
+			typingIntervalId: null,
 		};
 	},
+	mounted() {
+		// Init markdown
+		this.md = markdownit({
+			html: true,
+			linkify: true,
+			typographer: true,
+			highlight: (str, lang) => {
+				if (lang && hljs.getLanguage(lang)) {
+					return `<pre><code class="hljs language-${lang}">${hljs.highlight(str, { language: lang }).value}</code></pre>`;
+				}
+				return `<pre><code class="hljs">${this.md.utils.escapeHtml(str)}</code></pre>`;
+			},
+		});
+	},
+
 	methods: {
 		autoResize(e) {
 			e.target.style.height = "auto";
 			e.target.style.height = e.target.scrollHeight + "px";
 		},
-		handleSubmit(inputId) {
+
+		handleSubmit() {
 			const text = this.inputMessage.trim();
 			if (!text) return;
 			this.sendMessage(text);
 			this.inputMessage = "";
 		},
+
 		sendQuickQuestion(q) {
 			this.sendMessage(q);
 		},
+
 		async sendMessage(text) {
 			if (this.showWelcome) this.showWelcome = false;
 
-			this.messages.push({ role: "user", content: text });
+			this.messages.push({ role: "user", raw: text });
 			this.scrollToBottom();
 
 			this.isTyping = true;
@@ -152,42 +174,47 @@ export default {
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ message: text }),
 				});
-
 				const data = await res.json();
-				this.isTyping = false;
-
 				this.typeWriterEffect(data.reply);
 			} catch {
 				this.isTyping = false;
-				this.messages.push({
-					role: "ai",
-					content: "⚠️ Error: gagal terhubung ke server.",
-				});
+				this.messages.push({ role: "assistant", content: this.md.render("⚠️ **Error:** gagal terhubung ke server.") });
 			}
 		},
+
 		typeWriterEffect(text) {
+			if (this.typingIntervalId) clearInterval(this.typingIntervalId);
+
+			this.messages.push({ role: "assistant", raw: "", content: "" });
+
 			let i = 0;
 			let buffer = "";
-			const speed = 20;
 
-			const interval = setInterval(() => {
+			this.typingIntervalId = setInterval(() => {
 				if (i < text.length) {
 					buffer += text.charAt(i);
 					i++;
-					this.$set(this.messages, this.messages.length, {
-						role: "ai",
-						content: buffer,
+
+					const idx = this.messages.length - 1;
+					this.messages[idx].raw = buffer;
+					this.messages[idx].content = this.md.render(buffer);
+
+					this.$nextTick(() => {
+						hljs.highlightAll();
+						this.scrollToBottom();
 					});
-					this.scrollToBottom();
 				} else {
-					clearInterval(interval);
+					clearInterval(this.typingIntervalId);
+					this.typingIntervalId = null;
+					this.isTyping = false;
 				}
-			}, speed);
+			}, 18);
 		},
+
 		scrollToBottom() {
 			this.$nextTick(() => {
 				const el = this.$refs.chatContainer;
-				el.scrollTop = el.scrollHeight;
+				if (el) el.scrollTop = el.scrollHeight;
 			});
 		},
 	},
@@ -196,18 +223,24 @@ export default {
 
 <style scoped>
 .chat-message {
-	animation: fadeIn 0.3s ease-in-out;
+	animation: fadeIn 0.18s ease-in-out;
 }
 
 @keyframes fadeIn {
 	from {
 		opacity: 0;
-		transform: translateY(10px);
+		transform: translateY(6px);
 	}
 
 	to {
 		opacity: 1;
 		transform: translateY(0);
 	}
+}
+
+.message-markdown pre {
+	padding: 0.75rem;
+	border-radius: 0.5rem;
+	overflow: auto;
 }
 </style>

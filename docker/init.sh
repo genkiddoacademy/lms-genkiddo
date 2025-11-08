@@ -26,15 +26,16 @@ sed -i '/watch/d' ./Procfile
 
 bench get-app lms
 
-bench new-site lms.localhost \
+bench new-site lms.genkiddo.id \
 --force \
 --mariadb-root-password 123 \
---admin-password admin \
+--admin-password AhdafGanteng123 \
 --no-mariadb-socket
 
-bench --site lms.localhost install-app lms
-bench --site lms.localhost set-config developer_mode 1
-bench --site lms.localhost clear-cache
-bench use lms.localhost
+bench --site lms.genkiddo.id install-app lms
+bench --site lms.genkiddo.id set-config developer_mode 1
+bench --site lms.genkiddo.id clear-cache
+bench use lms.genkiddo.id
 
 bench start
+

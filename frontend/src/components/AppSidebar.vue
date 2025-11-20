@@ -1,10 +1,10 @@
 <template>
 	<div
-		class="flex h-full flex-col transition-all duration-300 ease-in-out border-r bg-surface-menu-bar"
+		class="flex h-full flex-col transition-all duration-300 ease-in-out border-r bg-surface-menu-bar overflow-hidden"
 		:class="sidebarStore.isSidebarCollapsed ? 'w-20' : '!w-[260px]'"
 	>
 		<div
-			class="flex flex-col flex-1 overflow-hidden h-fit px-4"
+			class="flex flex-col flex-1 overflow-y-auto overflow-x-hidden h-fit px-4 scrollbar-hide"
 			:class="sidebarStore.isSidebarCollapsed ? 'items-center' : ''"
 		>
 			<div
@@ -33,7 +33,7 @@
 			<!-- Theme Toggle and Main Links -->
 			<div
 				class="border-t-2 border-gray-200 flex flex-col py-2"
-				v-if="sidebarSettings.data"
+				v-if="sidebarSettings.data || !user"
 			>
 				<!-- Theme Toggle: render expanded or collapsed UI inside same parent -->
 				<div
@@ -384,6 +384,7 @@ import {
 	UserRound,
 	Settings,
 	HelpCircle,
+	LayoutDashboard
 } from 'lucide-vue-next'
 import {
 	TrialBanner,
@@ -443,42 +444,52 @@ onMounted(() => {
 })
 
 const setSidebarLinks = () => {
-	if (!user) {
-		return // Skip for guest users
-	}
-	sidebarSettings.reload(
-		{},
-		{
-			onSuccess(data) {
-				// Filter based on settings
-				Object.keys(data).forEach((key) => {
-					if (!parseInt(data[key])) {
-						sidebarLinks.value = sidebarLinks.value.filter(
-							(link) => link.label.toLowerCase().split(' ').join('_') !== key,
-						)
-					}
-				})
+    if (!user) {
+        return // Skip for guest users
+    }
+    sidebarSettings.reload(
+        {},
+        {
+            onSuccess(data) {
+                // Filter based on settings
+                Object.keys(data).forEach((key) => {
+                    if (!parseInt(data[key])) {
+                        sidebarLinks.value = sidebarLinks.value.filter(
+                            (link) => link.label.toLowerCase().split(' ').join('_') !== key,
+                        )
+                    }
+                })
 
-				// Filter based on user roles
-				filterSidebarByRole()
+                // Filter based on user roles
+                filterSidebarByRole()
 
-				// Add Chat with Kiko if not already present
-				if (
-					!sidebarLinks.value.some((link) => link.label === 'Chat with Kiko')
-				) {
-					sidebarLinks.value.push({
-						label: 'Chat with Kiko',
-						icon: 'MessageCircle',
-						to: 'ChatKiko',
-						activeFor: ['ChatKiko'],
-					})
-				}
-			},
-			onError() {
-				// Handle error, keep default sidebarLinks
-			},
-		},
-	)
+                // Add Dashboard at the top if not already present
+                if (!sidebarLinks.value.some((link) => link.label === 'Dashboard')) {
+                    sidebarLinks.value.unshift({
+                        label: 'Dashboard',
+                        icon: 'LayoutDashboard',
+                        to: 'Dashboard',
+                        activeFor: ['Dashboard'],
+                    })
+                }
+
+                // Add Chat with Kiko if not already present
+                if (
+                    !sidebarLinks.value.some((link) => link.label === 'Chat with Kiko')
+                ) {
+                    sidebarLinks.value.push({
+                        label: 'Chat with Kiko',
+                        icon: 'MessageCircle',
+                        to: 'ChatKiko',
+                        activeFor: ['ChatKiko'],
+                    })
+                }
+            },
+            onError() {
+                // Handle error, keep default sidebarLinks
+            },
+        },
+    )
 }
 
 const filterSidebarByRole = () => {
@@ -675,34 +686,34 @@ const addPrograms = () => {
 }
 
 const addGuestSidebar = () => {
-	if (!user) {
-		sidebarLinks.value = [
-			{
-				label: 'Courses',
-				icon: 'GraduationCap',
-				to: 'Courses',
-				activeFor: [
-					'Courses',
-					'CourseDetail',
-					'Lesson',
-					'CourseForm',
-					'LessonForm',
-				],
-			},
-			{
-				label: 'Batches',
-				icon: 'Users',
-				to: 'Batches',
-				activeFor: ['Batches', 'BatchDetail', 'Batch', 'BatchForm'],
-			},
-			{
-				label: 'Chat with Kiko',
-				icon: 'MessageCircle',
-				to: 'ChatKiko',
-				activeFor: ['ChatKiko'],
-			},
-		]
-	}
+    if (!user) {
+        sidebarLinks.value = [
+            {
+                label: 'Courses',
+                icon: 'GraduationCap',
+                to: 'Courses',
+                activeFor: [
+                    'Courses',
+                    'CourseDetail',
+                    'Lesson',
+                    'CourseForm',
+                    'LessonForm',
+                ],
+            },
+            {
+                label: 'Batches',
+                icon: 'Users',
+                to: 'Batches',
+                activeFor: ['Batches', 'BatchDetail', 'Batch', 'BatchForm'],
+            },
+            {
+                label: 'Chat with Kiko',
+                icon: 'MessageCircle',
+                to: 'ChatKiko',
+                activeFor: ['ChatKiko'],
+            },
+        ]
+    }
 }
 
 const openPageModal = (link) => {
@@ -743,7 +754,7 @@ const goToLogin = () => {
 }
 
 const goToRegister = () => {
-	window.location.href = '/register'
+	window.location.href = '/login#signup'
 }
 
 const goToHome = () => {
@@ -1041,3 +1052,16 @@ onUnmounted(() => {
 	socket.off('publish_lms_notifications')
 })
 </script>
+
+<style scoped>
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+	display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+	-ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;  /* Firefox */
+}
+</style>

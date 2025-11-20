@@ -172,7 +172,9 @@ const routes = [
 		path: '/chat-kiko',
 		name: 'ChatKiko',
 		component: () => import('@/pages/ChatKiko.vue'),
+		meta: { title: 'Chat with Kiko' },
 	},
+
 	{
 		path: '/forbidden',
 		name: 'Forbidden',
@@ -293,6 +295,15 @@ const routes = [
 		props: true,
 		meta: { requiresAuth: true },
 	},
+	{
+		path: '/dashboard',
+		name: 'DashboardStudent',
+		component: () => import('@/pages/DashboardStudent.vue'),
+		meta: {
+			title: 'Dashboard',
+			// requiresAuth: true  // tambahkan ini kalau butuh login
+		},
+	},
 ]
 
 let router = createRouter({
@@ -345,5 +356,12 @@ router.beforeEach(async (to, from, next) => {
 	}
 	return next()
 })
+
+router.afterEach((to) => {
+	// Update document title
+	const defaultTitle = 'LMS'
+	document.title = to.meta.title || to.name || defaultTitle
+})
+
 
 export default router

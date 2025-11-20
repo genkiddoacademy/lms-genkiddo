@@ -1,0 +1,306 @@
+2025-11-13 13:09:00,825 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-13 13:09:01,003 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-13 13:09:07,418 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-13 13:09:07,510 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-13 13:16:06,741 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-13 13:16:06,747 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-13 13:16:06,752 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-13 13:16:06,756 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-13 13:16:06,760 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-13 13:16:06,763 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-14 13:01:56,919 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'arch': 'amd64', 'commit': '08059e95dacafe0bf6e5782f8e2c8ec9cd8c5a17', 'os': 'windows'}
+2025-11-15 01:57:58,362 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-15 01:57:58,437 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-15 02:00:03,892 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 02:00:03,904 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 05:18:15,440 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'id': 895, 'jsonrpc': '2.0', 'method': 'initialize', 'params': {'capabilities': {'roots': {'listChanged': True}}, 'clientInfo': {'name': 'ExampleClient', 'version': '1.0.0'}, 'protocolVersion': '2025-03-26'}}
+2025-11-15 09:32:21,079 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-15 09:32:21,089 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-15 09:32:47,801 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-15 09:32:47,884 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-15 09:33:01,575 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-15 09:33:01,632 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-15 09:33:37,520 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-15 09:33:37,520 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-15 09:34:54,082 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-15 09:34:54,098 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-15 09:35:42,374 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-15 09:35:42,433 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-15 09:36:02,488 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-15 09:36:02,502 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-15 09:36:27,532 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'lesson': '0002 testing', 'videos': [{'watch_time': None}, {'watch_time': None}], 'cmd': 'lms.lms.api.track_video_watch_duration'}
+2025-11-15 09:36:49,132 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Badge Assignment', 'fields': ['name', 'badge', 'badge_image', 'description', 'creation', 'count(name) as count'], 'filters': {}, 'start': 0, 'limit': 20, 'limit_start': 0, 'limit_page_length': 20, 'group_by': 'badge', 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-15 09:36:49,231 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Badge Assignment', 'fields': ['name', 'badge', 'badge_image', 'description', 'creation', 'count(name) as count'], 'filters': {}, 'start': 0, 'limit': 20, 'limit_start': 0, 'limit_page_length': 20, 'group_by': 'badge', 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-15 09:36:50,401 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'keyword': '********', 'cmd': 'lms.lms.api.get_unsplash_photos'}
+2025-11-15 09:48:02,848 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,851 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,854 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,856 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,858 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,860 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,862 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,864 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,866 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,868 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,870 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,872 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,873 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 09:48:02,875 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 11:49:19,955 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Badge Assignment', 'fields': ['name', 'badge', 'badge_image', 'description', 'creation', 'count(name) as count'], 'filters': {}, 'start': 0, 'limit': 20, 'limit_start': 0, 'limit_page_length': 20, 'group_by': 'badge', 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-15 11:49:20,033 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Badge Assignment', 'fields': ['name', 'badge', 'badge_image', 'description', 'creation', 'count(name) as count'], 'filters': {}, 'start': 0, 'limit': 20, 'limit_start': 0, 'limit_page_length': 20, 'group_by': 'badge', 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-15 11:49:20,884 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'keyword': '********', 'cmd': 'lms.lms.api.get_unsplash_photos'}
+2025-11-15 11:51:34,335 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Certificate', 'name': 'n75rkk50ut', 'format': 'Certificate', 'cmd': 'frappe.utils.print_format.download_pdf', 'pdf_generator': 'wkhtmltopdf'}
+2025-11-15 11:52:03,283 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-15 11:52:03,370 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-15 12:00:07,923 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 12:00:07,927 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-15 17:46:51,356 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-16 02:55:33,877 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-16 02:55:58,826 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-16 02:55:59,055 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-16 02:56:00,347 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-16 02:56:04,565 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-16 02:56:04,817 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-16 02:56:55,578 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-16 02:56:55,748 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-16 02:57:24,071 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-16 23:17:24,309 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-17 01:22:06,010 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Badge Assignment', 'fields': ['name', 'badge', 'badge_image', 'description', 'creation', 'count(name) as count'], 'filters': {}, 'start': 0, 'limit': 20, 'limit_start': 0, 'limit_page_length': 20, 'group_by': 'badge', 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-17 01:22:06,082 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Badge Assignment', 'fields': ['name', 'badge', 'badge_image', 'description', 'creation', 'count(name) as count'], 'filters': {}, 'start': 0, 'limit': 20, 'limit_start': 0, 'limit_page_length': 20, 'group_by': 'badge', 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-17 01:22:07,017 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'keyword': '********', 'cmd': 'lms.lms.api.get_unsplash_photos'}
+2025-11-17 01:23:01,473 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-17 01:23:01,555 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-17 01:23:11,499 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-17 01:23:11,585 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-17 01:23:50,256 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Badge Assignment', 'fields': ['name', 'badge', 'badge_image', 'description', 'creation', 'count(name) as count'], 'filters': {}, 'start': 0, 'limit': 20, 'limit_start': 0, 'limit_page_length': 20, 'group_by': 'badge', 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-17 01:23:50,333 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Badge Assignment', 'fields': ['name', 'badge', 'badge_image', 'description', 'creation', 'count(name) as count'], 'filters': {}, 'start': 0, 'limit': 20, 'limit_start': 0, 'limit_page_length': 20, 'group_by': 'badge', 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-17 01:23:51,139 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'keyword': '********', 'cmd': 'lms.lms.api.get_unsplash_photos'}
+2025-11-17 01:32:04,892 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-17 01:32:04,895 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-17 01:32:04,897 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-17 01:32:04,900 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-17 01:41:39,777 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Badge Assignment', 'fields': ['name', 'badge', 'badge_image', 'description', 'creation', 'count(name) as count'], 'filters': {}, 'start': 0, 'limit': 20, 'limit_start': 0, 'limit_page_length': 20, 'group_by': 'badge', 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-17 01:41:39,842 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Badge Assignment', 'fields': ['name', 'badge', 'badge_image', 'description', 'creation', 'count(name) as count'], 'filters': {}, 'start': 0, 'limit': 20, 'limit_start': 0, 'limit_page_length': 20, 'group_by': 'badge', 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-17 01:41:40,906 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'keyword': '********', 'cmd': 'lms.lms.api.get_unsplash_photos'}
+2025-11-17 02:48:51,541 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Badge Assignment', 'fields': ['name', 'badge', 'badge_image', 'description', 'creation', 'count(name) as count'], 'filters': {}, 'start': 0, 'limit': 20, 'limit_start': 0, 'limit_page_length': 20, 'group_by': 'badge', 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-17 02:48:51,646 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Badge Assignment', 'fields': ['name', 'badge', 'badge_image', 'description', 'creation', 'count(name) as count'], 'filters': {}, 'start': 0, 'limit': 20, 'limit_start': 0, 'limit_page_length': 20, 'group_by': 'badge', 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-17 02:48:52,597 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'keyword': '********', 'cmd': 'lms.lms.api.get_unsplash_photos'}
+2025-11-17 06:04:12,860 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'field': 'livecode_url', 'cmd': 'frappe.client.get_single_value'}
+2025-11-17 06:04:14,394 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Settings', 'name': 'LMS Settings', 'cmd': 'frappe.client.get'}
+2025-11-17 06:04:26,165 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'course': 'komposer-digital', 'cmd': 'lms.lms.api.get_course_progress_distribution'}
+2025-11-17 06:04:27,642 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'course': 'komposer-digital', 'cmd': 'lms.lms.api.get_course_progress_distribution'}
+2025-11-17 06:04:28,377 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Enrollment', 'fields': ['name', 'member', 'member_name', 'member_image', 'member_username', 'progress'], 'filters': {'course': 'komposer-digital'}, 'start': 0, 'limit': 50, 'limit_start': 0, 'limit_page_length': 50, 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-17 06:04:30,541 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {'doctype': 'LMS Enrollment', 'fields': ['name', 'member', 'member_name', 'member_image', 'member_username', 'progress'], 'filters': {'course': 'komposer-digital'}, 'start': 0, 'limit': 50, 'limit_start': 0, 'limit_page_length': 50, 'debug': 0, 'cmd': 'frappe.client.get_list'}
+2025-11-17 06:16:02,989 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-17 06:16:02,993 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-17 06:16:02,995 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-17 06:16:02,998 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-17 06:16:03,002 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-17 06:16:03,004 ERROR frappe Error while inserting deferred Error Log record: (1406, "Data too long for column 'method' at row 1")
+Site: lms.localhost
+Form Dict: {}
+2025-11-17 07:31:03,311 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-17 08:29:42,981 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}
+2025-11-18 04:22:00,715 ERROR frappe New Exception collected in error log
+Site: lms.localhost
+Form Dict: {}

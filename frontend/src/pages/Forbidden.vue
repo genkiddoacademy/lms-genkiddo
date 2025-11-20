@@ -46,8 +46,7 @@ export default {
 	name: 'Forbidden',
 	methods: {
 		goToLogin() {
-			const { login } = sessionStore()
-			login()
+			window.location.href = '/login'
 		},
 		goToHome() {
 			window.open('https://genkiddo.id/', '_blank')

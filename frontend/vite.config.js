@@ -25,7 +25,13 @@ export default defineConfig({
 		}),
 	],
 	server: {
-		allowedHosts: ['fs', 'per2'],
+		allowedHosts: [
+			'fs', 
+			'per2', 
+			'.trycloudflare.com',
+			'.ngrok-free.app',  // ✅ Tambahkan ini
+			'.ngrok.io',        // ✅ Untuk ngrok versi lama
+		],
 		hmr: {
 			overlay: true,
 		},

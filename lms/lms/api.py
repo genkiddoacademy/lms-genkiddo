@@ -1085,7 +1085,7 @@ def give_discussions_permission():
 
 
 @frappe.whitelist()
-def upsert_chapter(title, course, is_scorm_package, **kwargs):
+def upsert_chapter(title, course, is_scorm_package, scorm_package=None, name=None):
 	"""
 	Create or update a chapter
 
@@ -1093,17 +1093,12 @@ def upsert_chapter(title, course, is_scorm_package, **kwargs):
 		title: Chapter title
 		course: Course name
 		is_scorm_package: Whether this is a SCORM package (0 or 1)
-		**kwargs: Optional parameters
-			- scorm_package: SCORM package file info (required if is_scorm_package=1)
-			- name: Chapter name (for editing existing chapter)
+		scorm_package: SCORM package file info (optional)
+		name: Chapter name (for editing existing chapter, optional)
 	"""
 	values = frappe._dict(
 		{"title": title, "course": course, "is_scorm_package": is_scorm_package}
 	)
-
-	# Get optional parameters
-	scorm_package = kwargs.get('scorm_package')
-	name = kwargs.get('name')
 
 	if is_scorm_package and scorm_package:
 		scorm_package = frappe._dict(scorm_package)
@@ -1130,7 +1125,6 @@ def upsert_chapter(title, course, is_scorm_package, **kwargs):
 		add_lesson(title, chapter.name, course)
 
 	return chapter
-
 
 def extract_package(course, title, scorm_package):
 	package = frappe.get_doc("File", scorm_package.name)
@@ -1744,3 +1738,26 @@ def get_progress_distribution(progressList):
 	]
 
 	return distribution
+
+#Genkiddo Academy
+@frappe.whitelist()
+def get_student_scores():
+    user = frappe.session.user
+
+    scores = frappe.db.get_all(
+        "LMS Quiz Submission",
+        filters={"owner": user},
+        fields=["quiz_title", "score"]
+    )
+
+    if not scores:
+        return {"scores": [], "avg": 0, "total": 0}
+
+    total = sum([s["score"] for s in scores])
+    avg = total / len(scores)
+
+    return {
+        "scores": scores,
+        "total": total,
+        "avg": avg
+    }

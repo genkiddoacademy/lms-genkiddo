@@ -61,6 +61,7 @@ import { sessionStore } from '@/stores/session'
 import { useSettings } from '@/stores/settings'
 import { usersStore } from '@/stores/user'
 import * as icons from 'lucide-vue-next'
+import {LayoutDashboard, MessageCircle } from 'lucide-vue-next'
 
 const { logout, user } = sessionStore()
 let { isLoggedIn } = sessionStore()
@@ -110,12 +111,22 @@ const setSidebarLinks = () => {
 		{},
 		{
 			onSuccess(data) {
+				// Reset sidebar links to base set
+				sidebarLinks.value = getSidebarLinks()
 				filterLinksToShow(data)
-				addOtherLinks()
+				
+				// Add Dashboard link if not already present
+				if (!sidebarLinks.value.some((link) => link.label === 'Dashboard')) {
+					sidebarLinks.value.unshift({
+						label: 'Dashboard',
+						icon: 'LayoutDashboard',
+						to: 'Dashboard',
+						activeFor: ['Dashboard'],
+					})
+				}
+
 				// Add Chat with Kiko if not already present
-				if (
-					!sidebarLinks.value.some((link) => link.label === 'Chat with Kiko')
-				) {
+				if (!sidebarLinks.value.some((link) => link.label === 'Chat with Kiko')) {
 					sidebarLinks.value.push({
 						label: 'Chat with Kiko',
 						icon: 'MessageCircle',
@@ -123,6 +134,15 @@ const setSidebarLinks = () => {
 						activeFor: ['ChatKiko'],
 					})
 				}
+
+				// Untuk user biasa, pastikan hanya ada link yang diinginkan
+				if (!userResource.data?.is_system_manager && !userResource.data?.is_moderator) {
+					sidebarLinks.value = sidebarLinks.value.filter(link => 
+						['Dashboard', 'Courses', 'Batches', 'Chat with Kiko'].includes(link.label)
+					)
+				}
+
+				addOtherLinks()
 				limitSidebarToFour()
 			},
 		},
@@ -141,8 +161,16 @@ const filterLinksToShow = (data) => {
 
 const addOtherLinks = () => {
 	if (user) {
-		addNotifications()
-		limitSidebarToFour()
+		// Untuk user biasa, tambahkan Notifications ke otherLinks
+		if (!userResource.data?.is_system_manager && !userResource.data?.is_moderator) {
+			otherLinks.value.push({
+				label: 'Notifications',
+				icon: 'Bell',
+				to: 'Notifications',
+				activeFor: ['Notifications'],
+			})
+		}
+		
 		otherLinks.value.push({
 			label: 'Profile',
 			icon: 'UserRound',
@@ -151,14 +179,17 @@ const addOtherLinks = () => {
 			label: 'Toggle Theme',
 			icon: isDarkMode.value ? 'Moon' : 'Sun',
 		})
-		// Settings shortcut in mobile "more" menu
+		
 		// Settings shortcut in mobile "more" menu (only for admins)
-		if (userResource.data?.roles?.includes('Administrator')) {
+		if (userResource.data?.roles?.includes('Administrator') || 
+			userResource.data?.is_system_manager || 
+			userResource.data?.is_moderator) {
 			otherLinks.value.push({
 				label: 'Settings',
 				icon: 'Settings',
 			})
 		}
+		
 		otherLinks.value.push({
 			label: 'Log out',
 			icon: 'LogOut',
@@ -179,19 +210,19 @@ const addOtherLinks = () => {
 	}
 }
 
-const addNotifications = () => {
-	if (userResource.data?.is_system_manager || userResource.data?.is_moderator) {
-		return // Admin sidebar already includes Notifications
-	}
-	if (user) {
-		sidebarLinks.value.push({
-			label: 'Notifications',
-			icon: 'Bell',
-			to: 'Notifications',
-			activeFor: ['Notifications'],
-		})
-	}
-}
+// const addNotifications = () => {
+// 	if (userResource.data?.is_system_manager || userResource.data?.is_moderator) {
+// 		return // Admin sidebar already includes Notifications
+// 	}
+// 	if (user) {
+// 		sidebarLinks.value.push({
+// 			label: 'Notifications',
+// 			icon: 'Bell',
+// 			to: 'Notifications',
+// 			activeFor: ['Notifications'],
+// 		})
+// 	}
+// }
 
 const addGuestSidebar = () => {
 	if (!user) {
@@ -244,7 +275,11 @@ const addAdminSidebar = () => {
 		!userResource.data?.is_system_manager &&
 		!userResource.data?.is_moderator
 	) {
-		return // Only for admin/moderator users
+		// Hapus Statistics dan Jobs link untuk non-admin
+		sidebarLinks.value = sidebarLinks.value.filter(link => 
+			link.label !== 'Statistics' && link.label !== 'Jobs'
+		)
+		return
 	}
 
 	// For admin/moderator users, ensure all admin links are present

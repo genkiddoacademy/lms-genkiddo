@@ -3,16 +3,16 @@
 		<div>
 			<div class="leading-5 mb-4">
 				<div v-if="readOnly">
-					{{ __('Thank you for providing your feedback.') }}
+					{{ __('Terima kasih telah memberikan umpan balik Anda.') }}
 					<span
 						@click="showFeedbackForm = !showFeedbackForm"
 						class="underline cursor-pointer"
-						>{{ __('Click here') }}</span
+						>{{ __('Klik disini') }}</span
 					>
-					{{ __('to view your feedback.') }}
+					{{ __('untuk melihat umpan balik Anda.') }}
 				</div>
 				<div v-else>
-					{{ __('Help us improve by providing your feedback.') }}
+					{{ __('Bantu kami meningkatkan kualitas dengan memberikan umpan balik Anda.”') }}
 				</div>
 			</div>
 			<div class="space-y-4" :class="showFeedbackForm ? 'block' : 'hidden'">
@@ -27,7 +27,7 @@
 				<FormControl
 					v-model="feedback.feedback"
 					type="textarea"
-					:label="__('Feedback')"
+					:label="__('Umpan Balik')"
 					:rows="9"
 					:readonly="readOnly"
 				/>
@@ -37,7 +37,7 @@
 					variant="outline"
 					class="!border-orange-2 text-orange-2"
 				>
-					{{ __('Kirim Feedback') }}
+					{{ __('Kirim Umpan Balik') }}
 				</Button>
 			</div>
 		</div>

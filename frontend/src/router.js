@@ -297,11 +297,11 @@ const routes = [
 	},
 	{
 		path: '/dashboard',
-		name: 'DashboardStudent',
+		name: 'Dashboard',
 		component: () => import('@/pages/DashboardStudent.vue'),
 		meta: {
 			title: 'Dashboard',
-			// requiresAuth: true  // tambahkan ini kalau butuh login
+			// requiresAuth: true  // opsional, sesuaikan kebutuhan
 		},
 	},
 ]

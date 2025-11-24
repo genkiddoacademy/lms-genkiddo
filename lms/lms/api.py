@@ -19,6 +19,7 @@ from frappe.utils import (
 	format_date,
 	date_diff,
 )
+import math
 from frappe.query_builder import DocType
 from lms.lms.utils import get_average_rating, get_lesson_count
 from xml.dom.minidom import parseString
@@ -1761,3 +1762,174 @@ def get_student_scores():
         "total": total,
         "avg": avg
     }
+    
+@frappe.whitelist()
+def get_my_courses_progress():
+    """Get all courses with progress for current user"""
+    if frappe.session.user == "Guest":
+        return []
+    
+    try:
+        # Get user's enrollments with progress
+        enrollments = frappe.get_all(
+            "LMS Enrollment",
+            filters={"member": frappe.session.user},
+            fields=["name", "course", "progress", "course_title"]
+        )
+        
+        print(f"🔍 DEBUG: Found {len(enrollments)} enrollments for user {frappe.session.user}")
+        
+        courses_with_progress = []
+        for enrollment in enrollments:
+            try:
+                # Get course info
+                course_info = frappe.get_doc("LMS Course", enrollment.course)
+                
+                # Calculate progress and round UP (ceil)
+                progress = float(enrollment.progress) if enrollment.progress else 0.0
+                progress_rounded = math.ceil(progress)  # Round UP to nearest integer
+                
+                courses_with_progress.append({
+                    "course_name": enrollment.course,
+                    "course_title": course_info.title if course_info else enrollment.course_title,
+                    "progress": progress_rounded,  # Use rounded up value
+                    "image": course_info.image if course_info else None,
+                    "short_introduction": course_info.short_introduction if course_info else "",
+                    "published": course_info.published if course_info else False,
+                    "upcoming": course_info.upcoming if course_info else False
+                })
+                
+            except Exception as e:
+                print(f"❌ ERROR processing course {enrollment.course}: {str(e)}")
+                # Skip courses that can't be found
+                continue
+        
+        print(f"🔍 DEBUG: Returning {len(courses_with_progress)} courses")
+        return courses_with_progress
+        
+    except Exception as e:
+        print(f"❌ ERROR in get_my_courses_progress: {str(e)}")
+        frappe.log_error(f"get_my_courses_progress error: {str(e)}")
+        return []
+
+@frappe.whitelist()
+def get_quiz_scores_for_course(course):
+    """Get all quiz scores for current user in a specific course"""
+    if frappe.session.user == "Guest":
+        return {"average_percentage": 0, "quiz_count": 0, "quiz_scores": []}
+    
+    try:
+        # Get all quiz submissions for this course and user
+        submissions = frappe.get_all(
+            "LMS Quiz Submission",
+            filters={
+                "course": course,
+                "member": frappe.session.user
+            },
+            fields=["name", "quiz", "quiz_title", "score", "score_out_of", "percentage", "creation", "member_name"]
+        )
+        
+        print(f"🔍 DEBUG: Found {len(submissions)} quiz submissions for course {course}")
+        
+        if not submissions:
+            return {"average_percentage": 0, "quiz_count": 0, "quiz_scores": []}
+        
+        # Calculate average percentage
+        total_percentage = 0
+        valid_submissions = 0
+        
+        for submission in submissions:
+            if submission.percentage is not None:
+                total_percentage += submission.percentage
+                valid_submissions += 1
+            elif submission.score is not None and submission.score_out_of is not None and submission.score_out_of > 0:
+                # Calculate percentage if not available
+                calculated_percentage = (submission.score / submission.score_out_of) * 100
+                total_percentage += calculated_percentage
+                valid_submissions += 1
+        
+        average_percentage = total_percentage / valid_submissions if valid_submissions > 0 else 0
+        
+        # Format quiz scores for display
+        quiz_scores = []
+        for submission in submissions:
+            # Determine the percentage to display
+            display_percentage = submission.percentage
+            if display_percentage is None and submission.score is not None and submission.score_out_of is not None and submission.score_out_of > 0:
+                display_percentage = (submission.score / submission.score_out_of) * 100
+            
+            quiz_scores.append({
+                "quiz_name": submission.quiz_title or submission.quiz,
+                "score": submission.score or 0,
+                "score_out_of": submission.score_out_of or 0,
+                "percentage": round(display_percentage, 2) if display_percentage is not None else 0,
+                "date": submission.creation,
+                "submission_id": submission.name
+            })
+        
+        result = {
+            "average_percentage": round(average_percentage, 2),
+            "quiz_count": len(submissions),
+            "quiz_scores": quiz_scores
+        }
+        
+        print(f"🔍 DEBUG: Quiz data result: {result}")
+        return result
+        
+    except Exception as e:
+        print(f"❌ ERROR in get_quiz_scores_for_course: {str(e)}")
+        import traceback
+        print(f"❌ TRACEBACK: {traceback.format_exc()}")
+        frappe.log_error(f"get_quiz_scores_for_course error: {str(e)}")
+        return {"average_percentage": 0, "quiz_count": 0, "quiz_scores": []}
+    
+@frappe.whitelist()
+def get_all_courses_with_quiz_scores():
+    """Get all courses with quiz scores for current user"""
+    if frappe.session.user == "Guest":
+        return []
+    
+    try:
+        # First get all courses the user is enrolled in
+        enrollments = frappe.get_all(
+            "LMS Enrollment",
+            filters={"member": frappe.session.user},
+            fields=["course", "progress", "course_title"]
+        )
+        
+        courses_with_scores = []
+        
+        for enrollment in enrollments:
+            # Get course details
+            course_info = frappe.db.get_value(
+                "LMS Course",
+                enrollment.course,
+                ["title", "image", "short_introduction", "published"],
+                as_dict=True
+            )
+            
+            if not course_info or not course_info.published:
+                continue
+            
+            # Get quiz scores for this course
+            quiz_data = get_quiz_scores_for_course(enrollment.course)
+            
+            courses_with_scores.append({
+                "course_name": enrollment.course,
+                "course_title": course_info.title or enrollment.course_title,
+                "progress": enrollment.progress or 0,
+                "image": course_info.image,
+                "short_introduction": course_info.short_introduction,
+                "average_quiz_percentage": quiz_data.get("average_percentage", 0),
+                "quiz_count": quiz_data.get("quiz_count", 0),
+                "published": course_info.published
+            })
+        
+        # Sort by average quiz percentage descending
+        courses_with_scores.sort(key=lambda x: x["average_quiz_percentage"], reverse=True)
+        
+        return courses_with_scores
+        
+    except Exception as e:
+        print(f"❌ ERROR in get_all_courses_with_quiz_scores: {str(e)}")
+        return []

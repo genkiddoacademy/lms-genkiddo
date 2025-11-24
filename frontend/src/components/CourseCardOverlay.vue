@@ -34,7 +34,7 @@
 							</span>
 						</Button>
 					</router-link>
-					<CertificationLinks :courseName="course.data.name" class="w-full" />
+					<!-- <CertificationLinks :courseName="course.data.name" class="w-full" /> -->
 				</div>
 				<router-link
 					v-else-if="course.data.paid_course"

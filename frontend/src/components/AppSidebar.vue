@@ -507,10 +507,10 @@ const filterSidebarByRole = () => {
 		sidebarLinks.value.push({
 			label: 'Desk',
 			icon: 'Settings',
-			to: '/app/lms',
+			to: '/desk',
 			activeFor: [],
 			onClick: () => {
-				window.location.href = '/app/lms'
+				window.location.href = '/desk'
 			},
 		})
 	}

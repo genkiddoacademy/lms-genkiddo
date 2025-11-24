@@ -18,7 +18,7 @@
 					</template>
 					{{ __('Video Statistics') }}
 				</Button>
-				<CertificationLinks :courseName="courseName" />
+				<!-- <CertificationLinks :courseName="courseName" /> -->
 			</div>
 		</header>
 		<div class="grid md:grid-cols-[70%,30%] h-screen">
